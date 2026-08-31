@@ -1,0 +1,282 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="utf-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>Matemática Aplicada — MAT002-A | UTFSM 2026</title>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;600;700;900&family=DM+Sans:wght@300;400;500;600;700&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet"/>
+<style>
+:root{
+  --navy:#1a3a5c;
+  --navy-mid:#2b4868;
+  --blue:#2e5b8e;
+  --blue-light:#dfe8f1;
+  --teal:#27788a;
+  --teal-light:#e2f0f2;
+  --orange:#c97d1a;
+  --orange-light:#f6ead7;
+  --red:#b53134;
+  --red-light:#f5e4e4;
+  --cream:#f4f6fa;
+  --cream-dark:#e7ecf2;
+  --text:#23384d;
+  --text-mid:#536a7e;
+  --text-light:#8192a1;
+  --white:#ffffff;
+  --card-bg:#ffffff;
+  --border:#d5dee7;
+}
+*{box-sizing:border-box;margin:0;padding:0}html{scroll-behavior:smooth}body{font-family:'DM Sans',sans-serif;background:var(--cream);color:var(--text);line-height:1.6;overflow-x:hidden}a{color:inherit}
+#progress-bar{position:fixed;top:0;left:0;height:3px;width:0;background:var(--orange);z-index:10000;transition:width .1s linear}
+nav{position:fixed;top:0;left:0;right:0;height:56px;background:rgba(26,58,92,.97);backdrop-filter:blur(12px);z-index:1000;padding:0 2rem;display:flex;align-items:center;justify-content:space-between;color:#fff}nav::before{content:"";position:absolute;left:0;bottom:0;height:3px;width:33.33%;background:var(--red)}nav::after{content:"";position:absolute;right:0;bottom:0;height:3px;width:33.33%;background:var(--blue)}nav .tricolor-mid{position:absolute;left:33.33%;right:33.33%;bottom:0;height:3px;background:#e3b341}.brand{display:flex;align-items:center;gap:.7rem;position:relative;z-index:1}.brand-badge{font-family:'DM Mono',monospace;font-size:.66rem;font-weight:700;letter-spacing:.08em;background:var(--blue);padding:4px 9px;border-radius:5px;color:#fff}.brand-name{font-size:.9rem;font-weight:600;opacity:.92}.nav-links{display:flex;list-style:none;gap:1.4rem;position:relative;z-index:1}.nav-links a{text-decoration:none;color:rgba(255,255,255,.68);font-size:.8rem;font-weight:600}.nav-links a:hover{color:#fff}@media(max-width:860px){.nav-links{display:none}}
+.hero{min-height:100vh;background:var(--navy);color:#fff;display:flex;align-items:center;justify-content:center;text-align:center;padding:100px 2rem 60px;position:relative;overflow:hidden}.hero::before{content:"";position:absolute;inset:0;background-image:linear-gradient(rgba(255,255,255,.035) 1px,transparent 1px),linear-gradient(90deg,rgba(255,255,255,.035) 1px,transparent 1px);background-size:54px 54px}.hero::after{content:"";position:absolute;left:0;right:0;bottom:0;height:5px;background:linear-gradient(90deg,var(--red) 0 33.33%, #e3b341 33.33% 66.66%, var(--blue) 66.66% 100%)}.hero-content{position:relative;z-index:1;max-width:900px}.hero-eyebrow{display:inline-flex;align-items:center;gap:8px;border:1px solid rgba(255,255,255,.22);background:rgba(255,255,255,.08);border-radius:999px;padding:7px 18px;margin-bottom:2rem}.dot{width:7px;height:7px;border-radius:50%;background:var(--orange)}.hero-eyebrow span{font-family:'DM Mono',monospace;font-size:.76rem;letter-spacing:.12em;text-transform:uppercase;color:rgba(255,255,255,.86)}.hero h1{font-family:'Playfair Display',serif;font-size:clamp(2.8rem,7vw,5.6rem);font-weight:900;line-height:1.03;letter-spacing:-.02em;margin-bottom:.6rem}.hero h1 em{font-style:normal;color:#fff}.subtitle{font-family:'DM Mono',monospace;font-size:.85rem;color:rgba(255,255,255,.58);letter-spacing:.11em;text-transform:uppercase;margin-bottom:1.8rem}.tagline{font-size:1.1rem;color:rgba(255,255,255,.78);max-width:690px;margin:0 auto 2.5rem;font-weight:300}.hero-stats{display:flex;gap:6px;justify-content:center;flex-wrap:wrap}.stat-pill{min-width:120px;border:1px solid rgba(255,255,255,.12);background:rgba(255,255,255,.06);border-radius:10px;padding:11px 18px;display:flex;flex-direction:column;align-items:center}.stat-pill .val{font-family:'Playfair Display',serif;font-size:1.75rem;font-weight:800;color:#fff;line-height:1}.stat-pill .lbl{font-size:.68rem;color:rgba(255,255,255,.54);letter-spacing:.08em;text-transform:uppercase;margin-top:4px}.scroll-cue{position:absolute;bottom:2rem;left:50%;transform:translateX(-50%);font-family:'DM Mono',monospace;font-size:.68rem;color:rgba(255,255,255,.35);letter-spacing:.14em;text-transform:uppercase}
+.agenda-strip{background:var(--navy-mid);color:#fff;padding:4rem 2rem;position:relative}.agenda-strip::before{content:"";position:absolute;left:0;top:0;height:3px;width:33.33%;background:var(--red)}.agenda-strip::after{content:"";position:absolute;right:0;top:0;height:3px;width:33.33%;background:var(--blue)}.agenda-strip .tricolor-mid{position:absolute;left:33.33%;right:33.33%;top:0;height:3px;background:#e3b341}.agenda-inner{max-width:1100px;margin:0 auto}.section-eyebrow{font-family:'DM Mono',monospace;font-size:.72rem;letter-spacing:.15em;text-transform:uppercase;color:var(--blue);margin-bottom:.6rem}.agenda-strip .section-eyebrow{color:rgba(255,255,255,.62)}.agenda-strip h2{font-family:'Playfair Display',serif;font-size:2rem;color:#fff;margin-bottom:2.2rem}.agenda-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:1px;background:rgba(255,255,255,.09);border-radius:14px;overflow:hidden;border:1px solid rgba(255,255,255,.08)}.agenda-item{background:rgba(255,255,255,.07);padding:1.5rem;display:flex;gap:1rem}.agenda-num{font-family:'Playfair Display',serif;font-size:2.1rem;font-weight:900;color:rgba(255,255,255,.28);line-height:1}.agenda-item h3{font-size:.93rem;margin-bottom:.25rem}.agenda-item p{font-size:.78rem;color:rgba(255,255,255,.54);line-height:1.45}
+main{}section{max-width:1100px;margin:0 auto;padding:5rem 2rem}section+section{padding-top:0}.section-divider{height:1px;background:var(--border);max-width:1100px;margin:0 auto}.section-header{margin-bottom:2.3rem}.section-header h2{font-family:'Playfair Display',serif;font-size:clamp(1.9rem,4vw,2.6rem);line-height:1.14;color:var(--navy);font-weight:800}.section-header p{color:var(--text-mid);font-size:1rem;max-width:680px;margin-top:.45rem}.card,.comp-card,.rda-item,.unidad-card,.met-card,.lin-card,.cal-item,.aula-item,.bib-item,.notice-card,.ap-card,.examen-card,.formula-card,.recom-card,.temario-card,.dept-card{background:var(--card-bg);border:1px solid var(--border);border-radius:16px;box-shadow:0 2px 16px rgba(26,58,92,.045);position:relative;overflow:hidden}.card::before,.comp-card::before,.rda-item::before,.unidad-card::before,.met-card::before,.lin-card::before,.cal-item::before,.aula-item::before,.bib-item::before,.notice-card::before,.ap-card::before,.examen-card::before,.formula-card::before,.recom-card::before,.temario-card::before,.dept-card::before{content:"";position:absolute;left:0;right:0;top:0;height:3px;background:linear-gradient(90deg,var(--red) 0 33.33%,#e3b341 33.33% 66.66%,var(--blue) 66.66% 100%)}.card{padding:2rem}.card-label{font-family:'DM Mono',monospace;font-size:.68rem;letter-spacing:.15em;text-transform:uppercase;color:var(--blue);margin-bottom:.8rem}.id-grid{display:grid;grid-template-columns:1fr 1fr;gap:1.5rem}@media(max-width:760px){.id-grid{grid-template-columns:1fr}}.info-table{width:100%;border-collapse:collapse;font-size:.88rem}.info-table td{padding:10px 12px;border-bottom:1px solid var(--cream-dark);vertical-align:top}.info-table td:first-child{width:42%;color:var(--text-light);font-size:.8rem;text-transform:uppercase;letter-spacing:.04em;font-weight:700}.info-table td:last-child{font-weight:600;color:var(--navy)}.info-table tr:last-child td{border-bottom:none}
+.dark-card{background:var(--navy);border-radius:18px;color:#fff;padding:2rem;position:relative;overflow:hidden}.dark-card::before{content:"";position:absolute;left:0;right:0;top:0;height:3px;background:linear-gradient(90deg,var(--red) 0 33.33%,#e3b341 33.33% 66.66%,var(--blue) 66.66% 100%)}.dark-card .card-label{color:rgba(255,255,255,.58)}.dark-card h3{font-family:'Playfair Display',serif;color:#fff;margin-bottom:.9rem}.hours-list{display:flex;flex-direction:column;gap:.7rem}.hour-row{display:flex;justify-content:space-between;padding:10px 14px;border-radius:8px;background:rgba(255,255,255,.07);font-size:.86rem}.hour-row span:first-child{color:rgba(255,255,255,.66)}.hour-row span:last-child{font-family:'DM Mono',monospace;color:#fff;font-weight:700}.desc-card{background:var(--navy);border-radius:20px;padding:2.5rem;color:#fff;position:relative;overflow:hidden}.desc-card .card-label{color:rgba(255,255,255,.58)}.desc-card p{font-size:1.05rem;line-height:1.75;color:rgba(255,255,255,.82);max-width:740px}.rda-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(260px,1fr));gap:.8rem}.rda-item{padding:1.2rem 1.4rem;display:flex;gap:.9rem;align-items:flex-start}.rda-badge,.chip{display:inline-block;background:var(--blue);color:#fff;border-radius:6px;padding:4px 9px;font-family:'DM Mono',monospace;font-size:.7rem;font-weight:700;white-space:nowrap}.rda-text{font-size:.87rem;color:var(--text-mid);line-height:1.5}.unidades-wrap{display:flex;flex-direction:column;gap:1rem}.unidad-card{padding:1.7rem 1.9rem;display:grid;grid-template-columns:80px 1fr auto;gap:1.4rem;align-items:start}.unidad-num{font-family:'Playfair Display',serif;font-size:3rem;font-weight:900;color:var(--blue);opacity:.24;line-height:1}.unidad-info h3{font-family:'Playfair Display',serif;color:var(--navy);font-size:1.2rem;margin-bottom:.4rem}.unidad-info p{font-size:.86rem;color:var(--text-mid)}.u-tags{display:flex;gap:5px;flex-wrap:wrap;justify-content:flex-end}.u-tag{font-family:'DM Mono',monospace;font-size:.68rem;color:#fff;background:var(--teal);border-radius:4px;padding:3px 8px}.u-tag.orange{background:var(--orange)}.u-tag.red{background:var(--red)}@media(max-width:680px){.unidad-card{grid-template-columns:1fr}.u-tags{justify-content:flex-start}}
+.temario-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(280px,1fr));gap:1rem}.temario-card{padding:1.4rem}.temario-card h3{font-family:'Playfair Display',serif;font-size:1.1rem;color:var(--navy);margin-bottom:.8rem}.temario-card ul{list-style:none;display:flex;flex-direction:column;gap:.45rem}.temario-card li{font-size:.84rem;color:var(--text-mid);padding-left:1.15rem;position:relative}.temario-card li::before{content:"•";position:absolute;left:0;color:var(--blue);font-weight:900}.dept-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:1rem}.dept-card{padding:1.25rem}.dept-card h3{font-size:.95rem;color:var(--navy);margin-bottom:.6rem}.dept-card p{font-size:.8rem;color:var(--text-mid);line-height:1.45}.eval-layout{display:grid;grid-template-columns:1fr 1fr;gap:1.5rem}@media(max-width:860px){.eval-layout{grid-template-columns:1fr}}.eval-donut-card{background:var(--navy);border-radius:20px;padding:2rem;color:#fff}.eval-donut-card .card-label{color:rgba(255,255,255,.58)}.eval-donut-card h3{font-family:'Playfair Display',serif;color:#fff;margin-bottom:1.2rem}.donut-bars{display:flex;flex-direction:column;gap:1.05rem}.donut-bar-row{display:flex;flex-direction:column;gap:5px}.donut-bar-meta{display:flex;justify-content:space-between;font-size:.82rem}.donut-bar-name{color:rgba(255,255,255,.76)}.donut-bar-pct{font-family:'DM Mono',monospace;color:#fff;font-weight:700}.bar-track{height:7px;background:rgba(255,255,255,.13);border-radius:99px;overflow:hidden}.bar-fill{height:100%;background:#e3b341;border-radius:99px;transition:width 1s ease}.formula-card{padding:2rem}.formula-card h3{font-family:'Playfair Display',serif;color:var(--navy);font-size:1.15rem;margin-bottom:.8rem}.formula-block{background:var(--cream-dark);border-radius:10px;padding:1.1rem 1.4rem;font-family:'DM Mono',monospace;font-size:.84rem;color:var(--navy);line-height:1.8}.formula-cases{margin-top:1rem;display:flex;flex-direction:column;gap:.7rem}.case-row{display:flex;gap:.75rem;align-items:flex-start;font-size:.86rem}.case-badge{font-family:'DM Mono',monospace;font-size:.68rem;padding:4px 9px;border-radius:6px;white-space:nowrap}.case-badge.blue{background:var(--blue);color:#fff}.case-badge.orange{background:var(--orange-light);color:#7b4c11}.case-badge.red{background:var(--red-light);color:var(--red)}.case-text{color:var(--text-mid)}.ap-card,.examen-card,.notice-card{padding:1.45rem 1.8rem;display:flex;gap:1rem;align-items:flex-start;margin-top:1.1rem}.ap-card{background:var(--teal-light);border-color:#cde5e9}.examen-card{background:var(--orange-light);border-color:#ead4b2}.notice-card{background:var(--red-light);border-color:#ebc5c6}.ap-icon,.examen-icon,.notice-icon{font-size:1.4rem;flex-shrink:0}.ap-card h4,.examen-card h4,.notice-card h3{color:var(--navy);font-size:.93rem;margin-bottom:.45rem}.ap-card p,.examen-card p,.notice-card p{font-size:.85rem;color:var(--text-mid);line-height:1.55}.ap-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(180px,1fr));gap:.65rem;margin-top:.7rem}.ap-item{background:#fff;border:1px solid var(--border);border-radius:9px;padding:.75rem .9rem;font-size:.82rem;color:var(--text-mid)}.ap-item strong{color:var(--navy)}
+.lin-grid{display:grid;grid-template-columns:1fr 1fr;gap:1.2rem}@media(max-width:760px){.lin-grid{grid-template-columns:1fr}}.lin-card{padding:1.6rem}.lin-card h3{font-size:.95rem;color:var(--navy);margin-bottom:.8rem}.lin-list{list-style:none;display:flex;flex-direction:column;gap:.55rem}.lin-list li{font-size:.84rem;color:var(--text-mid);line-height:1.45;padding-left:1.15rem;position:relative}.lin-list li::before{content:"→";position:absolute;left:0;color:var(--blue);font-weight:700}.calendar-wrap{display:flex;flex-direction:column;gap:.55rem;position:relative;padding-left:2rem}.calendar-wrap::before{content:"";position:absolute;left:8px;top:12px;bottom:12px;width:2px;background:var(--blue-light)}.cal-item{display:flex;gap:1.1rem;align-items:flex-start;padding:1rem 1.35rem;position:relative}.cal-item::after{content:"";position:absolute;left:-1.7rem;top:50%;transform:translateY(-50%);width:10px;height:10px;border-radius:50%;background:var(--blue);border:2px solid var(--cream)}.cal-num{background:var(--blue);color:#fff;font-family:'Playfair Display',serif;font-weight:800;border-radius:10px;width:52px;height:52px;display:flex;align-items:center;justify-content:center;flex-shrink:0;text-align:center;line-height:1.05}.cal-info h4{font-size:.9rem;color:var(--navy);margin-bottom:3px}.cal-date{font-family:'DM Mono',monospace;font-size:.74rem;color:var(--blue)}.cal-note{font-size:.78rem;color:var(--text-light);margin-top:2px}.cal-type{font-family:'DM Mono',monospace;font-size:.62rem;letter-spacing:.06em;text-transform:uppercase;border-radius:4px;padding:2px 8px;margin-left:5px;background:var(--blue);color:#fff}.cal-type.orange{background:var(--orange)}.cal-type.red{background:var(--red)}.cal-type.teal{background:var(--teal)}
+.aula-grid,.bib-list{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:1rem}.aula-item,.bib-item{padding:1rem 1.15rem;font-size:.86rem;color:var(--text-mid);display:flex;gap:.8rem;align-items:flex-start}.aula-item strong,.bib-item strong{color:var(--navy)}.contact-layout{display:grid;grid-template-columns:1fr 1fr;gap:1.4rem}@media(max-width:760px){.contact-layout{grid-template-columns:1fr}}.contact-card{background:var(--navy);border-radius:20px;padding:2rem;color:#fff}.contact-card .card-label{color:rgba(255,255,255,.58)}.contact-card h3{font-family:'Playfair Display',serif;color:#fff;font-size:1.5rem}.contact-row{display:flex;gap:.75rem;margin-top:.65rem;font-size:.86rem;color:rgba(255,255,255,.8)}.contact-row a{color:#fff;text-decoration:none}.recom-card{padding:2rem}.recom-item{display:flex;gap:1rem;margin-top:.9rem}.recom-icon{font-size:1.2rem}.recom-item h4{font-size:.9rem;color:var(--navy)}.recom-item p{font-size:.82rem;color:var(--text-light)}footer{background:var(--navy);color:#fff;text-align:center;padding:3rem 2rem;position:relative}footer::before{content:"";position:absolute;left:0;top:0;height:3px;width:33.33%;background:var(--red)}footer::after{content:"";position:absolute;right:0;top:0;height:3px;width:33.33%;background:var(--blue)}footer .tricolor-mid{position:absolute;left:33.33%;right:33.33%;top:0;height:3px;background:#e3b341}.f-brand{font-family:'Playfair Display',serif;font-size:1.5rem;font-weight:800;margin-bottom:.4rem}.f-sub{font-size:.78rem;color:rgba(255,255,255,.44);letter-spacing:.08em;text-transform:uppercase;margin-bottom:1rem}.f-links{display:flex;justify-content:center;flex-wrap:wrap;gap:1.2rem}.f-links a{font-size:.8rem;color:rgba(255,255,255,.52);text-decoration:none}.f-links a:hover{color:#fff}@keyframes fadeUp{from{opacity:0;transform:translateY(20px)}to{opacity:1;transform:none}}.reveal{opacity:0;transform:translateY(20px);transition:opacity .55s ease,transform .55s ease}.reveal.visible{opacity:1;transform:none}.rs>*{opacity:0;transform:translateY(16px);transition:opacity .45s ease,transform .45s ease}.rs.visible>*:nth-child(1){opacity:1;transform:none;transition-delay:.00s}.rs.visible>*:nth-child(2){opacity:1;transform:none;transition-delay:.06s}.rs.visible>*:nth-child(3){opacity:1;transform:none;transition-delay:.12s}.rs.visible>*:nth-child(4){opacity:1;transform:none;transition-delay:.18s}.rs.visible>*:nth-child(5){opacity:1;transform:none;transition-delay:.24s}.rs.visible>*:nth-child(6){opacity:1;transform:none;transition-delay:.30s}.rs.visible>*:nth-child(7){opacity:1;transform:none;transition-delay:.36s}.rs.visible>*:nth-child(8){opacity:1;transform:none;transition-delay:.42s}.rs.visible>*:nth-child(9){opacity:1;transform:none;transition-delay:.48s}
+
+.parallel-grid{display:grid;grid-template-columns:1fr 1fr;gap:1rem;margin-top:1.4rem}
+.parallel-card{background:var(--card-bg);border:1px solid var(--border);border-radius:16px;box-shadow:0 2px 16px rgba(26,58,92,.045);position:relative;overflow:hidden;padding:1.5rem}
+.parallel-card::before{content:"";position:absolute;left:0;right:0;top:0;height:3px;background:linear-gradient(90deg,var(--red) 0 33.33%,#e3b341 33.33% 66.66%,var(--blue) 66.66% 100%)}
+.parallel-card h3{font-family:'Playfair Display',serif;color:var(--navy);font-size:1.18rem;margin:.2rem 0 .4rem}
+.parallel-card p{font-size:.86rem;color:var(--text-mid);line-height:1.45}
+.parallel-code{display:inline-block;background:var(--blue);color:#fff;border-radius:6px;padding:4px 9px;font-family:'DM Mono',monospace;font-size:.7rem;font-weight:700;letter-spacing:.04em}
+.eval-table-wrap{background:var(--card-bg);border:1px solid var(--border);border-radius:16px;box-shadow:0 2px 16px rgba(26,58,92,.045);overflow:hidden;position:relative;margin-top:1.2rem}
+.eval-table-wrap::before{content:"";position:absolute;left:0;right:0;top:0;height:3px;background:linear-gradient(90deg,var(--red) 0 33.33%,#e3b341 33.33% 66.66%,var(--blue) 66.66% 100%)}
+.eval-table{width:100%;border-collapse:collapse;font-size:.86rem}
+.eval-table th{background:var(--blue-light);color:var(--navy);text-align:left;padding:12px 14px;font-size:.74rem;letter-spacing:.06em;text-transform:uppercase;font-weight:800;border-bottom:1px solid var(--border)}
+.eval-table td{padding:11px 14px;border-bottom:1px solid var(--cream-dark);vertical-align:top;color:var(--text-mid)}
+.eval-table tr:last-child td{border-bottom:none}
+.eval-table td:first-child{font-weight:800;color:var(--navy);white-space:nowrap}
+.eval-table .block{font-family:'DM Mono',monospace;color:var(--blue);font-size:.78rem;font-weight:700;white-space:nowrap}
+.eval-legend{display:flex;gap:.6rem;flex-wrap:wrap;margin-top:1rem}
+.eval-legend span{font-family:'DM Mono',monospace;font-size:.7rem;color:#fff;border-radius:6px;padding:4px 9px;background:var(--blue)}
+.eval-legend span.orange{background:var(--orange)}.eval-legend span.red{background:var(--red)}
+@media(max-width:820px){.parallel-grid{grid-template-columns:1fr}.eval-table{font-size:.78rem}.eval-table th,.eval-table td{padding:9px 10px}.eval-table td:first-child{white-space:normal}.eval-table .block{white-space:normal}}
+
+
+
+/* Detalle explícito de contenidos */
+.process-matrix{display:grid;grid-template-columns:1fr 1fr;gap:1.25rem;margin-top:1.5rem}
+.matrix-card{background:var(--card-bg);border:1px solid var(--border);border-radius:16px;padding:1.5rem;box-shadow:0 2px 14px rgba(26,58,92,.06);position:relative;overflow:hidden}
+.matrix-card::before{content:"";position:absolute;top:0;left:0;right:0;height:4px;background:linear-gradient(90deg,var(--red) 0 33%,#e3b341 33% 66%,var(--blue) 66% 100%)}
+.matrix-card h3{font-family:'Playfair Display',serif;color:var(--navy);font-size:1.18rem;margin-bottom:.25rem}
+.matrix-card .career{font-size:.82rem;color:var(--text-mid);margin-bottom:1rem;line-height:1.45}
+.matrix-table{width:100%;border-collapse:collapse;font-size:.82rem}
+.matrix-table th{background:var(--blue-light);color:var(--navy);text-align:left;padding:.65rem;border-bottom:1px solid var(--border)}
+.matrix-table td{padding:.72rem .65rem;border-bottom:1px solid var(--cream-dark);vertical-align:top;color:var(--text-mid);line-height:1.45}
+.matrix-table tr:last-child td{border-bottom:none}
+.matrix-table td:first-child{font-weight:700;color:var(--navy);width:22%}
+.detail-process{display:flex;flex-direction:column;gap:1.05rem;margin-top:1.3rem}
+.detail-card{background:var(--card-bg);border:1px solid var(--border);border-radius:16px;padding:1.45rem 1.6rem;box-shadow:0 2px 14px rgba(26,58,92,.05);position:relative;overflow:hidden}
+.detail-card::before{content:"";position:absolute;left:0;right:0;top:0;height:3px;background:linear-gradient(90deg,var(--red) 0 33.33%,#e3b341 33.33% 66.66%,var(--blue) 66.66% 100%)}
+.detail-head{display:flex;gap:.8rem;align-items:flex-start;margin-bottom:1rem;position:relative;z-index:1}
+.detail-badge{background:var(--blue);color:#fff;font-family:'DM Mono',monospace;font-size:.72rem;font-weight:600;border-radius:6px;padding:4px 10px;white-space:nowrap}
+.detail-card h3{font-family:'Playfair Display',serif;color:var(--navy);font-size:1.15rem}
+.detail-columns{display:grid;grid-template-columns:repeat(auto-fit,minmax(230px,1fr));gap:1rem;position:relative;z-index:1}
+.content-block{background:var(--cream);border:1px solid var(--cream-dark);border-radius:12px;padding:1rem}
+.content-block h4{font-size:.88rem;color:var(--navy);margin-bottom:.45rem}
+.content-block ul{list-style:none;display:flex;flex-direction:column;gap:.38rem}
+.content-block li{font-size:.82rem;color:var(--text-mid);line-height:1.42;padding-left:1rem;position:relative}
+.content-block li::before{content:"";position:absolute;left:0;top:.62em;width:5px;height:5px;border-radius:50%;background:var(--blue)}
+.content-block.note{background:var(--orange-light);border-color:rgba(201,125,26,.18)}
+.content-block.note li::before{background:var(--orange)}
+@media(max-width:780px){.process-matrix{grid-template-columns:1fr}.detail-head{flex-direction:column}.detail-badge{white-space:normal}.matrix-table{font-size:.78rem}}
+
+
+/* Temario oficial explícito: sin alturas fijas, sin solapamientos */
+.official-temario{display:flex;flex-direction:column;gap:1.4rem;margin-top:1.4rem}
+.official-process{background:var(--card-bg);border:1px solid var(--border);border-radius:18px;box-shadow:0 2px 16px rgba(26,58,92,.045);position:relative;overflow:hidden;padding:1.5rem}
+.official-process::before{content:"";position:absolute;left:0;right:0;top:0;height:3px;background:linear-gradient(90deg,var(--red) 0 33.33%,#e3b341 33.33% 66.66%,var(--blue) 66.66% 100%)}
+.official-head{display:flex;gap:.85rem;align-items:flex-start;margin-bottom:1.1rem;position:relative;z-index:1}
+.official-badge{background:var(--blue);color:#fff;font-family:'DM Mono',monospace;font-size:.7rem;font-weight:700;border-radius:6px;padding:4px 10px;white-space:nowrap}
+.official-head h3{font-family:'Playfair Display',serif;color:var(--navy);font-size:1.22rem;line-height:1.2;margin-bottom:.15rem}
+.official-head p{color:var(--text-mid);font-size:.86rem;line-height:1.45}
+.official-layout{display:grid;grid-template-columns:minmax(220px,280px) 1fr;gap:1rem;align-items:start;position:relative;z-index:1}
+.rda-panel{display:flex;flex-direction:column;gap:.75rem}
+.rda-box{background:var(--cream);border:1px solid var(--cream-dark);border-left:4px solid var(--red);border-radius:12px;padding:.9rem}
+.rda-box .rda-title{font-family:'DM Mono',monospace;font-weight:700;color:var(--red);font-size:.76rem;margin-bottom:.35rem}
+.rda-box p{font-size:.78rem;color:var(--text-mid);line-height:1.45}
+.topic-list{display:flex;flex-direction:column;gap:.65rem}
+.topic-row{display:grid;grid-template-columns:minmax(140px,210px) 1fr;gap:.85rem;background:#fff;border:1px solid var(--cream-dark);border-radius:12px;padding:.85rem .95rem}
+.topic-title{font-weight:800;color:var(--navy);font-size:.86rem;line-height:1.25}
+.topic-desc{color:var(--text-mid);font-size:.82rem;line-height:1.45}
+.topic-desc ul{margin:.15rem 0 0 1rem}
+.topic-desc li{margin:.16rem 0}
+@media(max-width:820px){.official-layout{grid-template-columns:1fr}.official-head{flex-direction:column}.official-badge{white-space:normal}.topic-row{grid-template-columns:1fr}}
+
+</style>
+</head>
+<body>
+<div id="progress-bar"></div>
+<nav><span class="tricolor-mid"></span><div class="brand"><span class="brand-badge">MAT002-A</span><span class="brand-name">Matemática Aplicada — UTFSM 2026</span></div><ul class="nav-links"><li><a href="#identificacion">Identificación</a></li><li><a href="#contenidos">Contenidos</a></li><li><a href="#evaluacion">Evaluación</a></li><li><a href="#calendario">Calendario</a></li><li><a href="#contacto">Contacto</a></li></ul></nav>
+<div class="hero"><div class="hero-content"><div class="hero-eyebrow"><span class="dot"></span><span>Segundo Semestre 2026</span></div><h1>Matemática<br><em>Aplicada</em></h1><div class="subtitle">MAT002-A · Departamento de Ciencias · UTFSM Viña del Mar</div><p class="tagline">Funciones reales, cálculo diferencial e integral en una variable para modelar, interpretar y resolver problemas de especialidad.</p><div class="hero-stats"><div class="stat-pill"><span class="val">3</span><span class="lbl">Unidades</span></div><div class="stat-pill"><span class="val">4</span><span class="lbl">RdA</span></div><div class="stat-pill"><span class="val">3</span><span class="lbl">Certámenes</span></div><div class="stat-pill"><span class="val">40%</span><span class="lbl">AP</span></div></div></div><div class="scroll-cue">Explorar ↓</div></div>
+<div class="agenda-strip"><span class="tricolor-mid"></span><div class="agenda-inner"><div class="section-eyebrow">Contenido de la presentación</div><h2>Agenda del Curso</h2><div class="agenda-grid rs"><div class="agenda-item"><span class="agenda-num">1</span><div><h3>Identificación</h3><p>Coordinación, datos generales y propósito de la asignatura.</p></div></div><div class="agenda-item"><span class="agenda-num">2</span><div><h3>Programa</h3><p>Unidades temáticas, resultados de aprendizaje y temarios.</p></div></div><div class="agenda-item"><span class="agenda-num">3</span><div><h3>Evaluación</h3><p>Certámenes, actividades prácticas, transversales y recuperativos.</p></div></div><div class="agenda-item"><span class="agenda-num">4</span><div><h3>Operación</h3><p>Calendario, reglas de certamen, AULA y canales oficiales.</p></div></div></div></div></div>
+<main>
+<section id="identificacion"><div class="section-header reveal"><div class="section-eyebrow">Sección 1</div><h2>Identificación de la Asignatura</h2><p>Información base entregada por la coordinación MAT002-A para el segundo semestre académico 2026.</p></div><div class="id-grid rs"><div class="card"><div class="card-label">Información General</div><h3 style="font-family:'Playfair Display',serif;color:var(--navy);font-size:1.2rem;margin-bottom:.8rem">Datos del Curso</h3><table class="info-table"><tr><td>Asignatura</td><td>Matemática Aplicada</td></tr><tr><td>Sigla</td><td>MAT002-A</td></tr><tr><td>Institución</td><td>Universidad Técnica Federico Santa María</td></tr><tr><td>Sede</td><td>Viña del Mar José Miguel Carrera</td></tr><tr><td>Unidad</td><td>Departamento de Ciencias</td></tr><tr><td>Semestre</td><td>Segundo semestre 2026</td></tr><tr><td>Inicio</td><td>Semana del 03 al 07 de agosto de 2026</td></tr><tr><td>Profesor titular</td><td>Víctor Vallejo Palacios</td></tr></table></div><div class="dark-card"><div class="card-label">Coordinación</div><h3>Coordinador de Asignatura</h3><div class="hours-list"><div class="hour-row"><span>Nombre</span><span>Gonzalo Garrido Carvajal</span></div><div class="hour-row"><span>Correo</span><span>gonzalo.garrido@usm.cl</span></div><div class="hour-row"><span>Instagram</span><span>@gonzalo.garrido.carvajal</span></div><div class="hour-row"><span>Documentos</span><span>PPT · PDF · Word · Excel</span></div></div></div></div><div class="parallel-grid rs" style="margin-top:1.5rem"><div class="parallel-card"><span class="parallel-code">Paralelo 302 · TUE</span><h3>Técnico Universitario en Electrónica</h3><p>Paralelo correspondiente a TUE, con calendario de evaluaciones propio.</p></div><div class="parallel-card"><span class="parallel-code">Paralelo 313 · TUQ</span><h3>Control del Medio Ambiente · Química Analítica · Alimentos</h3><p>Paralelo correspondiente a TUQ: Control del Medio Ambiente, Química mención Química Analítica y Técnico Universitario en Alimentos.</p></div></div></section>
+<div class="section-divider"></div>
+<section id="descripcion"><div class="section-header reveal"><div class="section-eyebrow">Sección 2</div><h2>Propósito y Resultados</h2></div><div class="desc-card reveal"><div class="card-label">Propósito Formativo</div><p>La asignatura organiza el trabajo matemático en torno al análisis de funciones reales de una variable, el uso de nociones básicas del cálculo diferencial y el uso de nociones básicas del cálculo integral, con énfasis en aplicaciones vinculadas a la especialidad.</p></div><div style="margin-top:2rem" class="section-header reveal"><div class="section-eyebrow">Resultados de Aprendizaje</div><h2 style="font-size:1.55rem">4 Resultados Declarados</h2></div><div class="rda-grid rs"><div class="rda-item"><span class="rda-badge">RdA1</span><span class="rda-text">Analiza el comportamiento de una función real de una variable, identificando sus elementos y aplicando sus propiedades para resolver problemáticas de especialidad.</span></div><div class="rda-item"><span class="rda-badge">RdA2</span><span class="rda-text">Aplica conceptos básicos del cálculo diferencial de una variable real, utilizando conceptos y propiedades de la derivada.</span></div><div class="rda-item"><span class="rda-badge">RdA3</span><span class="rda-text">Aplica conceptos básicos del cálculo integral de una variable real, utilizando conceptos y propiedades de la integral.</span></div><div class="rda-item"><span class="rda-badge">RdA4</span><span class="rda-text">Utiliza herramientas tecnológicas y de la web, interactuando y colaborando con sus pares para resolver problemáticas de especialidad.</span></div></div></section>
+<div class="section-divider"></div>
+
+<section id="contenidos">
+  <div class="section-header reveal">
+    <div class="section-eyebrow">Sección 3</div>
+    <h2>Contenidos a Abordar</h2>
+    <p>El curso se organiza en tres procesos evaluativos. El detalle considera el programa general de MAT002-A y el temario por departamento para los paralelos 302 y 313.</p>
+  </div>
+
+  <div class="unidades-wrap rs">
+    <div class="unidad-card">
+      <div class="unidad-num">01</div>
+      <div class="unidad-info"><h3>Funciones reales en una variable</h3><p>Funciones, dominio, recorrido, álgebra de funciones, propiedades, gráficas, función inversa, funciones polinomiales y familias trascendentes según departamento.</p></div>
+      <div class="u-tags"><span class="u-tag">RdA1</span><span class="u-tag orange">RdA4</span></div>
+    </div>
+    <div class="unidad-card">
+      <div class="unidad-num">02</div>
+      <div class="unidad-info"><h3>Cálculo diferencial en una variable</h3><p>Límites, continuidad, derivadas, interpretación geométrica y física, reglas de derivación, análisis gráfico y optimización.</p></div>
+      <div class="u-tags"><span class="u-tag">RdA2</span><span class="u-tag orange">RdA4</span></div>
+    </div>
+    <div class="unidad-card">
+      <div class="unidad-num">03</div>
+      <div class="unidad-info"><h3>Cálculo integral en una variable</h3><p>Integral indefinida, técnicas de integración, integral definida y aplicaciones al cálculo de áreas y problemas de especialidad.</p></div>
+      <div class="u-tags"><span class="u-tag">RdA3</span><span class="u-tag orange">RdA4</span></div>
+    </div>
+  </div>
+
+  <div style="margin-top:3rem" class="section-header reveal">
+    <div class="section-eyebrow">Paralelos 302 y 313</div>
+    <h2 style="font-size:1.55rem">Temario explícito por carrera</h2>
+    <p>La diferencia principal entre ambos paralelos aparece en el primer proceso: TUE aborda funciones trigonométricas; TUQ aborda funciones exponenciales y logarítmicas.</p>
+  </div>
+
+  <div class="process-matrix rs">
+    <div class="matrix-card">
+      <h3>Paralelo 302 · TUE</h3>
+      <div class="career">Técnico Universitario en Electrónica · Departamento ELINF</div>
+      <table class="matrix-table">
+        <tr><th>Proceso</th><th>Contenidos a abordar</th></tr>
+        <tr><td>1</td><td>Concepto de función, función lineal, función cuadrática y funciones trigonométricas.</td></tr>
+        <tr><td>2</td><td>Límites, continuidad, interpretación de la derivada, álgebra de derivadas/regla de la cadena y gráfica de función.</td></tr>
+        <tr><td>3</td><td>Integrales directas, integrales polinomiales y potencia, sustitución, integración por partes y áreas simples/compuestas.</td></tr>
+      </table>
+    </div>
+    <div class="matrix-card">
+      <h3>Paralelo 313 · TUQ</h3>
+      <div class="career">T.U. Control del Medio Ambiente · T.U. Química Analítica · T.U. en Alimentos · Departamento Química</div>
+      <table class="matrix-table">
+        <tr><th>Proceso</th><th>Contenidos a abordar</th></tr>
+        <tr><td>1</td><td>Concepto de función, función lineal, función cuadrática y función exponencial-logarítmica.</td></tr>
+        <tr><td>2</td><td>Límites, continuidad, interpretación de la derivada, álgebra de derivadas/regla de la cadena y gráfica de función.</td></tr>
+        <tr><td>3</td><td>Integrales directas, integrales polinomiales y potencia, sustitución, integración por partes y áreas simples/compuestas.</td></tr>
+      </table>
+    </div>
+  </div>
+
+  <div style="margin-top:3rem" class="section-header reveal">
+    <div class="section-eyebrow">Temario oficial explícito</div>
+    <h2 style="font-size:1.55rem">Detalle de contenidos por proceso de evaluación</h2>
+    <p>Se incorpora de forma explícita el temario completo informado por coordinación, incluyendo resultados de aprendizaje, temas y descripciones.</p>
+  </div>
+
+  <div class="official-temario rs">
+    <article class="official-process">
+      <div class="official-head">
+        <span class="official-badge">Proceso 1</span>
+        <div>
+          <h3>Temario Primer Proceso de Evaluación</h3>
+          <p>Funciones reales de una variable y uso de herramientas tecnológicas para resolver problemáticas de especialidad.</p>
+        </div>
+      </div>
+      <div class="official-layout">
+        <aside class="rda-panel">
+          <div class="rda-box"><div class="rda-title">RdA1</div><p>Analiza el comportamiento de una función real de una variable, identificando sus elementos y aplicando sus propiedades para resolver problemáticas relacionadas con la especialidad.</p></div>
+          <div class="rda-box"><div class="rda-title">RdA4</div><p>Utiliza diversas herramientas tecnológicas y de la web, al contexto disciplinar, interactuando y colaborando con sus pares para la resolución de problemáticas relacionadas con la especialidad.</p></div>
+        </aside>
+        <div class="topic-list">
+          <div class="topic-row"><div class="topic-title">Concepto de Función</div><div class="topic-desc"><ul><li>Concepto de función y su representación gráfica en el plano cartesiano.</li><li>Concepto y cálculo de dominio-recorrido para funciones polinómicas grado uno y dos, raíz y fraccionaria.</li><li>Bosquejo de gráficas de funciones polinómicas grado uno y dos, raíz y fraccionaria utilizando diferentes métodos.</li><li>Concepto de funciones biyectivas, inversa y compuesta entre funciones para polinomios de grado uno, raíz y fraccionaria.</li></ul></div></div>
+          <div class="topic-row"><div class="topic-title">Función lineal</div><div class="topic-desc">Definición y gráfica a partir de dos puntos, valor de la pendiente, paralelismo y perpendicularidad. Resolución analítica y gráfica de sistemas de funciones lineales y problemas de aplicación.</div></div>
+          <div class="topic-row"><div class="topic-title">Función Cuadrática</div><div class="topic-desc"><ul><li>Cálculo de dominio y recorrido de funciones cuadráticas.</li><li>Elementos de una función cuadrática y características que permiten graficarla.</li></ul></div></div>
+          <div class="topic-row"><div class="topic-title">Función Exponencial · Logaritmo</div><div class="topic-desc">Cálculo de dominio y recorrido, técnicas para graficar y problemas de aplicación.</div></div>
+          <div class="topic-row"><div class="topic-title">Funciones Trigonométricas y sus inversas</div><div class="topic-desc">Período, frecuencia, amplitud, ángulo de fase y gráfica.</div></div>
+        </div>
+      </div>
+    </article>
+
+    <article class="official-process">
+      <div class="official-head">
+        <span class="official-badge">Proceso 2</span>
+        <div>
+          <h3>Temario Segundo Proceso de Evaluación</h3>
+          <p>Límites, continuidad y derivada como herramientas para analizar funciones y resolver problemas aplicados.</p>
+        </div>
+      </div>
+      <div class="official-layout">
+        <aside class="rda-panel">
+          <div class="rda-box"><div class="rda-title">RdA2</div><p>Aplica conceptos básicos del cálculo diferencial de una variable real, utilizando conceptos y propiedades de la derivada y resolviendo problemáticas relacionadas con la especialidad.</p></div>
+          <div class="rda-box"><div class="rda-title">RdA4</div><p>Utiliza diversas herramientas tecnológicas y de la web, al contexto disciplinar, interactuando y colaborando con sus pares para la resolución de problemáticas relacionadas con la especialidad.</p></div>
+        </aside>
+        <div class="topic-list">
+          <div class="topic-row"><div class="topic-title">Límites</div><div class="topic-desc"><ul><li>Concepto de límite: presentar e interpretar la definición épsilon-delta.</li><li>Cálculo de límites mediante resolución directa.</li><li>Propiedades clásicas: suma, resta, producto y división de límites.</li><li>Técnicas basadas en racionalización y/o factorizaciones.</li></ul></div></div>
+          <div class="topic-row"><div class="topic-title">Continuidad de Funciones</div><div class="topic-desc"><ul><li>Declarar funciones continuas clásicas: polinomios, exponenciales, logaritmos y funciones trigonométricas.</li><li>Funciones por tramo.</li><li>Uso de límites laterales para la continuidad de funciones por tramo y su representación gráfica.</li></ul></div></div>
+          <div class="topic-row"><div class="topic-title">Definición e Interpretación de la Derivada</div><div class="topic-desc"><ul><li>Interpretación y concepto geométrico de la derivada como recta tangente y razón de cambio.</li><li>Cálculo de derivadas usando la definición para funciones polinomiales.</li><li>Reglas de derivación: sumas, restas, producto y división.</li><li>Aplicación de regla de la cadena para determinar primera, segunda y tercera derivada.</li><li>Análisis gráfico de funciones mediante técnicas basadas en derivadas.</li><li>Conceptos de mínimos y máximos, derivadas de orden superior y problemas de optimización.</li></ul></div></div>
+        </div>
+      </div>
+    </article>
+
+    <article class="official-process">
+      <div class="official-head">
+        <span class="official-badge">Proceso 3</span>
+        <div>
+          <h3>Temario Tercer Proceso de Evaluación</h3>
+          <p>Cálculo integral en una variable, técnicas de integración e interpretación de la integral definida.</p>
+        </div>
+      </div>
+      <div class="official-layout">
+        <aside class="rda-panel">
+          <div class="rda-box"><div class="rda-title">RdA3</div><p>Aplica conceptos básicos del cálculo integral de una variable real, utilizando conceptos y propiedades de la integral y resolviendo problemáticas relacionadas con la especialidad.</p></div>
+          <div class="rda-box"><div class="rda-title">RdA4</div><p>Utiliza diversas herramientas tecnológicas y de la web, al contexto disciplinar, interactuando y colaborando con sus pares para la resolución de problemáticas relacionadas con la especialidad.</p></div>
+        </aside>
+        <div class="topic-list">
+          <div class="topic-row"><div class="topic-title">Integral indefinida y definida</div><div class="topic-desc"><ul><li>Resolución de integrales basada en la intuición. Integrales directas.</li><li>Resolución de integrales polinomiales.</li><li>Aplicación de fórmula de potencia.</li><li>Técnicas de procedimiento para resolver una integral.</li><li>Aplicar método de sustitución para resolver integrales indefinidas.</li><li>Aplicar método de sustitución para resolver integrales indefinidas.</li><li>Aplicar método de integración por partes.</li><li>Definición y propiedades. Aplicaciones en el cálculo de áreas.</li><li>Aplicaciones de la integral definida en problemas de la especialidad.</li></ul></div></div>
+        </div>
+      </div>
+    </article>
+  </div>
+</section>
+
+<div class="section-divider"></div>
+<section id="evaluacion"><div class="section-header reveal"><div class="section-eyebrow">Sección 4</div><h2>Sistema de Evaluación</h2><p>La nota final combina certámenes solemnes presenciales con actividades prácticas del semestre.</p></div><div class="eval-layout rs"><div class="eval-donut-card"><div class="card-label">Ponderaciones</div><h3>Plan Evaluativo</h3><div class="donut-bars"><div class="donut-bar-row"><div class="donut-bar-meta"><span class="donut-bar-name">Certamen 1</span><span class="donut-bar-pct">20%</span></div><div class="bar-track"><div class="bar-fill" style="width:20%"></div></div></div><div class="donut-bar-row"><div class="donut-bar-meta"><span class="donut-bar-name">Certamen 2</span><span class="donut-bar-pct">20%</span></div><div class="bar-track"><div class="bar-fill" style="width:20%"></div></div></div><div class="donut-bar-row"><div class="donut-bar-meta"><span class="donut-bar-name">Certamen 3</span><span class="donut-bar-pct">20%</span></div><div class="bar-track"><div class="bar-fill" style="width:20%"></div></div></div><div class="donut-bar-row"><div class="donut-bar-meta"><span class="donut-bar-name">Actividades Prácticas</span><span class="donut-bar-pct">40%</span></div><div class="bar-track"><div class="bar-fill" style="width:40%"></div></div></div></div></div><div class="formula-card"><div class="card-label">Nota Final</div><h3>Cálculo de la Nota Final</h3><div class="formula-block">NF = C1×20% + C2×20% + C3×20% + Promedio AP×40%</div><div class="formula-cases"><div class="case-row"><span class="case-badge blue">Certámenes</span><span class="case-text">Tres evaluaciones solemnes presenciales de desarrollo, cada una con factor de ajuste.</span></div><div class="case-row"><span class="case-badge orange">AP 40%</span><span class="case-text">Controles o tareas, controles transversales online y trabajos prácticos o en equipo.</span></div><div class="case-row"><span class="case-badge red">50 ≤ NF ≤ 54</span><span class="case-text">Puede rendir Certamen Recuperativo, que reemplaza la nota más baja entre los tres certámenes rendidos.</span></div></div></div></div><div class="ap-card reveal"><span class="ap-icon">📋</span><div><h4>Actividades Prácticas</h4><p>En estos paralelos se calendarizan tres controles grupales, tres controles individuales y tres certámenes. Las fechas específicas quedan diferenciadas para TUE y TUQ según bloque horario.</p><div class="ap-grid"><div class="ap-item"><strong>3 controles grupales</strong><br>CG1 · CG2 · CG3</div><div class="ap-item"><strong>3 controles individuales</strong><br>CI1 · CI2 · CI3</div><div class="ap-item"><strong>3 certámenes</strong><br>C1 · C2 · C3</div><div class="ap-item"><strong>Recuperativo global</strong><br>03 de diciembre</div></div></div></div><div class="examen-card reveal"><span class="examen-icon">🎓</span><div><h4>Certamen Recuperativo</h4><p>Los recuperativos de justificados tienen fechas de coordinación para C1 y C2. El recuperativo de C3 y el recuperativo final del programa quedan definidos por el profesor titular, según cierre de semestre y normativa de asignatura.</p></div></div></section>
+<div class="section-divider"></div>
+<section id="calendario"><div class="section-header reveal"><div class="section-eyebrow">Sección 5</div><h2>Calendario de Evaluaciones 2026</h2><p>Fechas específicas para los paralelos 302 y 313 de MAT002-A Matemática Aplicada.</p></div>
+<div class="parallel-grid rs"><div class="parallel-card"><span class="parallel-code">302 · TUE</span><h3>Técnico Universitario en Electrónica</h3><p>Paralelo asociado a TUE. Las evaluaciones se distribuyen principalmente en bloques 01–02 y 07–08.</p></div><div class="parallel-card"><span class="parallel-code">313 · TUQ</span><h3>Control del Medio Ambiente · Química · Alimentos</h3><p>Paralelo asociado a TUQ: Control del Medio Ambiente, Química mención Química Analítica y Técnico Universitario en Alimentos.</p></div></div>
+<div class="eval-table-wrap reveal"><table class="eval-table"><thead><tr><th>Evaluación</th><th>Paralelo 302 · TUE</th><th>Paralelo 313 · TUQ</th></tr></thead><tbody>
+<tr><td>Control Grupal 1</td><td>19 de agosto · <span class="block">Bloque 07–08</span></td><td>21 de agosto · <span class="block">Bloque 11–12</span></td></tr>
+<tr><td>Control Individual 1</td><td>02 de septiembre · <span class="block">Bloque 07–08</span></td><td>31 de agosto · <span class="block">Bloque 05–06</span></td></tr>
+<tr><td>Certamen 1</td><td>11 de septiembre · <span class="block">Bloque 01–02</span></td><td>11 de septiembre · <span class="block">Bloque 11–12</span></td></tr>
+<tr><td>Control Grupal 2</td><td>01 de octubre · <span class="block">Bloque 01–02</span></td><td>02 de octubre · <span class="block">Bloque 11–12</span></td></tr>
+<tr><td>Control Individual 2</td><td>09 de octubre · <span class="block">Bloque 01–02</span></td><td>09 de octubre · <span class="block">Bloque 11–12</span></td></tr>
+<tr><td>Certamen 2</td><td>23 de octubre · <span class="block">Bloque 01–02</span></td><td>23 de octubre · <span class="block">Bloque 11–12</span></td></tr>
+<tr><td>Control Grupal 3</td><td>05 de noviembre · <span class="block">Bloque 01–02</span></td><td>06 de noviembre · <span class="block">Bloque 11–12</span></td></tr>
+<tr><td>Control Individual 3</td><td>18 de noviembre · <span class="block">Bloque 07–08</span></td><td>16 de noviembre · <span class="block">Bloque 05–06</span></td></tr>
+<tr><td>Certamen 3</td><td>27 de noviembre · <span class="block">Bloque 01–02</span></td><td>27 de noviembre · <span class="block">Bloque 11–12</span></td></tr>
+<tr><td>Certamen Recuperativo Global</td><td>03 de diciembre · <span class="block">Bloque 01–02</span></td><td>03 de diciembre · <span class="block">Bloque 01–02</span></td></tr>
+</tbody></table></div>
+<div class="eval-legend reveal"><span>Controles individuales</span><span class="orange">Controles grupales</span><span class="red">Certámenes y recuperativo</span></div>
+</section>
+<div class="section-divider"></div>
+<section id="reglas"><div class="section-header reveal"><div class="section-eyebrow">Sección 6</div><h2>Reglas Operativas</h2><p>Indicaciones de aplicación y justificación asociadas a certámenes y evaluaciones de desarrollo.</p></div><div class="lin-grid rs"><div class="lin-card"><h3>📝 Certámenes</h3><ul class="lin-list"><li>Modalidad presencial y formato de desarrollo.</li><li>Duración de 70 minutos.</li><li>Respuestas solo en el cuadernillo oficial.</li><li>Documento de identidad obligatorio si es requerido.</li><li>No se realizan preguntas al profesor examinador durante la evaluación.</li><li>No se permite salir al baño durante la aplicación.</li></ul></div><div class="lin-card"><h3>📵 Materiales y dispositivos</h3><ul class="lin-list"><li>Calculadora validada por el profesor examinador; uso único e intransferible.</li><li>No se permite uso de apuntes.</li><li>Celulares, audífonos, relojes multimedia y dispositivos inteligentes deben estar guardados.</li><li>Si se detecta uso o encendido de dispositivos no autorizados, se retira el cuadernillo y se califica con cero.</li><li>Las respuestas deben justificar los procedimientos declarados.</li></ul></div></div><div class="notice-card reveal"><span class="notice-icon">📌</span><div><h3>Justificación de inasistencia a certamen</h3><p>La justificación se realiza mediante solicitud en SIGA y formulario en AULA Coordinación Transversal Matemática Aplicada, con documentación correspondiente, dentro de un máximo de 72 horas transcurrida la evaluación.</p></div></div></section>
+<div class="section-divider"></div>
+<section id="aula"><div class="section-header reveal"><div class="section-eyebrow">Sección 7</div><h2>Plataformas, Plantillas y Recursos</h2><p>Documentos de coordinación y canales de trabajo para el semestre.</p></div><div class="aula-grid rs"><div class="aula-item"><span>📄</span><div><strong>Presentación inicial</strong><br>Hitos, planificación general y temarios actualizados.</div></div><div class="aula-item"><span>📝</span><div><strong>Plantilla de certámenes</strong><br>Nomenclatura: Certamen XX paralelo XX.</div></div><div class="aula-item"><span>📊</span><div><strong>Planilla segundo semestre</strong><br>Registro de actividades y calificaciones.</div></div><div class="aula-item"><span>💻</span><div><strong>AULA profesor titular</strong><br>Material, pautas, avisos y actividades propias del paralelo.</div></div><div class="aula-item"><span>🌐</span><div><strong>AULA Transversal</strong><br>Controles transversales y formularios de coordinación.</div></div><div class="aula-item"><span>📚</span><div><strong>Libro guía</strong><br>Disponible desde biblioteca, renovación cada 15 días.</div></div></div><div style="margin-top:2rem" class="section-header reveal"><div class="section-eyebrow">Bibliografía</div><h2 style="font-size:1.55rem">Referencias de estudio</h2></div><div class="bib-list rs"><div class="bib-item"><span>01</span><div><strong>Sullivan</strong><br>Pre-Cálculo, cuarta edición.</div></div><div class="bib-item"><span>02</span><div><strong>Larson & Hostetler, Robert P.</strong><br>Cálculo, Volumen I, sexta edición.</div></div></div></section>
+<div class="section-divider"></div>
+<section id="contacto"><div class="section-header reveal"><div class="section-eyebrow">Sección 8</div><h2>Contacto y Recomendaciones</h2></div><div class="contact-layout rs"><div class="contact-card"><div class="card-label">Profesor Titular</div><h3>Víctor Vallejo Palacios</h3><p style="color:rgba(255,255,255,.48);font-size:.82rem;margin:.25rem 0 1rem">Docente · Departamento de Ciencias · Sede Viña del Mar</p><div class="contact-row"><span>✉️</span><span><a href="mailto:victor.vallejo@usm.cl">victor.vallejo@usm.cl</a></span></div><div class="contact-row"><span>📌</span><span>Horario de atención y sala: por confirmar en AULA.</span></div><div class="contact-row"><span>🤝</span><span>Canales oficiales: AULA, AULA Transversal y correo institucional.</span></div></div><div class="recom-card"><div class="card-label">Recomendaciones para el Curso</div><div class="recom-item"><span class="recom-icon">📈</span><div><h4>Entender funciones antes de derivar</h4><p>Dominio, recorrido, gráfica y comportamiento son la base del cálculo aplicado.</p></div></div><div class="recom-item"><span class="recom-icon">✍️</span><div><h4>Justificar procedimientos</h4><p>En evaluaciones de desarrollo, el proceso matemático tiene valor central.</p></div></div><div class="recom-item"><span class="recom-icon">🧮</span><div><h4>Practicar con regularidad</h4><p>La habilidad se construye resolviendo ejercicios, interpretando resultados y corrigiendo errores.</p></div></div><div class="recom-item"><span class="recom-icon">📣</span><div><h4>Consultar por canales formales</h4><p>Las fechas, pautas y avisos oficiales se publican en AULA y canales institucionales.</p></div></div></div></div></section>
+</main>
+<footer><span class="tricolor-mid"></span><div class="f-brand">Matemática Aplicada</div><div class="f-sub">MAT002-A · UTFSM Viña del Mar · Segundo Semestre 2026</div><div class="f-links"><a href="#identificacion">Identificación</a><a href="#contenidos">Contenidos</a><a href="#evaluacion">Evaluación</a><a href="#calendario">Calendario</a><a href="#reglas">Reglas</a><a href="#aula">AULA</a><a href="#contacto">Contacto</a></div></footer>
+<script>
+window.addEventListener('scroll',function(){var d=document.documentElement;var pct=(d.scrollTop/(d.scrollHeight-d.clientHeight))*100;document.getElementById('progress-bar').style.width=pct+'%';});
+var obs=new IntersectionObserver(function(entries){entries.forEach(function(e){if(e.isIntersecting){e.target.classList.add('visible');obs.unobserve(e.target);}});},{threshold:.06,rootMargin:'0px 0px -30px 0px'});document.querySelectorAll('.reveal,.rs').forEach(function(el){obs.observe(el);});
+var bObs=new IntersectionObserver(function(entries){entries.forEach(function(e){if(e.isIntersecting){e.target.querySelectorAll('.bar-fill').forEach(function(b){var w=b.style.width;b.style.width='0%';setTimeout(function(){b.style.width=w;},160);});bObs.unobserve(e.target);}});},{threshold:.3});document.querySelectorAll('.eval-donut-card').forEach(function(el){bObs.observe(el);});
+</script>
+</body>
+</html>

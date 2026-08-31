@@ -1,0 +1,483 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="utf-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>Fundamentos de la Matemática — MAT010-B | UTFSM 2026</title>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;600;700;900&family=DM+Sans:wght@300;400;500;600;700&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet"/>
+<style>
+:root{
+  --navy:#1a3a5c;
+  --navy-mid:#2b4868;
+  --blue:#2e5b8e;
+  --blue-light:#dfe8f1;
+  --teal:#27788a;
+  --teal-light:#e2f0f2;
+  --orange:#c97d1a;
+  --orange-light:#f6ead7;
+  --red:#b53134;
+  --red-light:#f5e4e4;
+  --cream:#f4f6fa;
+  --cream-dark:#e7ecf2;
+  --text:#23384d;
+  --text-mid:#536a7e;
+  --text-light:#8192a1;
+  --white:#ffffff;
+  --card-bg:#ffffff;
+  --border:#d5dee7;
+}
+*{box-sizing:border-box;margin:0;padding:0}
+html{scroll-behavior:smooth}
+body{font-family:'DM Sans',sans-serif;background:var(--cream);color:var(--text);line-height:1.6;overflow-x:hidden}
+a{color:inherit}
+#progress-bar{position:fixed;top:0;left:0;height:3px;width:0;background:var(--orange);z-index:10000;transition:width .1s linear}
+nav{position:fixed;top:0;left:0;right:0;height:56px;background:rgba(26,58,92,.97);backdrop-filter:blur(12px);z-index:1000;padding:0 2rem;display:flex;align-items:center;justify-content:space-between;color:#fff}
+nav::before{content:"";position:absolute;left:0;bottom:0;height:3px;width:33.33%;background:var(--red)}
+nav::after{content:"";position:absolute;right:0;bottom:0;height:3px;width:33.33%;background:var(--blue)}
+nav .tricolor-mid{position:absolute;left:33.33%;right:33.33%;bottom:0;height:3px;background:#e3b341}
+.brand{display:flex;align-items:center;gap:.7rem;position:relative;z-index:1}
+.brand-badge{font-family:'DM Mono',monospace;font-size:.66rem;font-weight:700;letter-spacing:.08em;background:var(--blue);padding:4px 9px;border-radius:5px;color:#fff}
+.brand-name{font-size:.9rem;font-weight:600;opacity:.92}
+.nav-links{display:flex;list-style:none;gap:1.4rem;position:relative;z-index:1}
+.nav-links a{text-decoration:none;color:rgba(255,255,255,.68);font-size:.8rem;font-weight:600}
+.nav-links a:hover{color:#fff}
+@media(max-width:860px){.nav-links{display:none}}
+.hero{min-height:100vh;background:var(--navy);color:#fff;display:flex;align-items:center;justify-content:center;text-align:center;padding:100px 2rem 60px;position:relative;overflow:hidden}
+.hero::before{content:"";position:absolute;inset:0;background-image:linear-gradient(rgba(255,255,255,.035) 1px,transparent 1px),linear-gradient(90deg,rgba(255,255,255,.035) 1px,transparent 1px);background-size:54px 54px}
+.hero::after{content:"";position:absolute;left:0;right:0;bottom:0;height:5px;background:linear-gradient(90deg,var(--red) 0 33.33%, #e3b341 33.33% 66.66%, var(--blue) 66.66% 100%)}
+.hero-content{position:relative;z-index:1;max-width:920px}
+.hero-eyebrow{display:inline-flex;align-items:center;gap:8px;border:1px solid rgba(255,255,255,.22);background:rgba(255,255,255,.08);border-radius:999px;padding:7px 18px;margin-bottom:2rem}
+.dot{width:7px;height:7px;border-radius:50%;background:var(--orange)}
+.hero-eyebrow span{font-family:'DM Mono',monospace;font-size:.76rem;letter-spacing:.12em;text-transform:uppercase;color:rgba(255,255,255,.86)}
+.hero h1{font-family:'Playfair Display',serif;font-size:clamp(2.8rem,7vw,5.4rem);font-weight:900;line-height:1.03;letter-spacing:-.02em;margin-bottom:.6rem}
+.subtitle{font-family:'DM Mono',monospace;font-size:.85rem;color:rgba(255,255,255,.58);letter-spacing:.11em;text-transform:uppercase;margin-bottom:1.8rem}
+.tagline{font-size:1.08rem;color:rgba(255,255,255,.78);max-width:720px;margin:0 auto 2.5rem;font-weight:300}
+.hero-stats{display:flex;gap:6px;justify-content:center;flex-wrap:wrap}
+.stat-pill{min-width:120px;border:1px solid rgba(255,255,255,.12);background:rgba(255,255,255,.06);border-radius:10px;padding:11px 18px;display:flex;flex-direction:column;align-items:center}
+.stat-pill .val{font-family:'Playfair Display',serif;font-size:1.75rem;font-weight:800;color:#fff;line-height:1}
+.stat-pill .lbl{font-size:.68rem;color:rgba(255,255,255,.54);letter-spacing:.08em;text-transform:uppercase;margin-top:4px}
+.scroll-cue{position:absolute;bottom:2rem;left:50%;transform:translateX(-50%);font-family:'DM Mono',monospace;font-size:.68rem;color:rgba(255,255,255,.35);letter-spacing:.14em;text-transform:uppercase}
+.agenda-strip{background:var(--navy-mid);color:#fff;padding:4rem 2rem;position:relative}
+.agenda-strip::before{content:"";position:absolute;left:0;top:0;height:3px;width:33.33%;background:var(--red)}
+.agenda-strip::after{content:"";position:absolute;right:0;top:0;height:3px;width:33.33%;background:var(--blue)}
+.agenda-strip .tricolor-mid{position:absolute;left:33.33%;right:33.33%;top:0;height:3px;background:#e3b341}
+.agenda-inner{max-width:1100px;margin:0 auto}
+.section-eyebrow{font-family:'DM Mono',monospace;font-size:.72rem;letter-spacing:.15em;text-transform:uppercase;color:var(--blue);margin-bottom:.6rem}
+.agenda-strip .section-eyebrow{color:rgba(255,255,255,.62)}
+.agenda-strip h2{font-family:'Playfair Display',serif;font-size:2rem;color:#fff;margin-bottom:2.2rem}
+.agenda-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:1px;background:rgba(255,255,255,.09);border-radius:14px;overflow:hidden;border:1px solid rgba(255,255,255,.08)}
+.agenda-item{background:rgba(255,255,255,.07);padding:1.5rem;display:flex;gap:1rem}
+.agenda-num{font-family:'Playfair Display',serif;font-size:2.1rem;font-weight:900;color:rgba(255,255,255,.28);line-height:1}
+.agenda-item h3{font-size:.93rem;margin-bottom:.25rem}
+.agenda-item p{font-size:.78rem;color:rgba(255,255,255,.54);line-height:1.45}
+main{}main section{max-width:1100px;margin:0 auto;padding:5rem 2rem}main section+section{padding-top:0}.agenda-strip{max-width:none !important;margin:0 !important;padding:4rem 2rem !important}.section-divider{height:1px;background:var(--border);max-width:1100px;margin:0 auto}.section-header{margin-bottom:2.3rem}.section-header h2{font-family:'Playfair Display',serif;font-size:clamp(1.9rem,4vw,2.6rem);line-height:1.14;color:var(--navy);font-weight:800}.section-header p{color:var(--text-mid);font-size:1rem;max-width:760px;margin-top:.45rem}
+.card,.comp-card,.rda-item,.unidad-card,.met-card,.lin-card,.cal-item,.aula-item,.bib-item,.notice-card,.ap-card,.examen-card,.formula-card,.recom-card,.process-card,.week-card,.resource-card{background:var(--card-bg);border:1px solid var(--border);border-radius:16px;box-shadow:0 2px 16px rgba(26,58,92,.045);position:relative;overflow:hidden}
+.card::before,.comp-card::before,.rda-item::before,.unidad-card::before,.met-card::before,.lin-card::before,.cal-item::before,.aula-item::before,.bib-item::before,.notice-card::before,.ap-card::before,.examen-card::before,.formula-card::before,.recom-card::before,.process-card::before,.week-card::before,.resource-card::before{content:"";position:absolute;left:0;right:0;top:0;height:3px;background:linear-gradient(90deg,var(--red) 0 33.33%,#e3b341 33.33% 66.66%,var(--blue) 66.66% 100%)}
+.card{padding:2rem}
+.card-label{font-family:'DM Mono',monospace;font-size:.68rem;letter-spacing:.15em;text-transform:uppercase;color:var(--blue);margin-bottom:.8rem}
+.id-grid{display:grid;grid-template-columns:1.2fr .8fr;gap:1.5rem}
+@media(max-width:860px){.id-grid{grid-template-columns:1fr}}
+.info-table{width:100%;border-collapse:collapse;font-size:.88rem}
+.info-table td{padding:10px 12px;border-bottom:1px solid var(--cream-dark);vertical-align:top}
+.info-table td:first-child{width:42%;color:var(--text-light);font-size:.8rem;text-transform:uppercase;letter-spacing:.04em;font-weight:700}
+.info-table td:last-child{font-weight:600;color:var(--navy)}
+.info-table tr:last-child td{border-bottom:none}
+.dark-card{background:var(--navy);border-radius:18px;color:#fff;padding:2rem;position:relative;overflow:hidden}
+.dark-card::before{content:"";position:absolute;left:0;right:0;top:0;height:3px;background:linear-gradient(90deg,var(--red) 0 33.33%,#e3b341 33.33% 66.66%,var(--blue) 66.66% 100%)}
+.dark-card .card-label{color:rgba(255,255,255,.58)}
+.dark-card h3{font-family:'Playfair Display',serif;color:#fff;margin-bottom:.9rem}
+.hours-list{display:flex;flex-direction:column;gap:.7rem}
+.hour-row{display:flex;justify-content:space-between;gap:1rem;padding:10px 14px;border-radius:8px;background:rgba(255,255,255,.07);font-size:.86rem}
+.hour-row span:first-child{color:rgba(255,255,255,.66)}
+.hour-row span:last-child{font-family:'DM Mono',monospace;color:#fff;font-weight:700;text-align:right}
+.desc-card{background:var(--navy);border-radius:20px;padding:2.5rem;color:#fff;position:relative;overflow:hidden}
+.desc-card .card-label{color:rgba(255,255,255,.58)}
+.desc-card p{font-size:1.03rem;line-height:1.75;color:rgba(255,255,255,.82);max-width:760px}
+.rda-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(260px,1fr));gap:.8rem}
+.rda-item{padding:1.15rem 1.35rem;display:flex;gap:.9rem;align-items:flex-start}
+.rda-badge,.chip{display:inline-block;background:var(--blue);color:#fff;border-radius:6px;padding:4px 9px;font-family:'DM Mono',monospace;font-size:.7rem;font-weight:700;white-space:nowrap}
+.rda-text{font-size:.87rem;color:var(--text-mid);line-height:1.5}
+.unidades-wrap{display:flex;flex-direction:column;gap:1rem}
+.unidad-card{padding:1.6rem 1.8rem;display:grid;grid-template-columns:80px 1fr auto;gap:1.3rem;align-items:start}
+.unidad-num{font-family:'Playfair Display',serif;font-size:3rem;font-weight:900;color:var(--blue);opacity:.24;line-height:1}
+.unidad-info h3{font-family:'Playfair Display',serif;color:var(--navy);font-size:1.15rem;margin-bottom:.4rem}
+.unidad-info p{font-size:.86rem;color:var(--text-mid)}
+.u-tags{display:flex;gap:5px;flex-wrap:wrap;justify-content:flex-end}
+.u-tag{font-family:'DM Mono',monospace;font-size:.68rem;color:#fff;background:var(--teal);border-radius:4px;padding:3px 8px}
+.u-tag.orange{background:var(--orange)}.u-tag.red{background:var(--red)}
+@media(max-width:680px){.unidad-card{grid-template-columns:1fr}.u-tags{justify-content:flex-start}}
+.process-list{display:flex;flex-direction:column;gap:1.1rem}
+.process-card{padding:1.5rem 1.6rem}
+.process-head{display:flex;justify-content:space-between;gap:1rem;align-items:flex-start;margin-bottom:1rem;flex-wrap:wrap}
+.process-head h3{font-family:'Playfair Display',serif;color:var(--navy);font-size:1.2rem}
+.process-sub{font-size:.8rem;color:var(--text-light);margin-top:.2rem}
+.process-columns{display:grid;grid-template-columns:1.1fr .9fr;gap:1rem}
+@media(max-width:800px){.process-columns{grid-template-columns:1fr}}
+.content-block{background:var(--cream);border:1px solid var(--cream-dark);border-radius:12px;padding:1rem}
+.content-block h4{font-size:.88rem;color:var(--navy);margin-bottom:.45rem}
+.content-block ul{padding-left:1.05rem;display:flex;flex-direction:column;gap:.38rem}
+.content-block li{font-size:.84rem;color:var(--text-mid);line-height:1.42}
+.eval-layout{display:grid;grid-template-columns:.95fr 1.05fr;gap:1.2rem;align-items:start}
+@media(max-width:860px){.eval-layout{grid-template-columns:1fr}}
+.eval-donut-card,.formula-card{padding:1.7rem}
+.eval-donut-card h3,.formula-card h3{font-family:'Playfair Display',serif;color:var(--navy);font-size:1.28rem;margin-bottom:.95rem}
+.donut-bars{display:flex;flex-direction:column;gap:1rem}.donut-bar-meta{display:flex;justify-content:space-between;gap:1rem;font-size:.86rem;margin-bottom:.35rem}.donut-bar-name{color:var(--text-mid);font-weight:600}.donut-bar-pct{font-family:'DM Mono',monospace;color:var(--blue);font-weight:700}.bar-track{height:10px;border-radius:999px;background:var(--blue-light);overflow:hidden}.bar-fill{height:100%;border-radius:999px;background:linear-gradient(90deg,var(--blue),var(--teal))}
+.formula-block{background:var(--cream);border:1px solid var(--cream-dark);border-radius:12px;padding:1rem 1.2rem;font-family:'DM Mono',monospace;font-size:.95rem;color:var(--navy);margin-bottom:1rem}
+.formula-cases{display:flex;flex-direction:column;gap:.8rem}.case-row{display:flex;gap:.7rem;align-items:flex-start}.case-badge{font-family:'DM Mono',monospace;font-size:.68rem;color:#fff;background:var(--blue);border-radius:6px;padding:4px 9px;white-space:nowrap}.case-badge.orange{background:var(--orange)}.case-badge.red{background:var(--red)}.case-text{font-size:.85rem;color:var(--text-mid);line-height:1.52}
+.ap-card,.examen-card,.notice-card{padding:1.45rem 1.8rem;display:flex;gap:1rem;align-items:flex-start;margin-top:1.1rem}
+.ap-card{background:var(--teal-light);border-color:#cde5e9}.examen-card{background:var(--orange-light);border-color:#ead4b2}.notice-card{background:var(--red-light);border-color:#ebc5c6}
+.ap-icon,.examen-icon,.notice-icon{font-size:1.4rem;flex-shrink:0}
+.ap-card h4,.examen-card h4,.notice-card h3{color:var(--navy);font-size:.93rem;margin-bottom:.45rem}
+.ap-card p,.examen-card p,.notice-card p{font-size:.85rem;color:var(--text-mid);line-height:1.55}
+.ap-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(180px,1fr));gap:.65rem;margin-top:.7rem}
+.ap-item{background:#fff;border:1px solid var(--border);border-radius:9px;padding:.75rem .9rem;font-size:.82rem;color:var(--text-mid)}.ap-item strong{color:var(--navy)}
+.calendar-wrap{display:flex;flex-direction:column;gap:.55rem;position:relative;padding-left:2rem}.calendar-wrap::before{content:"";position:absolute;left:8px;top:12px;bottom:12px;width:2px;background:var(--blue-light)}
+.cal-item{display:flex;gap:1.1rem;align-items:flex-start;padding:1rem 1.35rem;position:relative}
+.cal-item::after{content:"";position:absolute;left:-1.7rem;top:50%;transform:translateY(-50%);width:10px;height:10px;border-radius:50%;background:var(--blue);border:2px solid var(--cream)}
+.cal-num{background:var(--blue);color:#fff;font-family:'Playfair Display',serif;font-weight:800;border-radius:10px;width:52px;height:52px;display:flex;align-items:center;justify-content:center;flex-shrink:0;text-align:center;line-height:1.05}
+.cal-info h4{font-size:.9rem;color:var(--navy);margin-bottom:3px}.cal-date{font-family:'DM Mono',monospace;font-size:.74rem;color:var(--blue)}.cal-note{font-size:.78rem;color:var(--text-light);margin-top:2px}.cal-type{font-family:'DM Mono',monospace;font-size:.62rem;letter-spacing:.06em;text-transform:uppercase;border-radius:4px;padding:2px 8px;margin-left:5px;background:var(--blue);color:#fff}.cal-type.orange{background:var(--orange)}.cal-type.red{background:var(--red)}
+.lin-grid{display:grid;grid-template-columns:1fr 1fr;gap:1.2rem}@media(max-width:760px){.lin-grid{grid-template-columns:1fr}}.lin-card{padding:1.6rem}.lin-card h3{font-size:.95rem;color:var(--navy);margin-bottom:.8rem}.lin-list{list-style:none;display:flex;flex-direction:column;gap:.55rem}.lin-list li{font-size:.84rem;color:var(--text-mid);line-height:1.45;padding-left:1.15rem;position:relative}.lin-list li::before{content:"→";position:absolute;left:0;color:var(--blue);font-weight:700}
+.aula-grid,.bib-list,.resource-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:1rem}.aula-item,.bib-item,.resource-card{padding:1rem 1.15rem;font-size:.86rem;color:var(--text-mid);display:flex;gap:.8rem;align-items:flex-start}.aula-item strong,.bib-item strong,.resource-card strong{color:var(--navy)}
+.week-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(210px,1fr));gap:1rem}.week-card{padding:1.2rem 1.25rem}.week-card h4{font-size:.92rem;color:var(--navy);margin-bottom:.35rem}.week-card p{font-size:.82rem;color:var(--text-mid);line-height:1.48}.week-card .week-tag{display:inline-block;background:var(--blue);color:#fff;border-radius:6px;padding:4px 8px;font-family:'DM Mono',monospace;font-size:.68rem;margin-bottom:.65rem}
+.contact-layout{display:grid;grid-template-columns:1fr 1fr;gap:1.4rem}@media(max-width:760px){.contact-layout{grid-template-columns:1fr}}
+.contact-card{background:var(--navy);border-radius:20px;padding:2rem;color:#fff}.contact-card::before{content:"";position:absolute;left:0;right:0;top:0;height:3px;background:linear-gradient(90deg,var(--red) 0 33.33%,#e3b341 33.33% 66.66%,var(--blue) 66.66% 100%)}.contact-card .card-label{color:rgba(255,255,255,.58)}.contact-card h3{font-family:'Playfair Display',serif;color:#fff;font-size:1.5rem}.contact-row{display:flex;gap:.75rem;margin-top:.65rem;font-size:.86rem;color:rgba(255,255,255,.8)}.contact-row a{color:#fff;text-decoration:none}
+.recom-card{padding:2rem}.recom-item{display:flex;gap:1rem;margin-top:.9rem}.recom-icon{font-size:1.2rem}.recom-item h4{font-size:.9rem;color:var(--navy)}.recom-item p{font-size:.82rem;color:var(--text-light)}
+footer{background:var(--navy);color:#fff;text-align:center;padding:3rem 2rem;position:relative}footer::before{content:"";position:absolute;left:0;top:0;height:3px;width:33.33%;background:var(--red)}footer::after{content:"";position:absolute;right:0;top:0;height:3px;width:33.33%;background:var(--blue)}footer .tricolor-mid{position:absolute;left:33.33%;right:33.33%;top:0;height:3px;background:#e3b341}.f-brand{font-family:'Playfair Display',serif;font-size:1.5rem;font-weight:800;margin-bottom:.4rem}.f-sub{font-size:.78rem;color:rgba(255,255,255,.44);letter-spacing:.08em;text-transform:uppercase;margin-bottom:1rem}.f-links{display:flex;justify-content:center;flex-wrap:wrap;gap:1.2rem}.f-links a{font-size:.8rem;color:rgba(255,255,255,.52);text-decoration:none}.f-links a:hover{color:#fff}
+.reveal{opacity:0;transform:translateY(20px);transition:opacity .55s ease,transform .55s ease}.reveal.visible{opacity:1;transform:none}.rs>*{opacity:0;transform:translateY(16px);transition:opacity .45s ease,transform .45s ease}.rs.visible>*:nth-child(1){opacity:1;transform:none;transition-delay:.00s}.rs.visible>*:nth-child(2){opacity:1;transform:none;transition-delay:.06s}.rs.visible>*:nth-child(3){opacity:1;transform:none;transition-delay:.12s}.rs.visible>*:nth-child(4){opacity:1;transform:none;transition-delay:.18s}.rs.visible>*:nth-child(5){opacity:1;transform:none;transition-delay:.24s}.rs.visible>*:nth-child(6){opacity:1;transform:none;transition-delay:.30s}.rs.visible>*:nth-child(7){opacity:1;transform:none;transition-delay:.36s}.rs.visible>*:nth-child(8){opacity:1;transform:none;transition-delay:.42s}
+
+/* Limpieza de formato v2 */
+main{display:block}
+section{padding:4.25rem 2rem}
+.section-divider{opacity:.8}
+.hero{min-height:88vh;padding:96px 2rem 54px}
+.hero-content{max-width:960px}
+.tagline{max-width:760px}
+.hero-stats{margin-top:.35rem}
+.stat-pill{min-width:132px}
+.agenda-grid{grid-template-columns:repeat(auto-fit,minmax(240px,1fr))}
+.agenda-item{align-items:flex-start}
+.card,.comp-card,.rda-item,.unidad-card,.met-card,.lin-card,.cal-item,.aula-item,.bib-item,.notice-card,.ap-card,.examen-card,.formula-card,.recom-card,.process-card,.week-card,.resource-card,.contact-card,.dark-card,.desc-card,.eval-donut-card{border-radius:18px}
+.card::before,.comp-card::before,.rda-item::before,.unidad-card::before,.met-card::before,.lin-card::before,.cal-item::before,.aula-item::before,.bib-item::before,.notice-card::before,.ap-card::before,.examen-card::before,.formula-card::before,.recom-card::before,.process-card::before,.week-card::before,.resource-card::before,.contact-card::before,.dark-card::before,.desc-card::before{height:4px}
+.rda-item,.aula-item,.bib-item,.resource-card{min-height:100%}
+.week-grid,.resource-grid,.aula-grid,.bib-list{align-items:stretch}
+.process-head{display:block}
+.process-head .chip{margin-bottom:.6rem}
+.process-head h3{margin-bottom:.15rem}
+.process-head .u-tags{justify-content:flex-start;margin-top:.8rem}
+.process-columns{grid-template-columns:repeat(auto-fit,minmax(280px,1fr));align-items:stretch}
+.content-block{height:100%}
+.content-block ul{margin:0;padding-left:1.1rem}
+.unidades-wrap{gap:1rem}
+.unidad-card{grid-template-columns:72px 1fr auto}
+.eval-layout{align-items:stretch}
+.eval-donut-card,.formula-card{height:100%}
+.formula-block{overflow:auto}
+.calendar-wrap{padding-left:1.4rem}
+.cal-item{padding:1rem 1.1rem}
+.cal-item::after{left:-1.1rem}
+.cal-num{width:56px;height:56px}
+.lin-card,.recom-card,.resource-card,.week-card{height:100%}
+.contact-card{position:relative;overflow:hidden}
+.notice-card,.ap-card,.examen-card{align-items:flex-start}
+.f-links{row-gap:.45rem}
+/* Desactivar animaciones de aparición para evitar comportamientos extraños */
+.reveal,.reveal.visible,.rs>*,.rs.visible>*{opacity:1 !important;transform:none !important;transition:none !important}
+@media (max-width:720px){
+  nav{padding:0 1rem}
+  .hero{min-height:auto;padding:88px 1.2rem 48px}
+  .hero h1{font-size:clamp(2.4rem,10vw,4rem)}
+  section{padding:3.6rem 1.2rem}
+  .card,.dark-card,.desc-card,.eval-donut-card,.formula-card,.process-card,.lin-card,.contact-card,.recom-card{padding:1.35rem}
+  .unidad-card{grid-template-columns:1fr;gap:.9rem}
+}
+
+
+/* Ajustes v4: calendario con tareas y detalle de cátedra/taller */
+.calendar-wrap{gap:.5rem}
+.cal-item{padding:.9rem 1.15rem}
+.cal-num{width:50px;height:50px;font-size:.95rem}
+.hour-row span:last-child{line-height:1.35}
+
+</style>
+</head>
+<body>
+<div id="progress-bar"></div>
+<nav>
+  <div class="tricolor-mid"></div>
+  <div class="brand"><span class="brand-badge">UTFSM · 2026</span><span class="brand-name">Fundamentos de la Matemática</span></div>
+  <ul class="nav-links">
+    <li><a href="#identificacion">Identificación</a></li>
+    <li><a href="#descripcion">Resultados</a></li>
+    <li><a href="#contenidos">Contenidos</a></li>
+    <li><a href="#evaluacion">Evaluación</a></li>
+    <li><a href="#calendario">Calendario</a></li>
+    <li><a href="#contacto">Contacto</a></li>
+  </ul>
+</nav>
+<header class="hero">
+  <div class="hero-content reveal">
+    <div class="hero-eyebrow"><span class="dot"></span><span>MAT010-B · Segundo semestre 2026 · Ingeniería en Mecánica Industrial</span></div>
+    <h1>Fundamentos de la <em>Matemática</em></h1>
+    <div class="subtitle">Universidad Técnica Federico Santa María · Sede Viña del Mar</div>
+    <p class="tagline">Presentación inicial de la asignatura con lineamientos generales, resultados de aprendizaje, contenidos por certamen, sistema de evaluación y canales oficiales de trabajo para el semestre.</p>
+    <div class="hero-stats">
+      <div class="stat-pill"><span class="val">6</span><span class="lbl">Créditos SCT</span></div>
+      <div class="stat-pill"><span class="val">8</span><span class="lbl">Resultados</span></div>
+      <div class="stat-pill"><span class="val">3</span><span class="lbl">Certámenes</span></div>
+      <div class="stat-pill"><span class="val">3</span><span class="lbl">Tareas PA</span></div>
+    </div>
+  </div>
+  <div class="scroll-cue">Desplaza para ver la planificación</div>
+</header>
+<section class="agenda-strip">
+  <div class="tricolor-mid"></div>
+  <div class="agenda-inner">
+    <div class="section-eyebrow">Panorama del curso</div>
+    <h2>¿Qué encontrarás en esta presentación?</h2>
+    <div class="agenda-grid rs">
+      <div class="agenda-item"><div class="agenda-num">01</div><div><h3>Marco general</h3><p>Datos de la asignatura, horario, créditos, unidad responsable y descripción formativa.</p></div></div>
+      <div class="agenda-item"><div class="agenda-num">02</div><div><h3>Contenidos y RdA</h3><p>Resultados de aprendizaje y temarios explícitos organizados por certamen.</p></div></div>
+      <div class="agenda-item"><div class="agenda-num">03</div><div><h3>Evaluación</h3><p>Ponderaciones oficiales, actividades prácticas, certamen global y protocolo de ausencias.</p></div></div>
+      <div class="agenda-item"><div class="agenda-num">04</div><div><h3>Canales y recursos</h3><p>AULA, Teams, bibliografía, software de apoyo y contacto de coordinación.</p></div></div>
+    </div>
+  </div>
+</section>
+<main>
+<section id="identificacion">
+  <div class="section-header reveal"><div class="section-eyebrow">Sección 1</div><h2>Identificación de la Asignatura</h2><p>Información curricular y operativa base para MAT010-B Fundamentos de la Matemática en el segundo semestre 2026.</p></div>
+  <div class="id-grid rs">
+    <div class="card">
+      <div class="card-label">Información general</div>
+      <h3 style="font-family:'Playfair Display',serif;color:var(--navy);font-size:1.2rem;margin-bottom:.8rem">Datos del curso</h3>
+      <table class="info-table">
+        <tr><td>Asignatura</td><td>Fundamentos de la Matemática</td></tr>
+        <tr><td>Sigla</td><td>MAT010-B</td></tr>
+        <tr><td>Carrera</td><td>Ingeniería en Mecánica Industrial</td></tr>
+        <tr><td>Unidad académica</td><td>Departamento de Ciencias</td></tr>
+        <tr><td>Sede</td><td>UTFSM Sede Viña del Mar</td></tr>
+        <tr><td>Créditos</td><td>3 créditos UTFSM · 6 SCT-Chile</td></tr>
+        <tr><td>Prerrequisitos</td><td>No tiene</td></tr>
+        <tr><td>Semestre</td><td>Segundo semestre 2026</td></tr>
+        <tr><td>Dedicación total</td><td>168 horas cronológicas</td></tr>
+      </table>
+    </div>
+    <div class="dark-card">
+      <div class="card-label">Horario y coordinación</div>
+      <h3>Bloques del curso</h3>
+      <div class="hours-list">
+        <div class="hour-row"><span>Cátedra · Miércoles</span><span>Bloque 11 - 12<br>16:05 a 17:15 · Sala H102</span></div>
+        <div class="hour-row"><span>Cátedra · Jueves</span><span>Bloque 11 - 12<br>16:05 a 17:15 · Sala H102</span></div>
+        <div class="hour-row"><span>Práctica/Taller · Martes</span><span>Bloque 11 - 12<br>16:05 a 17:15 · Sala H106</span></div>
+        <div class="hour-row"><span>Profesores</span><span>Víctor Vallejo Palacios<br>Ricardo Tamarin</span></div>
+        <div class="hour-row"><span>Inicio de clases</span><span>Semana del 03 de agosto</span></div>
+      </div>
+    </div>
+  </div>
+  <div class="week-grid rs" style="margin-top:1.4rem">
+    <div class="week-card"><span class="week-tag">Cátedra</span><h4>Miércoles y jueves · H102</h4><p>Clases de cátedra con el profesor Víctor Vallejo Palacios, en bloque 11 - 12, de 16:05 a 17:15.</p></div>
+    <div class="week-card"><span class="week-tag">Práctica/Taller</span><h4>Martes · H106</h4><p>Clase de práctica o taller con el profesor Ricardo Tamarin, en bloque 11 - 12. No toda sesión de taller corresponde necesariamente a una evaluación.</p></div>
+    <div class="week-card"><span class="week-tag">Evaluación</span><h4>3 certámenes + 3 tareas</h4><p>Las actividades prácticas serán tres tareas durante el semestre, una antes de cada certamen, con fechas próximas a informar.</p></div>
+  </div>
+</section>
+<div class="section-divider"></div>
+<section id="descripcion">
+  <div class="section-header reveal"><div class="section-eyebrow">Sección 2</div><h2>Propósito Formativo y Resultados de Aprendizaje</h2></div>
+  <div class="desc-card reveal"><div class="card-label">Descripción de la asignatura</div><p>La asignatura desarrolla un pensamiento lógico-deductivo esencial para la formación en ingeniería. A través del estudio de lógica, números reales, geometría analítica básica, funciones, trigonometría y números complejos, el curso entrega herramientas para modelar, resolver e interpretar problemas propios del ámbito de la ingeniería.</p></div>
+  <div style="margin-top:2rem" class="section-header reveal"><div class="section-eyebrow">Resultados de aprendizaje</div><h2 style="font-size:1.55rem">8 resultados declarados por programa</h2><p>Estos resultados orientan el trabajo del semestre y se articulan con los contenidos y evaluaciones por certamen.</p></div>
+  <div class="rda-grid rs">
+    <div class="rda-item"><span class="rda-badge">RdA1</span><span class="rda-text">Traduce una situación real a una estructura matemática, utilizando con precisión razonamientos matemáticos.</span></div>
+    <div class="rda-item"><span class="rda-badge">RdA2</span><span class="rda-text">Aplica técnicas de resolución de ecuaciones algebraicas, distinguiendo existencia y unicidad de las soluciones.</span></div>
+    <div class="rda-item"><span class="rda-badge">RdA3</span><span class="rda-text">Aplica las identidades trigonométricas fundamentales en la resolución de problemas.</span></div>
+    <div class="rda-item"><span class="rda-badge">RdA4</span><span class="rda-text">Identifica las propiedades de orden de los números reales, aplicándolas en la resolución de inecuaciones.</span></div>
+    <div class="rda-item"><span class="rda-badge">RdA5</span><span class="rda-text">Grafica una recta, circunferencia, parábola, elipse o hipérbola, distinguiendo sus elementos característicos.</span></div>
+    <div class="rda-item"><span class="rda-badge">RdA6</span><span class="rda-text">Relaciona las características de una función y de su inversa, determinando analíticamente la inversa, dominio y recorrido.</span></div>
+    <div class="rda-item"><span class="rda-badge">RdA7</span><span class="rda-text">Resuelve problemas de la especialidad aplicando propiedades de funciones exponenciales, logarítmicas y trigonométricas.</span></div>
+    <div class="rda-item"><span class="rda-badge">RdA8</span><span class="rda-text">Realiza operaciones entre números complejos, aplicando propiedades y utilizando sus distintas notaciones.</span></div>
+  </div>
+</section>
+<div class="section-divider"></div>
+<section id="contenidos">
+  <div class="section-header reveal"><div class="section-eyebrow">Sección 3</div><h2>Contenidos del Curso</h2><p>La programación del área organiza el semestre en tres grandes procesos asociados a los tres certámenes. A continuación se explicitan los contenidos a abordar y los desempeños esperados.</p></div>
+  <div class="section-header reveal"><div class="section-eyebrow">Temario por certamen</div><h2 style="font-size:1.55rem">Programación explícita del semestre</h2></div>
+  <div class="process-list rs">
+    <div class="process-card">
+      <div class="process-head"><div><span class="chip">Certamen 1</span><h3>Conceptos básicos, números reales y sistemas</h3><div class="process-sub">Semanas 1–5 · RdA1, RdA2 y RdA4</div></div><div class="u-tags"><span class="u-tag">Lógica</span><span class="u-tag orange">Números reales</span><span class="u-tag red">Ecuaciones</span></div></div>
+      <div class="process-columns">
+        <div class="content-block"><h4>Contenidos a revisar</h4><ul>
+          <li>Lógica proposicional: proposiciones, conectivos, tablas de verdad y cuantificadores.</li>
+          <li>Teoría de conjuntos: operaciones, propiedades, cardinalidad y conjunto potencia. Aplicaciones.</li>
+          <li>Números reales: operaciones básicas, potencias, raíces, logaritmos y notación científica.</li>
+          <li>Ecuaciones e inecuaciones: lineales, cuadráticas, con valor absoluto, racionales y de grado superior.</li>
+          <li>Sistemas de ecuaciones lineales 2×2 y 3×3 y aplicaciones a problemas de especialidad.</li>
+        </ul></div>
+        <div class="content-block"><h4>Desempeños evaluables</h4><ul>
+          <li>Traducir situaciones contextualizadas a lenguaje algebraico.</li>
+          <li>Resolver operaciones con números reales aplicando propiedades del álgebra.</li>
+          <li>Resolver ecuaciones e inecuaciones usando técnicas y propiedades adecuadas.</li>
+          <li>Aplicar el concepto de valor absoluto e interpretar soluciones.</li>
+          <li>Resolver sistemas lineales y utilizarlos en situaciones aplicadas.</li>
+        </ul></div>
+      </div>
+    </div>
+    <div class="process-card">
+      <div class="process-head"><div><span class="chip">Certamen 2</span><h3>Funciones y nociones de geometría analítica</h3><div class="process-sub">Semanas 6–10 · RdA5, RdA6 y RdA7</div></div><div class="u-tags"><span class="u-tag">Funciones</span><span class="u-tag orange">Modelamiento</span><span class="u-tag red">Cónicas</span></div></div>
+      <div class="process-columns">
+        <div class="content-block"><h4>Contenidos a revisar</h4><ul>
+          <li>Concepto de función; dominio, recorrido y codominio.</li>
+          <li>Álgebra de funciones y composición.</li>
+          <li>Propiedades cualitativas: paridad, monotonía y acotamiento.</li>
+          <li>Función lineal y cuadrática: análisis, gráfica y aplicaciones.</li>
+          <li>Función exponencial y logarítmica: propiedades, ecuaciones y modelamiento.</li>
+          <li>Función inversa; inyectividad, sobreyectividad y biyectividad.</li>
+          <li>Nociones de cónicas: circunferencia, parábola, elipse e hipérbola.</li>
+        </ul></div>
+        <div class="content-block"><h4>Desempeños evaluables</h4><ul>
+          <li>Determinar dominio, recorrido e inversa de una función.</li>
+          <li>Construir y analizar gráficas para interpretar comportamiento funcional.</li>
+          <li>Determinar compuestas e inversas aplicando sus propiedades.</li>
+          <li>Modelar problemas con funciones lineales, cuadráticas, exponenciales o logarítmicas.</li>
+          <li>Utilizar las secciones cónicas y sus elementos para responder a problemas aplicados.</li>
+        </ul></div>
+      </div>
+    </div>
+    <div class="process-card">
+      <div class="process-head"><div><span class="chip">Certamen 3</span><h3>Trigonometría y números complejos</h3><div class="process-sub">Semanas 11–15 · RdA3 y RdA8</div></div><div class="u-tags"><span class="u-tag">Trigonometría</span><span class="u-tag orange">Sinusoides</span><span class="u-tag red">Complejos</span></div></div>
+      <div class="process-columns">
+        <div class="content-block"><h4>Contenidos a revisar</h4><ul>
+          <li>Ángulos y sistemas de medición: grados y radianes.</li>
+          <li>Razones trigonométricas en triángulo rectángulo; identidad fundamental e identidades clásicas.</li>
+          <li>Funciones seno y coseno; funciones sinusoidales y ecuaciones trigonométricas.</li>
+          <li>Teoremas del seno y del coseno y sus aplicaciones.</li>
+          <li>Números complejos: definición, operatoria, conjugado, módulo y gráfica.</li>
+          <li>Forma polar y exponencial; teorema de De Moivre, potencias y raíces.</li>
+        </ul></div>
+        <div class="content-block"><h4>Desempeños evaluables</h4><ul>
+          <li>Transformar unidades angulares y trabajar con el círculo unitario.</li>
+          <li>Resolver problemas con relaciones e identidades trigonométricas.</li>
+          <li>Resolver ecuaciones trigonométricas y analizar sinusoides.</li>
+          <li>Determinar gráficas de funciones trigonométricas directas e inversas.</li>
+          <li>Operar con números complejos y aplicar el teorema de De Moivre.</li>
+        </ul></div>
+      </div>
+    </div>
+  </div>
+  <div style="margin-top:2rem" class="section-header reveal"><div class="section-eyebrow">Contenidos temáticos oficiales</div><h2 style="font-size:1.55rem">Unidades del programa de asignatura</h2><p>Resumen del programa formal que respalda la organización del curso.</p></div>
+  <div class="unidades-wrap rs">
+    <div class="unidad-card"><div class="unidad-num">1</div><div class="unidad-info"><h3>Fundamentos del lenguaje matemático</h3><p>Uso de la lógica para la resolución de problemas matemáticos.</p></div><div class="u-tags"><span class="u-tag">Base conceptual</span></div></div>
+    <div class="unidad-card"><div class="unidad-num">2</div><div class="unidad-info"><h3>Números reales</h3><p>Axiomas de cuerpo y de orden, valor absoluto e inecuaciones lineales y factorizadas.</p></div><div class="u-tags"><span class="u-tag orange">RdA2 · RdA4</span></div></div>
+    <div class="unidad-card"><div class="unidad-num">3</div><div class="unidad-info"><h3>Geometría analítica básica</h3><p>Sistema cartesiano, distancia en el plano, la recta y las cónicas con sus elementos principales.</p></div><div class="u-tags"><span class="u-tag red">RdA5</span></div></div>
+    <div class="unidad-card"><div class="unidad-num">4</div><div class="unidad-info"><h3>Funciones</h3><p>Definición, dominio, recorrido, funciones elementales, propiedades, composición e inversa.</p></div><div class="u-tags"><span class="u-tag">RdA6 · RdA7</span></div></div>
+    <div class="unidad-card"><div class="unidad-num">5</div><div class="unidad-info"><h3>Función exponencial y logarítmica</h3><p>Propiedades algebraicas y cualitativas, con problemas de aplicación.</p></div><div class="u-tags"><span class="u-tag orange">Modelamiento</span></div></div>
+    <div class="unidad-card"><div class="unidad-num">6</div><div class="unidad-info"><h3>Trigonometría</h3><p>Circunferencia unitaria, identidades, funciones trigonométricas, ecuaciones y teoremas del seno y coseno.</p></div><div class="u-tags"><span class="u-tag red">RdA3</span></div></div>
+    <div class="unidad-card"><div class="unidad-num">7</div><div class="unidad-info"><h3>Números complejos</h3><p>Definición, operatoria, forma trigonométrica y notaciones polar y exponencial; teorema de De Moivre.</p></div><div class="u-tags"><span class="u-tag">RdA8</span></div></div>
+  </div>
+</section>
+<div class="section-divider"></div>
+<section id="evaluacion">
+  <div class="section-header reveal"><div class="section-eyebrow">Sección 4</div><h2>Sistema de Evaluación</h2><p>La nota final se construye con tres certámenes y un componente de actividades prácticas a lo largo del semestre.</p></div>
+  <div class="eval-layout rs">
+    <div class="eval-donut-card"><div class="card-label">Ponderaciones oficiales</div><h3>Plan evaluativo</h3><div class="donut-bars">
+      <div><div class="donut-bar-meta"><span class="donut-bar-name">Certamen 1</span><span class="donut-bar-pct">20%</span></div><div class="bar-track"><div class="bar-fill" style="width:20%"></div></div></div>
+      <div><div class="donut-bar-meta"><span class="donut-bar-name">Certamen 2</span><span class="donut-bar-pct">25%</span></div><div class="bar-track"><div class="bar-fill" style="width:25%"></div></div></div>
+      <div><div class="donut-bar-meta"><span class="donut-bar-name">Certamen 3</span><span class="donut-bar-pct">30%</span></div><div class="bar-track"><div class="bar-fill" style="width:30%"></div></div></div>
+      <div><div class="donut-bar-meta"><span class="donut-bar-name">Actividades prácticas (PA)</span><span class="donut-bar-pct">25%</span></div><div class="bar-track"><div class="bar-fill" style="width:25%"></div></div></div>
+    </div></div>
+    <div class="formula-card"><div class="card-label">Nota final</div><h3>Cálculo de la nota</h3>
+      <div class="formula-block">NP = 20%·C1 + 25%·C2 + 30%·C3 + 25%·PA</div>
+      <div class="formula-cases">
+        <div class="case-row"><span class="case-badge">NP ≥ 55 o NP &lt; 45</span><span class="case-text">En estos casos, la nota final coincide con la nota de presentación: NF = NP.</span></div>
+        <div class="case-row"><span class="case-badge orange">45 ≤ NP &lt; 55</span><span class="case-text">El estudiante debe rendir Certamen Global (CG), y la nota final se calcula como: NF = 0,7·NP + 0,3·CG.</span></div>
+        <div class="case-row"><span class="case-badge red">PA 25%</span><span class="case-text">Las actividades prácticas serán tres tareas durante el semestre, una antes de cada certamen; sus fechas serán informadas oportunamente.</span></div>
+      </div>
+    </div>
+  </div>
+  <div class="ap-card reveal"><span class="ap-icon">📋</span><div><h4>Actividades prácticas</h4><p>El componente PA estará compuesto por tres tareas durante el semestre. Cada tarea se ubicará antes del certamen correspondiente y sus fechas específicas serán informadas próximamente por AULA.</p><div class="ap-grid"><div class="ap-item"><strong>Tarea 1</strong><br>Antes del Certamen 1</div><div class="ap-item"><strong>Tarea 2</strong><br>Antes del Certamen 2</div><div class="ap-item"><strong>Tarea 3</strong><br>Antes del Certamen 3</div><div class="ap-item"><strong>Práctica/Taller</strong><br>No necesariamente evaluada</div></div></div></div>
+  <div class="examen-card reveal"><span class="examen-icon">🎓</span><div><h4>Certámenes y certamen global</h4><p>Los certámenes deben ser presenciales, escritos, de desarrollo, con un máximo de 70 minutos y diseñados para ser resueltos en tres preguntas. El certamen recuperativo global se rinde cuando la nota de presentación se encuentra entre 45 y 54; para este curso queda fijado el jueves 03/12/2026.</p></div></div>
+</section>
+<div class="section-divider"></div>
+<section id="calendario">
+  <div class="section-header reveal"><div class="section-eyebrow">Sección 5</div><h2>Calendario de Evaluaciones</h2><p>Los certámenes quedan fijados los días jueves dentro de las semanas propuestas por coordinación. Las fechas de las tareas serán informadas próximamente.</p></div>
+  <div class="calendar-wrap rs">
+    <div class="cal-item"><div class="cal-num">T1</div><div class="cal-info"><h4>Tarea 1 <span class="cal-type orange">por informar</span></h4><div class="cal-date">Fecha próxima a informar</div><div class="cal-note">Actividad práctica previa al Certamen 1.</div></div></div>
+    <div class="cal-item"><div class="cal-num">C1</div><div class="cal-info"><h4>Certamen 1 <span class="cal-type">jueves</span></h4><div class="cal-date">Jueves 10/09/2026</div><div class="cal-note">Primera evaluación solemne del semestre.</div></div></div>
+    <div class="cal-item"><div class="cal-num">T2</div><div class="cal-info"><h4>Tarea 2 <span class="cal-type orange">por informar</span></h4><div class="cal-date">Fecha próxima a informar</div><div class="cal-note">Actividad práctica previa al Certamen 2.</div></div></div>
+    <div class="cal-item"><div class="cal-num">C2</div><div class="cal-info"><h4>Certamen 2 <span class="cal-type">jueves</span></h4><div class="cal-date">Jueves 22/10/2026</div><div class="cal-note">Segunda evaluación solemne según calendario de coordinación.</div></div></div>
+    <div class="cal-item"><div class="cal-num">T3</div><div class="cal-info"><h4>Tarea 3 <span class="cal-type orange">por informar</span></h4><div class="cal-date">Fecha próxima a informar</div><div class="cal-note">Actividad práctica previa al Certamen 3.</div></div></div>
+    <div class="cal-item"><div class="cal-num">C3</div><div class="cal-info"><h4>Certamen 3 <span class="cal-type">jueves</span></h4><div class="cal-date">Jueves 26/11/2026</div><div class="cal-note">Tercera evaluación solemne del semestre.</div></div></div>
+    <div class="cal-item"><div class="cal-num">CG</div><div class="cal-info"><h4>Certamen Global / Recuperativo <span class="cal-type red">jueves</span></h4><div class="cal-date">Jueves 03/12/2026</div><div class="cal-note">Aplica para estudiantes cuyo NP quede en el rango 45–54.</div></div></div>
+    <div class="cal-item"><div class="cal-num">NF</div><div class="cal-info"><h4>Cierre de notas <span class="cal-type orange">cierre</span></h4><div class="cal-date">04/12/2026 entrega a estudiantes · 09/12/2026 cierre final</div><div class="cal-note">Fechas institucionales para publicación y registro final de notas.</div></div></div>
+  </div>
+  <div class="notice-card reveal"><span class="notice-icon">📌</span><div><h3>Importante</h3><p>Durante la primera semana de clases se publicarán en AULA los lineamientos del curso, el programa de estudio, el sistema de evaluación y las reglas generales. Las tareas se informarán oportunamente, una antes de cada certamen.</p></div></div>
+</section>
+<div class="section-divider"></div>
+<section id="reglas">
+  <div class="section-header reveal"><div class="section-eyebrow">Sección 6</div><h2>Reglas Operativas y Canales Oficiales</h2><p>Algunas orientaciones clave de coordinación para el desarrollo del semestre y la comunicación con los estudiantes.</p></div>
+  <div class="lin-grid rs">
+    <div class="lin-card"><h3>📝 Evaluaciones</h3><ul class="lin-list">
+      <li>Los certámenes son presenciales, escritos y de desarrollo, con duración máxima de 70 minutos.</li>
+      <li>Se solicita que cada certamen contemple tres preguntas de desarrollo.</li>
+      <li>Se debe presentar un documento que permita verificar la identidad cuando el profesor o profesora lo requiera.</li>
+      <li>Solo se permite el uso de materiales o documentos previamente validados por el profesor o profesora.</li>
+      <li>El tipo de calculadora autorizada será indicado oportunamente por el equipo docente.</li>
+    </ul></div>
+    <div class="lin-card"><h3>📵 Comunicación y conducta</h3><ul class="lin-list">
+      <li>Los canales oficiales del curso son AULA, Microsoft Teams y el correo institucional.</li>
+      <li>No se utilizarán WhatsApp, Telegram u otras redes sociales como canal formal del curso.</li>
+      <li>Durante las evaluaciones, los dispositivos inteligentes deben permanecer guardados, apagados o en silencio.</li>
+      <li>Cualquier conducta que comprometa la transparencia de la evaluación puede ser sancionada con calificación cero.</li>
+      <li>Se recomienda revisar con frecuencia los anuncios, materiales y pautas publicados en AULA.</li>
+    </ul></div>
+  </div>
+  <div class="notice-card reveal"><span class="notice-icon">⏳</span><div><h3>Ausencias justificadas</h3><p>Los estudiantes correctamente justificados deben rendir un instrumento equivalente en forma y contenido al original, dentro de un plazo no mayor a dos semanas desde la evaluación programada inicialmente.</p></div></div>
+</section>
+<div class="section-divider"></div>
+<section id="recursos">
+  <div class="section-header reveal"><div class="section-eyebrow">Sección 7</div><h2>Recursos, Plataforma y Bibliografía</h2><p>La plataforma AULA concentrará la información del curso, materiales de apoyo y publicaciones formales del semestre.</p></div>
+  <div class="resource-grid rs">
+    <div class="resource-card"><span>📘</span><div><strong>Programa de estudio</strong><br>Disponible en PDF junto con la presentación inicial y los lineamientos generales del curso.</div></div>
+    <div class="resource-card"><span>🧩</span><div><strong>Material de trabajo</strong><br>Guías, talleres, ejercicios de apoyo y material complementario organizados por unidad.</div></div>
+    <div class="resource-card"><span>🧾</span><div><strong>Pautas de corrección</strong><br>Las pautas y orientaciones de revisión se publicarán por actividad o evaluación cuando corresponda.</div></div>
+    <div class="resource-card"><span>💻</span><div><strong>Software de apoyo</strong><br>GeoGebra, Matlab y Wolfram Alpha como herramientas de trabajo y exploración matemática.</div></div>
+    <div class="resource-card"><span>📢</span><div><strong>Noticias y avisos</strong><br>Los avances del curso, fechas y anuncios oficiales se informarán regularmente por AULA.</div></div>
+    <div class="resource-card"><span>🌐</span><div><strong>Teams y correo</strong><br>Disponibilidad de información complementaria y coordinación académica mediante plataformas institucionales.</div></div>
+  </div>
+  <div style="margin-top:2rem" class="section-header reveal"><div class="section-eyebrow">Bibliografía</div><h2 style="font-size:1.55rem">Referencias de apoyo</h2></div>
+  <div class="bib-list rs">
+    <div class="bib-item"><span>01</span><div><strong>Zill & Dewar</strong><br><em>Álgebra, trigonometría y geometría analítica</em>, 3.ª edición, McGraw-Hill.</div></div>
+    <div class="bib-item"><span>02</span><div><strong>Demana, Waits, Foley & Kennedy</strong><br><em>Precalculo</em>, 7.ª edición, Pearson.</div></div>
+    <div class="bib-item"><span>03</span><div><strong>Sullivan</strong><br><em>Álgebra y Trigonometría</em>, 7.ª edición, Pearson.</div></div>
+    <div class="bib-item"><span>04</span><div><strong>Recursos digitales</strong><br>Wolfram Alpha, GeoGebra y otros apoyos indicados por el profesor o profesora.</div></div>
+  </div>
+</section>
+<div class="section-divider"></div>
+<section id="contacto">
+  <div class="section-header reveal"><div class="section-eyebrow">Sección 8</div><h2>Contacto y Recomendaciones</h2></div>
+  <div class="contact-layout rs">
+    <div class="contact-card" style="position:relative;overflow:hidden">
+      <div class="card-label">Equipo docente y coordinación</div>
+      <h3>MAT010-B · Fundamentos</h3>
+      <p style="color:rgba(255,255,255,.48);font-size:.82rem;margin:.25rem 0 1rem">Departamento de Ciencias · UTFSM Sede Viña del Mar</p>
+      <div class="contact-row"><span>👨‍🏫</span><span>Cátedra: Víctor Vallejo Palacios · miércoles y jueves, H102.</span></div>
+      <div class="contact-row"><span>🧩</span><span>Práctica/Taller: Ricardo Tamarin · martes, H106.</span></div>
+      <div class="contact-row"><span>🧭</span><span>Coordinación: Gilberto Campaña · Oficina A-207.</span></div>
+      <div class="contact-row"><span>🤝</span><span>Canales oficiales: AULA, Microsoft Teams y correo institucional.</span></div>
+    </div>
+    <div class="recom-card">
+      <div class="card-label">Recomendaciones para el semestre</div>
+      <div class="recom-item"><span class="recom-icon">📈</span><div><h4>Trabaja de forma constante</h4><p>El curso combina fundamentos algebraicos con modelamiento, por lo que el avance sostenido es clave.</p></div></div>
+      <div class="recom-item"><span class="recom-icon">✍️</span><div><h4>Justifica tus procedimientos</h4><p>Los certámenes son de desarrollo: el razonamiento y el proceso matemático forman parte esencial de la evaluación.</p></div></div>
+      <div class="recom-item"><span class="recom-icon">🧠</span><div><h4>Conecta los contenidos</h4><p>Lógica, ecuaciones, funciones, trigonometría y números complejos forman un continuo; trata de estudiar relacionando ideas.</p></div></div>
+      <div class="recom-item"><span class="recom-icon">📣</span><div><h4>Revisa AULA con frecuencia</h4><p>Materiales, pautas, avisos y fechas oficiales se publicarán por los canales institucionales del curso.</p></div></div>
+    </div>
+  </div>
+</section>
+</main>
+<footer>
+  <div class="tricolor-mid"></div>
+  <div class="f-brand">Fundamentos de la Matemática · MAT010-B</div>
+  <div class="f-sub">Universidad Técnica Federico Santa María · Segundo semestre 2026</div>
+  <div class="f-links"><a href="#identificacion">Identificación</a><a href="#contenidos">Contenidos</a><a href="#evaluacion">Evaluación</a><a href="#contacto">Contacto</a></div>
+</footer>
+<script>const pb=document.getElementById('progress-bar');const onScroll=()=>{const h=document.documentElement;const scrolled=(h.scrollTop||document.body.scrollTop);const height=h.scrollHeight-h.clientHeight;pb.style.width=(height>0?(scrolled/height)*100:0)+'%';};window.addEventListener('scroll',onScroll);onScroll();</script>
+</body>
+</html>

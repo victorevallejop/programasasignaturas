@@ -1,0 +1,624 @@
+<!DOCTYPE html>
+
+<html lang="es">
+<head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Estadística Descriptiva — EST-001 A | UTFSM 2026</title>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;600;700;900&amp;family=DM+Sans:wght@300;400;500;600&amp;family=DM+Mono:wght@400;500&amp;display=swap" rel="stylesheet"/>
+<style>
+:root{--navy:#46657a;--navy-mid:#58788c;--accent:#6f9db7;--accent-light:#c1dceb;--accent2:#c59a52;--accent2-light:#e5c98e;--cream:#f3f5f6;--cream-dark:#e4eaed;--text:#24323a;--text-mid:#42535d;--text-light:#6b7a83;--white:#fff;--card-bg:rgba(255,255,255,.97);--border:rgba(70,101,122,.14);}
+*{margin:0;padding:0;box-sizing:border-box}html{scroll-behavior:smooth}body{font-family:'DM Sans',sans-serif;background:var(--cream);color:var(--text);line-height:1.6;overflow-x:hidden}
+#progress-bar{position:fixed;top:0;left:0;height:3px;width:0%;background:var(--blue);z-index:9999;transition:width .1s linear}
+nav{position:fixed;top:0;left:0;right:0;background:rgba(70,101,122,.96);backdrop-filter:blur(12px);z-index:1000;padding:0 2rem;height:56px;display:flex;align-items:center;justify-content:space-between;border-bottom:1px solid rgba(111,157,183,.3)}
+.brand{display:flex;align-items:center;gap:10px}.brand-badge{background:var(--accent);color:#fff;font-family:'DM Mono',monospace;font-size:.65rem;font-weight:600;padding:3px 8px;border-radius:4px;letter-spacing:.08em;text-transform:uppercase}.brand-name{color:#fff;font-size:.9rem;font-weight:500;opacity:.85}
+.nav-links{display:flex;gap:1.5rem;list-style:none}.nav-links a{color:rgba(255,255,255,.55);text-decoration:none;font-size:.8rem;font-weight:500;transition:color .2s}.nav-links a:hover{color:var(--accent-light)}@media(max-width:768px){.nav-links{display:none}}
+.hero{min-height:100vh;background:var(--navy);display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;padding:100px 2rem 60px;position:relative;overflow:hidden}
+.hero::before{content:'';position:absolute;inset:0;background:none;pointer-events:none}
+.hero-grid{position:absolute;inset:0;background-image:none;background-size:52px 52px;pointer-events:none}
+.hero-content{position:relative;z-index:1;max-width:820px}
+.hero-eyebrow{display:inline-flex;align-items:center;gap:8px;background:rgba(111,157,183,.18);border:1px solid rgba(111,157,183,.4);border-radius:100px;padding:6px 16px;margin-bottom:2rem;animation:fadeUp .6s ease both}
+.hero-eyebrow span{color:var(--accent-light);font-size:.75rem;font-weight:600;letter-spacing:.1em;text-transform:uppercase}
+.dot{width:6px;height:6px;border-radius:50%;background:var(--accent-light);animation:pulse 2s infinite;flex-shrink:0}
+.hero h1{font-family:'Playfair Display',serif;font-size:clamp(2.4rem,7vw,5rem);font-weight:900;color:#fff;line-height:1.05;margin-bottom:.3rem;animation:fadeUp .6s .1s ease both}
+.hero h1 em{font-style:normal;color:var(--accent-light)}
+.subtitle{font-family:'DM Mono',monospace;font-size:.82rem;color:rgba(255,255,255,.4);letter-spacing:.12em;text-transform:uppercase;margin-bottom:2rem;animation:fadeUp .6s .2s ease both}
+.tagline{font-size:1.1rem;color:rgba(255,255,255,.62);max-width:580px;margin:0 auto 3rem;font-weight:300;animation:fadeUp .6s .3s ease both}
+.hero-stats{display:flex;gap:4px;justify-content:center;flex-wrap:wrap;animation:fadeUp .6s .4s ease both}
+.stat-pill{background:rgba(255,255,255,.05);border:1px solid rgba(255,255,255,.09);border-radius:8px;padding:10px 20px;display:flex;flex-direction:column;align-items:center;min-width:110px}
+.stat-pill .val{font-family:'Playfair Display',serif;font-size:1.6rem;font-weight:700;color:var(--accent-light);line-height:1}
+.stat-pill .lbl{font-size:.67rem;color:rgba(255,255,255,.38);text-transform:uppercase;letter-spacing:.08em;margin-top:4px}
+.paralelo-strip{display:flex;gap:10px;justify-content:center;margin-top:2rem;flex-wrap:wrap;animation:fadeUp .6s .5s ease both}
+.paralelo-badge{display:flex;align-items:center;gap:8px;border-radius:10px;padding:8px 16px;font-size:.82rem;font-weight:600;background:rgba(111,157,183,.18);border:1px solid rgba(111,157,183,.35);color:var(--accent-light)}
+.scroll-cue{position:absolute;bottom:2rem;left:50%;transform:translateX(-50%);display:flex;flex-direction:column;align-items:center;gap:6px;color:rgba(255,255,255,.25);font-size:.7rem;letter-spacing:.1em;text-transform:uppercase;animation:fadeUp .6s .9s ease both}
+.arrow{animation:bounce 1.8s infinite}
+.agenda-strip{background:var(--navy-mid);padding:4rem 2rem}
+.agenda-inner{max-width:1100px;margin:0 auto}
+.section-eyebrow{font-family:'DM Mono',monospace;font-size:.72rem;letter-spacing:.15em;text-transform:uppercase;color:var(--accent-light);margin-bottom:.6rem}
+.agenda-strip h2{font-family:'Playfair Display',serif;font-size:2rem;color:#fff;margin-bottom:2.5rem;font-weight:700}
+.agenda-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:1px;background:rgba(255,255,255,.05);border-radius:12px;overflow:hidden;border:1px solid rgba(255,255,255,.05)}
+.agenda-item{background:rgba(70,101,122,.8);padding:1.5rem;display:flex;gap:1rem;align-items:flex-start;transition:background .2s}
+.agenda-item:hover{background:rgba(111,157,183,.18)}
+.agenda-num{font-family:'Playfair Display',serif;font-size:2rem;font-weight:900;color:var(--accent-light);opacity:.35;line-height:1;flex-shrink:0}
+.agenda-item-text h3{font-size:.9rem;font-weight:600;color:#fff;margin-bottom:4px}
+.agenda-item-text p{font-size:.78rem;color:rgba(255,255,255,.4);line-height:1.4}
+main{}section{max-width:1100px;margin:0 auto;padding:5rem 2rem}section+section{padding-top:0}
+.section-header{margin-bottom:2.5rem}.section-header h2{font-family:'Playfair Display',serif;font-size:clamp(1.8rem,4vw,2.5rem);font-weight:700;color:var(--navy);line-height:1.2}.section-header p{color:var(--text-mid);font-size:1rem;margin-top:.5rem;max-width:600px}
+.section-divider{height:1px;background:var(--border);max-width:1100px;margin:0 auto}
+.card{background:var(--card-bg);border:1px solid var(--border);border-radius:16px;padding:2rem;box-shadow:0 2px 16px rgba(70,101,122,.06);transition:box-shadow .2s,transform .2s}.card:hover{box-shadow:0 8px 32px rgba(70,101,122,.1);transform:translateY(-2px)}
+.card-label{font-family:'DM Mono',monospace;font-size:.68rem;letter-spacing:.15em;text-transform:uppercase;color:var(--accent);margin-bottom:.8rem}
+.id-grid{display:grid;grid-template-columns:1fr 1fr;gap:1.5rem}@media(max-width:640px){.id-grid{grid-template-columns:1fr}}
+.info-table{width:100%;border-collapse:collapse;font-size:.88rem}.info-table td{padding:10px 12px;border-bottom:1px solid var(--cream-dark);vertical-align:top}.info-table td:first-child{color:var(--text-light);width:45%;font-size:.82rem;text-transform:uppercase;letter-spacing:.04em;font-weight:600}.info-table td:last-child{font-weight:500;color:var(--navy)}.info-table tr:last-child td{border-bottom:none}
+.horas-card{background:var(--navy);border-radius:16px;padding:2rem;color:#fff}.horas-card .card-label{color:var(--accent-light)}
+.horas-list{display:flex;flex-direction:column;gap:.75rem;margin-top:1rem}
+.hora-row{display:flex;justify-content:space-between;align-items:center;padding:10px 14px;background:rgba(255,255,255,.07);border-radius:8px;font-size:.88rem}
+.hora-row .hora-label{color:rgba(255,255,255,.65)}.hora-row .hora-val{font-family:'Playfair Display',serif;font-size:1.4rem;font-weight:700;color:var(--accent-light)}
+.hora-total{margin-top:1rem;padding-top:1rem;border-top:1px solid rgba(255,255,255,.1);display:flex;justify-content:space-between;align-items:center;font-size:.85rem;color:rgba(255,255,255,.45);text-transform:uppercase;letter-spacing:.06em}
+.hora-total strong{font-family:'Playfair Display',serif;font-size:1.8rem;color:#fff}
+.horario-card{background:var(--navy);border-radius:16px;padding:1.8rem;color:#fff;margin-top:1.5rem}
+.horario-card .p-label{font-family:'DM Mono',monospace;font-size:.68rem;letter-spacing:.15em;text-transform:uppercase;color:var(--accent-light);margin-bottom:.6rem}
+.horario-card h3{font-family:'Playfair Display',serif;font-size:1.2rem;color:#fff;margin-bottom:1rem}
+.schedule-rows{display:flex;flex-direction:column;gap:.5rem}
+.schedule-row{display:flex;gap:.75rem;align-items:center;padding:8px 12px;background:rgba(255,255,255,.07);border-radius:8px;font-size:.83rem}
+.schedule-day{font-weight:700;color:rgba(255,255,255,.9);min-width:70px}.schedule-time{color:rgba(255,255,255,.55);font-family:'DM Mono',monospace;font-size:.75rem}.schedule-room{margin-left:auto;font-family:'DM Mono',monospace;font-size:.72rem;color:rgba(255,255,255,.4)}
+.schedule-note{font-size:.72rem;color:rgba(255,255,255,.35);margin-top:6px;font-style:italic;padding:0 4px}
+.desc-card{background:var(--navy);border-radius:20px;padding:2.5rem;color:#fff;position:relative;overflow:hidden;margin-bottom:1.5rem}
+.desc-card::after{content:'\201C';font-family:'Playfair Display',serif;font-size:12rem;line-height:1;color:rgba(111,157,183,.12);position:absolute;top:-2rem;right:1rem;pointer-events:none}
+.desc-card p{font-size:1.05rem;line-height:1.75;color:rgba(255,255,255,.78);position:relative;z-index:1;max-width:680px}
+.req-card{background:var(--cream-dark);border:1px solid var(--border);border-radius:12px;padding:1.5rem;margin-top:1rem}
+.req-list{list-style:none;display:flex;flex-direction:column;gap:.5rem;margin-top:.5rem}
+.req-list li{font-size:.87rem;color:var(--text-mid);padding-left:1.2rem;position:relative}
+.req-list li::before{content:'→';position:absolute;left:0;color:var(--accent);font-size:.75rem}
+.comp-grid{display:grid;grid-template-columns:1fr 1fr;gap:1rem;margin-top:1.5rem}@media(max-width:640px){.comp-grid{grid-template-columns:1fr}}
+.comp-card{background:var(--card-bg);border:1px solid var(--border);border-radius:12px;padding:1.5rem}
+.comp-code{display:inline-block;background:var(--navy);color:var(--accent-light);font-family:'DM Mono',monospace;font-size:.7rem;padding:3px 10px;border-radius:6px;margin-bottom:.75rem;letter-spacing:.06em}
+.comp-card p{font-size:.87rem;color:var(--text-mid);line-height:1.5}
+.rda-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(280px,1fr));gap:.75rem}
+.rda-item{display:flex;gap:1rem;align-items:flex-start;background:var(--card-bg);border:1px solid var(--border);border-radius:12px;padding:1.2rem 1.5rem;transition:border-color .2s}
+.rda-item:hover{border-color:var(--accent)}
+.rda-badge{background:var(--navy);color:var(--accent-light);font-family:'DM Mono',monospace;font-size:.7rem;font-weight:500;padding:4px 8px;border-radius:6px;flex-shrink:0;white-space:nowrap}
+.rda-text{font-size:.87rem;color:var(--text-mid);line-height:1.5}
+.unidades-wrap{display:flex;flex-direction:column;gap:1rem}
+.unidad-card{background:var(--card-bg);border:1px solid var(--border);border-radius:16px;padding:1.8rem 2rem;display:grid;grid-template-columns:80px 1fr auto;align-items:start;gap:1.5rem;transition:box-shadow .2s}
+.unidad-card:hover{box-shadow:0 4px 20px rgba(70,101,122,.08)}
+.unidad-num{font-family:'Playfair Display',serif;font-size:3rem;font-weight:900;color:var(--accent);opacity:.2;line-height:1}
+.unidad-info h3{font-family:'Playfair Display',serif;font-size:1.2rem;font-weight:700;color:var(--navy);margin-bottom:6px}
+.unidad-info .u-weeks{font-family:'DM Mono',monospace;font-size:.7rem;color:var(--accent2);background:rgba(200,151,58,.1);border:1px solid rgba(200,151,58,.25);border-radius:4px;padding:2px 8px;display:inline-block;margin-bottom:8px}
+.unidad-info p{font-size:.84rem;color:var(--text-light);line-height:1.55}
+.unidad-rdas{display:flex;flex-direction:column;align-items:flex-end;gap:4px}
+.rda-tag{font-family:'DM Mono',monospace;font-size:.68rem;color:var(--accent);background:rgba(111,157,183,.1);border:1px solid rgba(111,157,183,.25);border-radius:4px;padding:2px 8px;white-space:nowrap}
+@media(max-width:600px){.unidad-card{grid-template-columns:1fr}.unidad-rdas{align-items:flex-start}}
+.met-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:1rem}
+.met-card{background:var(--card-bg);border:1px solid var(--border);border-radius:16px;padding:1.6rem;text-align:center}
+.met-icon{font-size:2rem;margin-bottom:.8rem;display:block}.met-card h3{font-weight:700;font-size:.92rem;color:var(--navy);margin-bottom:.4rem}.met-card p{font-size:.8rem;color:var(--text-light);line-height:1.5}
+.eval-layout{display:grid;grid-template-columns:1fr 1fr;gap:1.5rem}@media(max-width:768px){.eval-layout{grid-template-columns:1fr}}
+.eval-donut-card{background:var(--navy);border-radius:20px;padding:2rem}.eval-donut-card .card-label{color:var(--accent-light)}
+.donut-bars{margin-top:1.5rem;display:flex;flex-direction:column;gap:1.1rem}
+.donut-bar-row{display:flex;flex-direction:column;gap:5px}
+.donut-bar-meta{display:flex;justify-content:space-between;font-size:.82rem}
+.donut-bar-name{color:rgba(255,255,255,.75)}.donut-bar-pct{font-family:'DM Mono',monospace;color:var(--accent-light);font-weight:500}
+.bar-track{height:6px;background:rgba(255,255,255,.1);border-radius:99px;overflow:hidden}
+.bar-fill{height:100%;border-radius:99px;background:var(--blue);transition:width 1s ease}
+.formula-card{background:var(--cream-dark);border:1px solid var(--border);border-radius:20px;padding:2rem}
+.formula-block{background:var(--navy);color:var(--accent-light);font-family:'DM Mono',monospace;font-size:.82rem;border-radius:10px;padding:1.2rem 1.5rem;margin-top:1rem;line-height:1.9}
+.formula-block span{color:rgba(255,255,255,.5)}
+.formula-cases{margin-top:1.25rem;display:flex;flex-direction:column;gap:.75rem}
+.case-row{display:flex;gap:.75rem;align-items:flex-start;font-size:.86rem}
+.case-badge{flex-shrink:0;font-family:'DM Mono',monospace;font-size:.7rem;padding:3px 10px;border-radius:6px;white-space:nowrap;margin-top:2px}
+.case-badge.green{background:#1a4a2e;color:#6fcf97}.case-badge.yellow{background:#4a1a1a;color:#eb5757}.case-badge.recup{background:#3f5d70;color:#c1dceb}
+.case-text{color:var(--text-mid);line-height:1.5}
+.ap-card{background:rgba(111,157,183,.06);border:1px solid rgba(111,157,183,.22);border-radius:14px;padding:1.5rem 2rem;margin-top:1.25rem;display:flex;gap:1rem;align-items:flex-start}
+.ap-icon{font-size:1.5rem;flex-shrink:0;margin-top:2px}.ap-card h4{font-weight:700;font-size:.9rem;color:var(--navy);margin-bottom:6px}
+.ap-grid{display:grid;grid-template-columns:1fr 1fr;gap:.6rem;margin-top:.6rem}@media(max-width:500px){.ap-grid{grid-template-columns:1fr}}
+.ap-item{background:var(--card-bg);border:1px solid var(--border);border-radius:8px;padding:.75rem 1rem;font-size:.85rem;color:var(--text-mid);display:flex;gap:.6rem;align-items:center}
+.ap-item strong{color:var(--navy)}
+.examen-card{background:rgba(200,151,58,.06);border:1px solid rgba(200,151,58,.3);border-radius:14px;padding:1.5rem 2rem;margin-top:1.25rem;display:flex;gap:1rem;align-items:flex-start}
+.examen-icon{font-size:1.5rem;flex-shrink:0;margin-top:2px}.examen-card h4{font-weight:700;font-size:.9rem;color:var(--navy);margin-bottom:6px}.examen-card p{font-size:.85rem;color:var(--text-mid);line-height:1.6}
+.lin-grid{display:grid;grid-template-columns:1fr 1fr;gap:1.5rem;margin-bottom:1.5rem}@media(max-width:640px){.lin-grid{grid-template-columns:1fr}}
+.lin-card{background:var(--card-bg);border:1px solid var(--border);border-radius:16px;padding:1.8rem}
+.lin-card h3{font-weight:700;font-size:.95rem;color:var(--navy);margin-bottom:1rem}
+.lin-list{list-style:none;display:flex;flex-direction:column;gap:.6rem}
+.lin-list li{font-size:.85rem;color:var(--text-mid);padding-left:1.2rem;position:relative;line-height:1.5}
+.lin-list li::before{content:'→';position:absolute;left:0;color:var(--accent);font-size:.75rem}
+.notice-card{background:rgba(200,151,58,.06);border:1px solid rgba(200,151,58,.3);border-radius:16px;padding:1.8rem 2rem;display:flex;gap:1.2rem;align-items:flex-start}
+.notice-icon{font-size:1.5rem;flex-shrink:0;margin-top:2px}.notice-card h3{font-weight:700;font-size:.95rem;color:var(--navy);margin-bottom:.5rem}.notice-card p{font-size:.87rem;color:var(--text-mid);line-height:1.6}
+.calendar-wrap{display:flex;flex-direction:column;gap:.55rem;position:relative;padding-left:2rem}
+.calendar-wrap::before{content:'';position:absolute;left:8px;top:12px;bottom:12px;width:2px;background:var(--blue-light)}
+.cal-item{display:flex;gap:1.2rem;align-items:flex-start;background:var(--card-bg);border:1px solid var(--border);border-radius:12px;padding:1.1rem 1.5rem;position:relative}
+.cal-item::before{content:'';position:absolute;left:-1.7rem;top:50%;transform:translateY(-50%);width:10px;height:10px;border-radius:50%;background:var(--accent);border:2px solid var(--cream)}
+.cal-item.cert-item{border-color:var(--navy)}.cal-item.cert-item::before{background:var(--navy)}
+.cal-item.recup-item{border-color:rgba(111,157,183,.3)}.cal-item.recup-item::before{background:var(--accent);width:8px;height:8px}
+.cal-item.global-item{border-color:rgba(200,151,58,.5);background:rgba(200,151,58,.04)}.cal-item.global-item::before{background:var(--accent2);width:12px;height:12px}
+.cal-item.ap-item-cal{border-color:rgba(111,157,183,.25)}.cal-item.ap-item-cal::before{background:var(--accent-light)}
+.cal-item.expo-item{border-color:rgba(200,151,58,.35)}.cal-item.expo-item::before{background:var(--accent2)}
+.cal-num{background:var(--navy);color:var(--accent-light);font-family:'Playfair Display',serif;font-size:1rem;font-weight:700;width:48px;height:48px;border-radius:10px;display:flex;align-items:center;justify-content:center;flex-shrink:0;text-align:center;line-height:1.1}
+.cal-info h4{font-weight:700;font-size:.9rem;color:var(--navy);margin-bottom:2px}
+.cal-info .cal-date{font-family:'DM Mono',monospace;font-size:.74rem;color:var(--accent)}
+.cal-info .cal-date.gold{color:var(--accent2)}
+.cal-info .cal-note{font-size:.78rem;color:var(--text-light);margin-top:2px}
+.cal-type{display:inline-block;font-family:'DM Mono',monospace;font-size:.62rem;font-weight:600;padding:2px 8px;border-radius:4px;text-transform:uppercase;letter-spacing:.06em;margin-left:6px;vertical-align:middle}
+.cal-type.ci{background:rgba(111,157,183,.12);color:#466f89}.cal-type.expo{background:rgba(200,151,58,.15);color:#8a5a00}.cal-type.cert{background:var(--navy);color:var(--accent-light)}.cal-type.recup{background:rgba(111,157,183,.15);color:var(--accent)}.cal-type.global{background:rgba(200,151,58,.2);color:#7a4a00}
+.aula-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(180px,1fr));gap:1rem}
+.aula-item{background:var(--card-bg);border:1px solid var(--border);border-radius:12px;padding:1.2rem 1.5rem;display:flex;gap:.8rem;align-items:center;font-size:.87rem;color:var(--text-mid);font-weight:500}
+.bib-list{display:flex;flex-direction:column;gap:.75rem}
+.bib-section-label{font-family:'DM Mono',monospace;font-size:.72rem;letter-spacing:.12em;text-transform:uppercase;color:var(--text-light);margin-top:1.5rem;margin-bottom:.5rem;padding-left:.5rem;border-left:3px solid var(--accent)}
+.bib-item{background:var(--card-bg);border:1px solid var(--border);border-radius:12px;padding:1.1rem 1.5rem;display:flex;gap:1rem;align-items:flex-start;font-size:.88rem;color:var(--text-mid);line-height:1.5}
+.bib-num{font-family:'DM Mono',monospace;color:var(--accent);font-size:.8rem;flex-shrink:0;font-weight:600;min-width:24px}
+.contact-layout{display:grid;grid-template-columns:1fr 1fr;gap:1.5rem}@media(max-width:640px){.contact-layout{grid-template-columns:1fr}}
+.contact-card{background:var(--navy);border-radius:20px;padding:2rem;color:#fff}.contact-card .card-label{color:var(--accent-light)}
+.contact-detail{margin-top:1rem;display:flex;flex-direction:column;gap:.75rem}
+.contact-row{display:flex;gap:.75rem;align-items:center;font-size:.87rem}
+.contact-row .c-icon{font-size:1rem;opacity:.6;flex-shrink:0}.contact-row .c-val{color:rgba(255,255,255,.8)}.contact-row .c-val a{color:var(--accent-light);text-decoration:none}.contact-row .c-val a:hover{text-decoration:underline}
+.recom-card{background:var(--cream-dark);border:1px solid var(--border);border-radius:20px;padding:2rem}
+.recom-list{margin-top:1rem;display:flex;flex-direction:column;gap:1rem}
+.recom-item{display:flex;gap:1rem;align-items:flex-start}
+.recom-icon{font-size:1.3rem;flex-shrink:0;margin-top:2px}.recom-item h4{font-weight:700;font-size:.88rem;color:var(--navy);margin-bottom:2px}.recom-item p{font-size:.82rem;color:var(--text-light);line-height:1.4}
+footer{background:var(--navy);padding:3rem 2rem;text-align:center}
+.f-brand{font-family:'Playfair Display',serif;font-size:1.5rem;color:#fff;font-weight:700;margin-bottom:.5rem}
+.f-sub{font-size:.8rem;color:rgba(255,255,255,.3);letter-spacing:.08em;text-transform:uppercase;margin-bottom:1.5rem}
+.f-links{display:flex;justify-content:center;gap:2rem;flex-wrap:wrap}
+.f-links a{font-size:.82rem;color:rgba(255,255,255,.38);text-decoration:none}.f-links a:hover{color:var(--accent-light)}
+@keyframes fadeUp{from{opacity:0;transform:translateY(24px)}to{opacity:1;transform:translateY(0)}}
+@keyframes pulse{0%,100%{opacity:1}50%{opacity:.4}}
+@keyframes bounce{0%,100%{transform:translateY(0)}50%{transform:translateY(6px)}}
+.reveal{opacity:0;transform:translateY(20px);transition:opacity .6s ease,transform .6s ease}.reveal.visible{opacity:1;transform:translateY(0)}
+.rs>*{opacity:0;transform:translateY(16px);transition:opacity .5s ease,transform .5s ease}
+.rs.visible>*:nth-child(1){opacity:1;transform:none;transition-delay:.00s}.rs.visible>*:nth-child(2){opacity:1;transform:none;transition-delay:.08s}.rs.visible>*:nth-child(3){opacity:1;transform:none;transition-delay:.16s}.rs.visible>*:nth-child(4){opacity:1;transform:none;transition-delay:.24s}.rs.visible>*:nth-child(5){opacity:1;transform:none;transition-delay:.32s}.rs.visible>*:nth-child(6){opacity:1;transform:none;transition-delay:.40s}.rs.visible>*:nth-child(7){opacity:1;transform:none;transition-delay:.48s}.rs.visible>*:nth-child(8){opacity:1;transform:none;transition-delay:.56s}.rs.visible>*:nth-child(9){opacity:1;transform:none;transition-delay:.64s}.rs.visible>*:nth-child(10){opacity:1;transform:none;transition-delay:.72s}.rs.visible>*:nth-child(11){opacity:1;transform:none;transition-delay:.80s}.rs.visible>*:nth-child(12){opacity:1;transform:none;transition-delay:.88s}.rs.visible>*:nth-child(13){opacity:1;transform:none;transition-delay:.96s}.rs.visible>*:nth-child(14){opacity:1;transform:none;transition-delay:1.04s}
+
+
+/* Paleta y jerarquía inspiradas en la presentación de clase */
+:root{
+  --navy:#1a3a5c;
+  --navy-mid:#2b4868;
+  --blue:#2e5b8e;
+  --blue-light:#dfe8f1;
+  --teal:#27788a;
+  --teal-light:#e2f0f2;
+  --orange:#c97d1a;
+  --orange-light:#f6ead7;
+  --red:#b53134;
+  --red-light:#f5e4e4;
+  --cream:#f4f6fa;
+  --cream-dark:#e7ecf2;
+  --text:#23384d;
+  --text-mid:#536a7e;
+  --text-light:#8192a1;
+  --white:#ffffff;
+  --card-bg:#ffffff;
+  --border:#d5dee7;
+  --accent:var(--blue);
+  --accent-light:#e8eff6;
+  --accent2:var(--orange);
+  --accent2-light:#f6ead7;
+}
+
+body{background:var(--cream);color:var(--text)}
+#progress-bar{background:var(--orange)!important}
+
+/* Color fuerte solo en barras de jerarquía; el resto respira */
+nav,.agenda-strip,.horas-card,.horario-card,.desc-card,.eval-donut-card,.contact-card,footer{
+  background:var(--navy)!important;
+  color:#fff!important;
+}
+nav{border-bottom:0!important}
+.hero{
+  background:var(--navy)!important;
+  color:#fff!important;
+}
+.hero::before,.hero-grid{display:none!important}
+
+/* Franja tricolor sin degradados */
+nav,.agenda-strip,footer{position:relative}
+nav{border-bottom:3px solid #e3b341!important}
+nav::before{content:"";position:absolute;left:0;bottom:-3px;width:33.333%;height:3px;background:var(--red)}
+nav::after{content:"";position:absolute;right:0;bottom:-3px;width:33.333%;height:3px;background:var(--blue)}
+.agenda-strip{border-top:3px solid #e3b341}
+.agenda-strip::before{content:"";position:absolute;left:0;top:-3px;width:33.333%;height:3px;background:var(--red)}
+.agenda-strip::after{content:"";position:absolute;right:0;top:-3px;width:33.333%;height:3px;background:var(--blue)}
+footer{border-top:3px solid #e3b341}
+footer::before{content:"";position:absolute;left:0;top:-3px;width:33.333%;height:3px;background:var(--red)}
+footer::after{content:"";position:absolute;right:0;top:-3px;width:33.333%;height:3px;background:var(--blue)}
+.hero-content{position:relative;padding-left:16px}
+.hero-content::before{content:"";position:absolute;left:0;top:4%;bottom:4%;width:4px;background:var(--red);box-shadow:5px 0 0 #e3b341,10px 0 0 var(--blue)}
+
+/* Navegación y portada */
+.brand-badge{background:var(--orange)!important;color:#fff!important}
+.brand-name{color:#fff!important;opacity:.95!important}
+.nav-links a{color:rgba(255,255,255,.72)!important}
+.nav-links a:hover{color:#fff!important}
+.hero h1,.hero h1 em{color:#fff!important}
+.subtitle{color:rgba(255,255,255,.66)!important}
+.tagline{color:rgba(255,255,255,.82)!important}
+.hero-eyebrow{background:var(--teal)!important;border-color:transparent!important}
+.hero-eyebrow span{color:#fff!important}
+.dot{background:#fff!important}
+.stat-pill{background:rgba(255,255,255,.08)!important;border-color:rgba(255,255,255,.14)!important}
+.stat-pill .val{color:#fff!important}
+.stat-pill .lbl{color:rgba(255,255,255,.66)!important}
+.paralelo-badge{background:rgba(255,255,255,.08)!important;border-color:rgba(255,255,255,.16)!important;color:#fff!important}
+.scroll-cue{color:rgba(255,255,255,.55)!important}
+
+/* Agenda */
+.agenda-strip h2{color:#fff!important}
+.agenda-strip .section-eyebrow{color:rgba(255,255,255,.65)!important}
+.agenda-grid{background:rgba(255,255,255,.10)!important;border-color:rgba(255,255,255,.10)!important}
+.agenda-item{background:rgba(255,255,255,.05)!important}
+.agenda-item:hover{background:rgba(255,255,255,.10)!important}
+.agenda-num{color:var(--orange)!important;opacity:1!important}
+.agenda-item-text h3{color:#fff!important}
+.agenda-item-text p{color:rgba(255,255,255,.68)!important}
+
+/* Contenido: fondo claro y títulos navy */
+.section-header h2{color:var(--navy)!important}
+.section-header p{color:var(--text-mid)!important}
+.section-eyebrow,.card-label{color:var(--blue)!important}
+.section-divider{background:var(--border)!important}
+
+.card,.comp-card,.rda-item,.unidad-card,.met-card,.lin-card,.cal-item,.aula-item,.bib-item,.recom-card,.formula-card,.req-card,.ap-item{
+  background:#fff!important;
+  border-color:var(--border)!important;
+  box-shadow:0 2px 12px rgba(26,58,92,.05)!important;
+}
+.card:hover,.unidad-card:hover{box-shadow:0 7px 20px rgba(26,58,92,.09)!important}
+.info-table td:first-child,.req-list li,.rda-text,.unidad-info p,.met-card p,.case-text,.lin-list li,.aula-item,.bib-item,.recom-item p,.cal-info .cal-note{color:var(--text-mid)!important}
+.info-table td:last-child,.unidad-info h3,.met-card h3,.formula-card h3,.lin-card h3,.notice-card h3,.examen-card h4,.ap-card h4,.cal-info h4,.recom-item h4{color:var(--navy)!important}
+
+/* Barras azules con texto blanco */
+.horas-card .card-label,.horario-card .p-label,.desc-card .card-label,.eval-donut-card .card-label,.contact-card .card-label{color:rgba(255,255,255,.62)!important}
+.horas-card h3,.horario-card h3,.eval-donut-card h3,.contact-card h3{color:#fff!important}
+.hora-row,.schedule-row{background:rgba(255,255,255,.08)!important}
+.hora-row .hora-label,.schedule-time,.schedule-room,.schedule-note,.hora-total,.donut-bar-name,.f-sub,.f-links a,.contact-row .c-val,.contact-row .c-val a{color:rgba(255,255,255,.74)!important}
+.hora-row .hora-val,.schedule-day,.hora-total strong,.donut-bar-pct{color:#fff!important}
+.hora-total{border-top-color:rgba(255,255,255,.14)!important}
+.desc-card p{color:rgba(255,255,255,.88)!important}
+.desc-card::after{color:rgba(255,255,255,.10)!important}
+.bar-track{background:rgba(255,255,255,.16)!important}
+.bar-fill{background:var(--orange)!important}
+
+/* Botones y etiquetas: misma fuerza que la presentación */
+.comp-code,.rda-badge,.rda-tag,.cal-type.ci,.cal-type.cert,.case-badge.recup{
+  background:var(--blue)!important;
+  color:#fff!important;
+  border-color:transparent!important;
+}
+.cal-type.expo,.cal-type.global,.case-badge.yellow{background:var(--orange)!important;color:#fff!important;border-color:transparent!important}
+.cal-type.recup{background:var(--red)!important;color:#fff!important;border-color:transparent!important}
+.case-badge.green{background:var(--teal)!important;color:#fff!important}
+.unidad-num,.bib-num{color:var(--blue)!important;opacity:.35!important}
+
+/* Tarjetas con borde tricolor plano */
+.card,.comp-card,.rda-item,.unidad-card,.met-card,.lin-card,.aula-item,.bib-item,.recom-card,.formula-card{position:relative;border-top:3px solid #e3b341!important}
+.card::before,.comp-card::before,.rda-item::before,.unidad-card::before,.met-card::before,.lin-card::before,.aula-item::before,.bib-item::before,.recom-card::before,.formula-card::before{
+  content:"";position:absolute;left:-1px;top:-3px;width:33.333%;height:3px;background:var(--red);z-index:2
+}
+.card::after,.comp-card::after,.rda-item::after,.unidad-card::after,.met-card::after,.lin-card::after,.aula-item::after,.bib-item::after,.recom-card::after,.formula-card::after{
+  content:"";position:absolute;right:-1px;top:-3px;width:33.333%;height:3px;background:var(--blue);z-index:2
+}
+
+/* Alternancia de acentos, como en la presentación */
+.unidad-card:nth-child(3n+1) .rda-tag,.rda-item:nth-child(3n+1) .rda-badge{background:var(--blue)!important}
+.unidad-card:nth-child(3n+2) .rda-tag,.rda-item:nth-child(3n+2) .rda-badge{background:var(--teal)!important}
+.unidad-card:nth-child(3n) .rda-tag,.rda-item:nth-child(3n) .rda-badge{background:var(--orange)!important}
+
+.formula-block{background:var(--blue-light)!important;color:var(--navy)!important}
+.formula-block span{color:var(--text-mid)!important}
+.notice-card{background:#fff!important;border-color:#e5c7c8!important}
+.notice-icon{color:var(--red)!important}
+.ap-card{background:#fff!important;border-color:#d7e2ec!important}
+.examen-card{background:#fff!important;border-color:#e8d3ae!important}
+.cal-date,.cal-info .cal-date.gold{color:var(--blue)!important}
+.calendar-wrap::before{background:var(--blue-light)!important}
+.contact-row .c-val a:hover,.f-links a:hover{color:#fff!important}
+
+</style>
+</head>
+<body>
+<div id="progress-bar"></div>
+<nav>
+<div class="brand"><span class="brand-badge">EST-001 A</span><span class="brand-name">Estadística Descriptiva — UTFSM 2026</span></div>
+<ul class="nav-links">
+<li><a href="#identificacion">Identificación</a></li><li><a href="#contenidos">Contenidos</a></li><li><a href="#evaluacion">Evaluación</a></li><li><a href="#calendario">Calendario</a></li><li><a href="#contacto">Contacto</a></li>
+</ul>
+</nav>
+<div class="hero">
+<div class="hero-grid"></div>
+<div class="hero-content">
+<div class="hero-eyebrow"><span class="dot"></span><span>Segundo Semestre 2026</span></div>
+<h1>Estadística<br/><em>Descriptiva</em></h1>
+<div class="subtitle">EST-001 A  ·  UTFSM Viña del Mar  ·  T.U. Ciencia de Datos</div>
+<p class="tagline">Organización, representación y análisis descriptivo de datos para comprender fenómenos y sustentar decisiones mediante evidencia.</p>
+<div class="hero-stats">
+<div class="stat-pill"><span class="val">5</span><span class="lbl">Créditos SCT</span></div>
+<div class="stat-pill"><span class="val">124</span><span class="lbl">Hrs totales</span></div>
+<div class="stat-pill"><span class="val">3</span><span class="lbl">Ciclos temáticos</span></div>
+<div class="stat-pill"><span class="val">3</span><span class="lbl">Certámenes</span></div>
+</div>
+<div class="paralelo-strip"><div class="paralelo-badge">📊 T.U. Ciencia de Datos · Lunes y Viernes · Inicio 03 de agosto</div></div>
+</div>
+<div class="scroll-cue"><span>Explorar</span><span class="arrow">↓</span></div>
+</div>
+<div class="agenda-strip">
+<div class="agenda-inner">
+<div class="section-eyebrow">Contenido de la presentación</div>
+<h2>Agenda del Curso</h2>
+<div class="agenda-grid rs">
+<div class="agenda-item"><span class="agenda-num">1</span><div class="agenda-item-text"><h3>Identificación</h3><p>Datos generales, créditos, prerequisitos y horario</p></div></div>
+<div class="agenda-item"><span class="agenda-num">2</span><div class="agenda-item-text"><h3>Descripción y Objetivos</h3><p>Propósito, competencias y resultados de aprendizaje</p></div></div>
+<div class="agenda-item"><span class="agenda-num">3</span><div class="agenda-item-text"><h3>Contenidos y Metodología</h3><p>3 ciclos, 6 subunidades y estrategias de enseñanza</p></div></div>
+<div class="agenda-item"><span class="agenda-num">4</span><div class="agenda-item-text"><h3>Evaluación y Calendario</h3><p>Estructura evaluativa y fechas estimadas 2026</p></div></div>
+</div>
+</div>
+</div>
+<main>
+<section id="identificacion">
+<div class="section-header reveal"><div class="section-eyebrow">Sección 1</div><h2>Identificación de la Asignatura</h2><p>Datos del curso y horario informado para el segundo semestre de 2026.</p></div>
+<div class="id-grid rs">
+<div class="card">
+<div class="card-label">Información General</div>
+<h3 style="font-family:'Playfair Display',serif;font-size:1.2rem;color:var(--navy);margin-bottom:.8rem;">Datos del Curso</h3>
+<table class="info-table">
+<tr><td>Asignatura</td><td>Estadística Descriptiva</td></tr>
+<tr><td>Sigla</td><td>EST-001 A</td></tr>
+<tr><td>Semestre curricular</td><td>II</td></tr>
+<tr><td>Créditos SCT-Chile</td><td>5</td></tr>
+<tr><td>Prerrequisito</td><td>Elementos de la Matemática</td></tr>
+<tr><td>Área OCDE</td><td>Ingeniería y Tecnología</td></tr>
+<tr><td>Eje Formativo</td><td>Tecnología y Especialidad</td></tr>
+<tr><td>Carrera</td><td>T.U. en Ciencia de Datos</td></tr>
+<tr><td>Unidad académica</td><td>Departamento de Ciencias</td></tr>
+<tr><td>Sede</td><td>Viña del Mar</td></tr>
+</table>
+</div>
+<div class="horas-card">
+<div class="card-label">Horas de Dedicación</div>
+<h3 style="color:#fff;font-family:'Playfair Display',serif;">Distribución de Tiempo</h3>
+<div class="horas-list">
+<div class="hora-row"><span class="hora-label">Cátedra semanal</span><span class="hora-val">2,3</span></div>
+<div class="hora-row"><span class="hora-label">Trabajo autónomo semanal</span><span class="hora-val">4,8</span></div>
+<div class="hora-row"><span class="hora-label">Horas directas semestrales</span><span class="hora-val">41,9</span></div>
+<div class="hora-row"><span class="hora-label">Horas autónomas semestrales</span><span class="hora-val">82</span></div>
+</div>
+<div class="hora-total"><span>Total curricular: 124 hrs cronológicas</span><strong>5 SCT</strong></div>
+</div>
+</div>
+<div class="horario-card reveal">
+<div class="p-label">Horario 2026</div>
+<h3>Lunes y Viernes</h3>
+<div class="schedule-rows">
+<div class="schedule-row"><span class="schedule-day">Lunes</span><span class="schedule-time">Bloques 1–2  ·  08:15 – 09:25</span><span class="schedule-room">G202</span></div>
+<div class="schedule-row"><span class="schedule-day">Viernes</span><span class="schedule-time">Bloques 5–6  ·  11:05 – 12:15</span><span class="schedule-room">G203</span></div>
+</div>
+<p class="schedule-note">Salas confirmadas: lunes en G202 y viernes en G203.</p>
+</div>
+</section>
+<div class="section-divider"></div>
+<section id="descripcion">
+<div class="section-header reveal"><div class="section-eyebrow">Sección 2</div><h2>Descripción y Objetivos</h2></div>
+<div class="desc-card reveal">
+<div class="card-label" style="color:rgba(46,130,212,.85)">Descripción Curricular</div>
+<p>El o la estudiante aprenderá a resumir y describir las características principales de un conjunto de datos y a comprender la importancia del análisis de datos en disciplinas como administración, economía, comunicación y física. La asignatura aborda conceptos generales de muestreo, ordenación y representación gráfica de datos, medidas de tendencia central, posición y dispersión, junto con el uso de aplicaciones para el análisis de datos.</p>
+</div>
+<div class="reveal" style="margin-top:1.5rem;"><div class="card-label">Aprendizajes Previos Requeridos</div></div>
+<div class="req-card reveal">
+<ul class="req-list"><li>Resolver expresiones algebraicas y ecuaciones en una variable real.</li><li>Utilizar propiedades y proposiciones para la resolución de problemas.</li></ul>
+</div>
+<div class="reveal" style="margin-top:2rem;"><div class="card-label">Competencias del Perfil de Egreso</div></div>
+<div class="comp-grid rs">
+<div class="comp-card"><span class="comp-code">CE 1.3.1</span><p>Aplicar métodos de exploración y análisis preliminares mediante herramientas especializadas, proporcionando información de apoyo para la toma de decisiones.</p></div>
+<div class="comp-card"><span class="comp-code">CE 1.3.2</span><p>Aplicar criterios de preprocesamiento de datos mediante representaciones, considerando criterios de calidad y optimización del procesamiento.</p></div>
+<div class="comp-card"><span class="comp-code">CE 2.1.2</span><p>Procesar datos mediante herramientas de software para obtener información según requerimientos previamente establecidos.</p></div>
+<div class="comp-card"><span class="comp-code">CE 2.1.3</span><p>Aplicar diseños de visualización con herramientas especializadas para interpretar y presentar resultados.</p></div>
+<div class="comp-card"><span class="comp-code">CE 3.1.1</span><p>Identificar patrones para predecir el comportamiento de los datos mediante técnicas de minería de datos y aprendizaje automático.</p></div>
+<div class="comp-card"><span class="comp-code">CTS · Resolución de Problemas</span><p>Resolver problemas analizando y evaluando soluciones efectivas y eficientes según su impacto en la organización, las personas y el medio ambiente.</p></div>
+<div class="comp-card"><span class="comp-code">CTS · TIC</span><p>Utilizar de forma pertinente y eficiente herramientas tecnológicas y de comunicación para analizar, comprender y generar información.</p></div>
+</div>
+<div class="reveal" style="margin-top:2.5rem;"><div class="card-label">Resultados de Aprendizaje Curriculares</div><div class="section-header" style="margin-bottom:1.25rem;"><h2 style="font-size:1.5rem;">4 Resultados de Aprendizaje</h2></div></div>
+<div class="rda-grid rs">
+<div class="rda-item"><span class="rda-badge">RdA1</span><span class="rda-text">Construye tablas de frecuencia y gráficos, describiendo el comportamiento de un conjunto de datos.</span></div>
+<div class="rda-item"><span class="rda-badge">RdA2</span><span class="rda-text">Construye tablas de contingencia, analizando la relación entre dos o más variables.</span></div>
+<div class="rda-item"><span class="rda-badge">RdA3</span><span class="rda-text">Calcula medidas de tendencia central, dispersión y posición, interpretando estos indicadores en problemas de aplicación.</span></div>
+<div class="rda-item"><span class="rda-badge">RdA4</span><span class="rda-text">Explica los conceptos clave y las diferencias entre análisis predictivo y prescriptivo, comparando su impacto en la toma de decisiones.</span></div>
+</div>
+</section>
+<div class="section-divider"></div>
+<section id="contenidos">
+<div class="section-header reveal"><div class="section-eyebrow">Sección 3</div><h2>Ciclos y Subunidades Temáticas</h2><p>La planificación se organiza en tres ciclos evaluativos y seis subunidades.</p></div>
+<div class="notice-card reveal" style="margin-bottom:1.5rem;">
+<span class="notice-icon">🧭</span>
+<div><h3>Criterio de secuenciación</h3><p>El programa curricular define los resultados de aprendizaje, contenidos mínimos y evaluación. La <strong>Planificación Clase a Clase</strong> define el orden efectivo en que esos contenidos se desarrollan durante el semestre.</p></div>
+</div>
+
+<div class="unidades-wrap rs">
+<div class="unidad-card">
+<div class="unidad-num">01</div>
+<div class="unidad-info"><h3>Ciclo 1 · SU1 + SU2</h3><span class="u-weeks">Semanas 1–6</span><p><strong>Introducción, organización y visualización de datos.</strong> Historia y conceptos básicos de estadística; tipos de variables y escalas de medición; recopilación y clasificación de datos; tablas de frecuencia; gráficos de barras, circulares, histogramas, polígonos y ojivas; media, mediana y moda.</p></div>
+<div class="unidad-rdas"><span class="rda-tag">RdA1</span><span class="rda-tag">RdA3</span></div>
+</div>
+<div class="unidad-card">
+<div class="unidad-num">02</div>
+<div class="unidad-info"><h3>Ciclo 2 · SU3 + SU4</h3><span class="u-weeks">Semanas 7–11</span><p><strong>Medidas de posición, dispersión y forma.</strong> Cuartiles, deciles y percentiles; rango, varianza y desviación estándar; coeficiente de variación; asimetría y curtosis; interpretación práctica de las medidas descriptivas.</p></div>
+<div class="unidad-rdas"><span class="rda-tag">RdA3</span></div>
+</div>
+<div class="unidad-card">
+<div class="unidad-num">03</div>
+<div class="unidad-info"><h3>Ciclo 3 · SU5 + SU6</h3><span class="u-weeks">Semanas 12–16</span><p><strong>Relación entre variables, predicción y aplicaciones computacionales.</strong> Tablas de contingencia y análisis bivariado; regresión lineal y correlación; estadística predictiva y prescriptiva; aplicaciones en R o SPSS; variabilidad poblacional, esperanza matemática y varianza.</p></div>
+<div class="unidad-rdas"><span class="rda-tag">RdA2</span><span class="rda-tag">RdA3</span><span class="rda-tag">RdA4</span></div>
+</div>
+</div>
+
+<div class="section-header reveal" style="margin-top:3rem;"><div class="section-eyebrow">Metodología</div><h2>Estrategias de Enseñanza</h2></div>
+<div class="met-grid rs">
+<div class="met-card"><span class="met-icon">🧩</span><h3>Aprendizaje Basado en Problemas</h3><p>Resolución de problemas donde los datos deben organizarse, resumirse, visualizarse e interpretarse.</p></div>
+<div class="met-card"><span class="met-icon">🎲</span><h3>Simulaciones</h3><p>Exploración de variabilidad y comportamiento de datos mediante experiencias y representaciones simuladas.</p></div>
+<div class="met-card"><span class="met-icon">👥</span><h3>Metodologías de Clase Activa</h3><p>Instrucción por pares, demostraciones interactivas en clases y otras dinámicas de participación.</p></div>
+<div class="met-card"><span class="met-icon">💻</span><h3>Aplicaciones Computacionales</h3><p>Análisis exploratorio y tratamiento de datos con software estadístico, particularmente R o SPSS.</p></div>
+</div>
+</section>
+<div class="section-divider"></div>
+<section id="evaluacion">
+<div class="section-header reveal"><div class="section-eyebrow">Sección 4</div><h2>Sistema de Evaluación</h2></div>
+
+<div class="eval-layout rs">
+<div class="eval-donut-card">
+<div class="card-label">Ponderaciones Curriculares</div>
+<h3 style="color:#fff;font-family:'Playfair Display',serif;margin-bottom:0;">Plan Evaluativo</h3>
+<div class="donut-bars">
+<div class="donut-bar-row"><div class="donut-bar-meta"><span class="donut-bar-name">Certamen 1</span><span class="donut-bar-pct">25%</span></div><div class="bar-track"><div class="bar-fill" style="width:25%"></div></div></div>
+<div class="donut-bar-row"><div class="donut-bar-meta"><span class="donut-bar-name">Certamen 2</span><span class="donut-bar-pct">25%</span></div><div class="bar-track"><div class="bar-fill" style="width:25%"></div></div></div>
+<div class="donut-bar-row"><div class="donut-bar-meta"><span class="donut-bar-name">Certamen 3</span><span class="donut-bar-pct">25%</span></div><div class="bar-track"><div class="bar-fill" style="width:25%"></div></div></div>
+<div class="donut-bar-row"><div class="donut-bar-meta"><span class="donut-bar-name">Promedio de Actividades Prácticas</span><span class="donut-bar-pct">25%</span></div><div class="bar-track"><div class="bar-fill" style="width:25%"></div></div></div>
+</div>
+</div>
+<div class="formula-card">
+<div class="card-label">Calificación Final</div>
+<h3 style="font-family:'Playfair Display',serif;color:var(--navy);font-size:1.1rem;">Cálculo de la Nota Final</h3>
+<div class="formula-block"><span>NF =</span> C1×25% + C2×25% + C3×25% + AP×25%</div>
+<div class="formula-cases">
+<div class="case-row"><span class="case-badge green">NF ≥ 55</span><span class="case-text">Aprueba directamente la asignatura.</span></div>
+<div class="case-row"><span class="case-badge recup">50 ≤ NF ≤ 54</span><span class="case-text">Puede rendir un Certamen Recuperativo y recalcular: <strong>NF = NP×70% + CR×30%</strong>.</span></div>
+<div class="case-row"><span class="case-badge yellow">AP: 4 instrumentos</span><span class="case-text">El Promedio de Actividades Prácticas se compone de <strong>3 controles individuales y 1 trabajo grupal</strong>.</span></div>
+</div>
+</div>
+</div>
+
+<div class="ap-card reveal" style="margin-top:1.25rem;">
+<span class="ap-icon">📋</span>
+<div style="width:100%">
+<h4>Actividades Prácticas — Fechas estimadas 2026</h4>
+<div class="ap-grid">
+<div class="ap-item"><span>✏️</span><div><strong>Control Individual 1</strong><br/><span style="font-size:.78rem;color:var(--text-light)">Lunes 24 de agosto de 2026 · 70 minutos</span></div></div>
+<div class="ap-item"><span>✏️</span><div><strong>Control Individual 2</strong><br/><span style="font-size:.78rem;color:var(--text-light)">Lunes 5 de octubre de 2026 · 70 minutos</span></div></div>
+<div class="ap-item"><span>✏️</span><div><strong>Control Individual 3</strong><br/><span style="font-size:.78rem;color:var(--text-light)">Lunes 9 de noviembre de 2026 · 70 minutos</span></div></div>
+<div class="ap-item"><span>📂</span><div><strong>Trabajo Grupal</strong><br/><span style="font-size:.78rem;color:var(--text-light)">Entrega estimada: lunes 23 de noviembre de 2026</span></div></div>
+</div>
+</div>
+</div>
+
+
+<div class="examen-card reveal" style="margin-top:1.25rem;">
+<span class="examen-icon">🎓</span>
+<div>
+<h4>Certamen Recuperativo — Fecha exacta por confirmar</h4>
+<p>Disponible para estudiantes con nota final entre 50 y 54. Tendrá una duración de <strong>70 minutos</strong>, será <strong>presencial</strong> y se rendirá <strong>sin formulario</strong>. La fecha institucional exacta aún debe confirmarse.</p>
+</div>
+</div>
+
+<div class="section-header reveal" style="margin-top:2.5rem;"><div class="section-eyebrow">Lineamientos</div><h2>Reglas de Evaluación</h2></div>
+<div class="lin-grid rs">
+<div class="lin-card">
+<h3>📝 Certámenes y Recuperativo</h3>
+<ul class="lin-list">
+<li>Se contemplan tres certámenes, uno al cierre de cada ciclo temático.</li>
+<li>Los certámenes y el Certamen Recuperativo duran <strong>70 minutos</strong>.</li>
+<li>Modalidad <strong>presencial</strong> y rendición <strong>sin formulario</strong>.</li>
+</ul>
+</div>
+<div class="lin-card">
+<h3>📊 Actividades Prácticas</h3>
+<ul class="lin-list">
+<li>El AP se compone de <strong>3 controles individuales y 1 trabajo grupal</strong>.</li>
+<li>Cada control individual dura <strong>70 minutos</strong>, es presencial y se rinde sin formulario.</li>
+<li>El promedio de estos cuatro instrumentos constituye el 25% de la Nota Final.</li>
+</ul>
+</div>
+</div>
+<div class="notice-card reveal" style="margin-top:1rem;">
+<span class="notice-icon">📄</span>
+<div><h3>Justificación de ausencias</h3><p>Toda ausencia a una evaluación debe justificarse en un plazo máximo de <strong>2 días desde la ausencia</strong>, mediante un <strong>certificado</strong>. No se aceptarán justificaciones informales.</p></div>
+</div>
+<div class="notice-card reveal" style="margin-top:1rem;">
+<span class="notice-icon">🗓️</span>
+<div><h3>Carácter de las fechas</h3><p>Las fechas se estimaron conservando la estructura semanal de la planificación 2025 y ajustándola a clases los lunes y viernes. Deben validarse antes de publicarlas como calendario definitivo.</p></div>
+</div>
+</section>
+<div class="section-divider"></div>
+<section id="calendario">
+<div class="section-header reveal"><div class="section-eyebrow">Sección 5</div><h2>Calendario de Evaluaciones</h2><p>T.U. Ciencia de Datos · fechas estimadas para el segundo semestre de 2026.</p></div>
+
+<div class="calendar-wrap rs">
+<div class="cal-item ap-item-cal"><div class="cal-num" style="font-size:.68rem;">CI 1</div><div class="cal-info"><h4>Control Individual 1 <span class="cal-type ci">Individual</span></h4><div class="cal-date">Lunes 24 de agosto de 2026</div><div class="cal-note">SU1 + SU2 · 70 minutos · presencial · sin formulario</div></div></div>
+<div class="cal-item cert-item"><div class="cal-num">C1</div><div class="cal-info"><h4>Certamen 1 <span class="cal-type cert">Certamen</span></h4><div class="cal-date">Viernes 11 de septiembre de 2026</div><div class="cal-note">Ciclo 1 · 70 minutos · presencial · sin formulario</div></div></div>
+<div class="cal-item ap-item-cal"><div class="cal-num" style="font-size:.68rem;">CI 2</div><div class="cal-info"><h4>Control Individual 2 <span class="cal-type ci">Individual</span></h4><div class="cal-date">Lunes 5 de octubre de 2026</div><div class="cal-note">SU3 + SU4 · 70 minutos · presencial · sin formulario</div></div></div>
+<div class="cal-item cert-item"><div class="cal-num">C2</div><div class="cal-info"><h4>Certamen 2 <span class="cal-type cert">Certamen</span></h4><div class="cal-date">Viernes 23 de octubre de 2026</div><div class="cal-note">Ciclo 2 · 70 minutos · presencial · sin formulario</div></div></div>
+<div class="cal-item ap-item-cal"><div class="cal-num" style="font-size:.68rem;">CI 3</div><div class="cal-info"><h4>Control Individual 3 <span class="cal-type ci">Individual</span></h4><div class="cal-date">Lunes 9 de noviembre de 2026</div><div class="cal-note">SU5 · 70 minutos · presencial · sin formulario</div></div></div>
+<div class="cal-item expo-item"><div class="cal-num" style="font-size:.65rem;background:#2a1a00;color:#e5c98e;">TG</div><div class="cal-info"><h4>Entrega del Trabajo Grupal <span class="cal-type expo">Grupal</span></h4><div class="cal-date gold">Lunes 23 de noviembre de 2026</div><div class="cal-note">Único trabajo grupal del semestre · fecha estimada</div></div></div>
+<div class="cal-item cert-item"><div class="cal-num">C3</div><div class="cal-info"><h4>Certamen 3 <span class="cal-type cert">Certamen</span></h4><div class="cal-date">Viernes 27 de noviembre de 2026</div><div class="cal-note">Ciclo 3 · 70 minutos · presencial · sin formulario</div></div></div>
+<div class="cal-item recup-item"><div class="cal-num" style="font-size:.62rem;background:#3f5d70;color:#c1dceb;">REP.</div><div class="cal-info"><h4>Repaso General <span class="cal-type recup">Preparación</span></h4><div class="cal-date">Lunes 30 de noviembre de 2026</div><div class="cal-note">Ejercicios preparatorios para el recuperativo</div></div></div>
+<div class="cal-item global-item"><div class="cal-num" style="font-size:.6rem;background:#3a2200;color:#e5c98e;">C.R.</div><div class="cal-info"><h4>Certamen Recuperativo <span class="cal-type global">Fecha por confirmar</span></h4><div class="cal-date gold">Diciembre de 2026 · por confirmar</div><div class="cal-note">70 minutos · presencial · sin formulario</div></div></div>
+</div>
+
+
+</section>
+<div class="section-divider"></div>
+<section id="bibliografia">
+<div class="section-header reveal"><div class="section-eyebrow">Sección 6</div><h2>Bibliografía y Recursos</h2><p>Textos y plataformas de referencia para el estudio de los contenidos del curso.</p></div>
+<div class="bib-list reveal">
+<div class="bib-section-label">Bibliografía Básica</div>
+<div class="bib-item"><span class="bib-num">01</span><span>MONTGOMERY, D.; RUNGER, G. <em>“Probabilidad y Estadística Aplicadas a la Ingeniería”</em>. McGraw-Hill, 2005.</span></div>
+<div class="bib-section-label">Bibliografía Recomendada</div>
+<div class="bib-item"><span class="bib-num">02</span><span>POSADA, G. <em>“Elementos básicos de estadística descriptiva”</em>. Editorial Luis Amigó, 2016.</span></div>
+<div class="bib-section-label">Recursos Virtuales</div>
+<div class="bib-item"><span class="bib-num">03</span><span>Plataforma Educativa Virtual <strong>AULA-USM</strong>.</span></div>
+<div class="bib-item"><span class="bib-num">04</span><span><strong>Software estadístico de especialidad</strong>, con tratamiento de datos mediante R o SPSS.</span></div>
+</div>
+</section>
+<div class="section-divider"></div>
+<section id="aula">
+<div class="section-header reveal"><div class="section-eyebrow">Sección 7</div><h2>Plataforma AULA</h2><p>El curso en AULA incluirá los siguientes recursos y secciones:</p></div>
+<div class="aula-grid rs">
+<div class="aula-item"><span>📄</span> Descripción del curso</div>
+<div class="aula-item"><span>📁</span> Programa de estudio</div>
+<div class="aula-item"><span>⚖️</span> Sistema de evaluación y reglas</div>
+<div class="aula-item"><span>📚</span> Material de clases y taller</div>
+<div class="aula-item"><span>✅</span> Pautas de corrección</div>
+<div class="aula-item"><span>📢</span> Noticias y avisos generales</div>
+<div class="aula-item"><span>💯</span> Avances y calificaciones</div>
+<div class="aula-item"><span>💻</span> Recursos y guías para R o SPSS</div>
+</div>
+<div class="notice-card reveal" style="margin-top:1.5rem;">
+<span class="notice-icon">📡</span>
+<div><h3>Canales Oficiales de Comunicación</h3><p>Los canales oficiales de la asignatura son: <strong>Plataforma AULA</strong>, <strong>Microsoft Teams</strong> y <strong>correo institucional (@usm.cl)</strong>. Toda comunicación oficial se realizará exclusivamente por estos medios.</p></div>
+</div>
+</section>
+<div class="section-divider"></div>
+<section id="contacto">
+<div class="section-header reveal"><div class="section-eyebrow">Sección 8</div><h2>Contacto y Recomendaciones</h2></div>
+<div class="contact-layout rs">
+<div class="contact-card">
+<div class="card-label">Profesor de la Asignatura</div>
+<h3 style="color:#fff;font-family:'Playfair Display',serif;font-size:1.6rem;margin-bottom:.25rem;">Víctor Vallejo Palacios</h3>
+<p style="color:rgba(255,255,255,.4);font-size:.8rem;margin-bottom:1rem;">Docente · Departamento de Ciencias · Sede Viña del Mar</p>
+<div class="contact-detail">
+<div class="contact-row"><span class="c-icon">✉️</span><span class="c-val"><a href="mailto:victor.vallejo@usm.cl">victor.vallejo@usm.cl</a></span></div>
+<div class="contact-row"><span class="c-icon">🏢</span><span class="c-val">Sala de Profesores Part-Time y Honorarios, Edificio C</span></div>
+<div class="contact-row"><span class="c-icon">🕐</span><span class="c-val">Horario de atención 2026 por confirmar en AULA</span></div>
+</div>
+</div>
+<div class="recom-card">
+<div class="card-label">Recomendaciones para el Curso</div>
+<div class="recom-list">
+<div class="recom-item"><span class="recom-icon">📌</span><div><h4>Trabajar con datos reales</h4><p>Trae preguntas concretas y aprende a responderlas mediante tablas, gráficos y medidas descriptivas.</p></div></div>
+<div class="recom-item"><span class="recom-icon">🧮</span><div><h4>Interpretar antes de calcular</h4><p>Una medida estadística solo tiene valor cuando se entiende qué dice sobre el fenómeno estudiado.</p></div></div>
+<div class="recom-item"><span class="recom-icon">💻</span><div><h4>Usar software desde el inicio</h4><p>La práctica constante con planillas o código reduce errores mecánicos y mejora la comunicación de resultados.</p></div></div>
+<div class="recom-item"><span class="recom-icon">📣</span><div><h4>Comunicar con precisión</h4><p>Evita conclusiones vagas: indica variable, muestra, medida usada y lectura estadística.</p></div></div>
+</div>
+</div>
+</div>
+</section>
+</main>
+<footer>
+<div class="f-brand">Estadística Descriptiva</div>
+<div class="f-sub">EST-001 A · UTFSM Viña del Mar · 2026</div>
+<div class="f-links">
+<a href="#identificacion">Identificación</a><a href="#descripcion">Descripción</a><a href="#contenidos">Contenidos</a><a href="#evaluacion">Evaluación</a><a href="#calendario">Calendario</a><a href="#bibliografia">Bibliografía</a><a href="#contacto">Contacto</a>
+</div>
+</footer>
+<script>
+window.addEventListener('scroll',function(){var doc=document.documentElement;var pct=(doc.scrollTop/(doc.scrollHeight-doc.clientHeight))*100;document.getElementById('progress-bar').style.width=pct+'%';});
+var obs=new IntersectionObserver(function(entries){entries.forEach(function(e){if(e.isIntersecting){e.target.classList.add('visible');obs.unobserve(e.target);}});},{threshold:.06,rootMargin:'0px 0px -30px 0px'});
+document.querySelectorAll('.reveal,.rs').forEach(function(el){obs.observe(el);});
+var bObs=new IntersectionObserver(function(entries){entries.forEach(function(e){if(e.isIntersecting){e.target.querySelectorAll('.bar-fill').forEach(function(b){var w=b.style.width;b.style.width='0%';setTimeout(function(){b.style.width=w;},200);});bObs.unobserve(e.target);}});},{threshold:.3});
+document.querySelectorAll('.eval-donut-card').forEach(function(el){bObs.observe(el);});
+</script>
+</body>
+</html>
