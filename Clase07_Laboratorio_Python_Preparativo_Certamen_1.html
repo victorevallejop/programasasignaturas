@@ -1,0 +1,1189 @@
+<!DOCTYPE html>
+
+<html lang="es"><head><meta charset="utf-8"/><meta content="width=device-width,initial-scale=1" name="viewport"/><title>Laboratorio Python · Estadística Descriptiva</title><style>
+:root{--navy:#173A5E;--navy2:#0D273F;--blue:#2D6393;--teal:#2C8791;--amber:#D18A18;--red:#B54A4A;--paper:#F4F6F8;--white:#fff;--text:#22303A;--muted:#667682;--line:#D6DEE4;--soft-blue:#EDF4FA;--soft-teal:#ECF7F7;--soft-amber:#FFF6E8;--soft-red:#FAEEEE;--shadow:0 10px 28px rgba(23,58,94,.10);--body:Calibri,"Segoe UI",Arial,sans-serif;--title:"Calibri Light",Calibri,"Segoe UI",Arial,sans-serif;--mono:"Cascadia Mono",Consolas,"Courier New",monospace}
+*{box-sizing:border-box}html,body{width:100%;height:100%;margin:0;overflow:hidden;background:#dfe5e9;color:var(--text);font-family:var(--body)}button{font:inherit}.viewport{position:relative;width:100vw;height:100vh;overflow:hidden}.stage{position:absolute;width:1600px;height:900px;transform-origin:0 0;background:var(--paper);box-shadow:0 22px 70px rgba(12,34,55,.25)}
+.slide{position:absolute;inset:0;padding:34px 54px 36px;background:var(--paper);display:grid;grid-template-rows:95px 1fr 28px;gap:16px;opacity:0;transform:translateX(22px) scale(.995);pointer-events:none;transition:opacity .42s ease,transform .42s cubic-bezier(.2,.7,.2,1)}.slide.active{opacity:1;transform:none;pointer-events:auto;z-index:3}.slide.exit-left{opacity:0;transform:translateX(-24px) scale(.995);z-index:2}.slide.exit-right{opacity:0;transform:translateX(24px) scale(.995);z-index:2}.stripe{position:absolute;top:0;left:0;right:0;height:8px;background:var(--navy)}.stripe i,.stripe b,.stripe em{display:block;float:left;height:8px}.stripe i{width:14px;background:var(--red)}.stripe b{width:118px;background:var(--amber)}.stripe em{width:74px;background:var(--teal)}
+.head{background:var(--navy);border-radius:10px;color:#fff;padding:14px 22px 13px 24px;display:flex;align-items:center;justify-content:space-between;border-left:6px solid var(--amber);box-shadow:0 5px 13px rgba(12,34,55,.14)}.kicker{font-size:13px;font-weight:700;letter-spacing:.16em;color:#cfe0ee;margin-bottom:3px}.head h2{font-family:var(--title);font-size:36px;line-height:1.05;font-weight:600;margin:0}.head p{font-family:var(--title);font-size:17px;font-style:italic;margin:5px 0 0;color:#d7e2eb}.num{font-family:var(--title);font-size:18px;color:#b8cad8}.body{min-height:0;overflow:hidden;display:flex;flex-direction:column;justify-content:center}.slide footer{margin:0 -54px -36px;background:var(--navy);color:#d9e6ef;border-bottom:8px solid var(--amber);height:36px;padding:7px 18px 0;display:grid;grid-template-columns:1fr auto 32px;gap:18px;align-items:start;font-size:11px}.slide footer span:last-child{text-align:right}
+/* Cover */.cover{padding:0;display:block;background:var(--navy2)}.cover-split{display:grid;grid-template-columns:52% 48%;height:892px}.cover-left{padding:82px 68px 56px;background:linear-gradient(135deg,#0c2237 0%,#173A5E 70%,#1c476e 100%);color:#fff;border-left:11px solid var(--red);display:flex;flex-direction:column;justify-content:center}.cover-kicker{display:inline-block;align-self:flex-start;background:#2D6393;padding:11px 18px;border-radius:7px;font-size:14px;font-weight:700;letter-spacing:.13em;margin-bottom:46px}.cover h1{font-family:var(--title);font-size:74px;line-height:.97;margin:0;font-weight:600;letter-spacing:-.02em}.cover h1 span{color:#fff}.cover-rule{width:182px;height:6px;background:var(--amber);margin:28px 0 25px}.cover-lead{font-family:var(--title);font-size:27px;line-height:1.25;color:#dce8f0;max-width:690px;margin:0}.cover-meta{margin-top:26px;color:#afc3d0;font-size:16px}.cover-pills{display:flex;gap:9px;flex-wrap:wrap;margin-top:48px}.cover-pills span{border:1px solid rgba(255,255,255,.34);background:rgba(45,99,147,.55);border-radius:7px;padding:9px 16px;font-size:14px}.cover-right{background:radial-gradient(circle at 70% 20%,#45637a 0,#263e52 28%,#10283f 68%);padding:76px 56px;display:flex;align-items:center}.cover-dash{width:100%;background:rgba(255,255,255,.09);border:1px solid rgba(255,255,255,.17);border-radius:16px;padding:28px;box-shadow:0 28px 70px rgba(0,0,0,.28)}.dash-title{color:#c5d6e2;font-size:14px;letter-spacing:.12em;font-weight:700}.dash-metrics{display:grid;grid-template-columns:repeat(3,1fr);gap:12px;margin:24px 0}.dash-metrics div{background:#fff;border-radius:10px;padding:18px}.dash-metrics b{display:block;color:var(--navy);font-family:var(--title);font-size:30px}.dash-metrics span{color:#677781;font-size:13px}.dash-chart{height:250px;background:rgba(255,255,255,.96);border-radius:10px;padding:24px 22px 18px;display:flex;align-items:flex-end;gap:15px}.dash-chart i{flex:1;background:linear-gradient(#2D6393,#173A5E);border-radius:4px 4px 0 0}.dash-chart i:nth-child(3n){background:var(--teal)}.dash-chart i:nth-child(4n){background:var(--amber)}.dash-flow{display:flex;align-items:center;justify-content:space-between;color:#e6eef4;margin-top:20px;font-size:15px}.dash-flow span{padding:8px 12px;border:1px solid rgba(255,255,255,.24);border-radius:7px}.cover-bottom{position:absolute;left:0;right:0;bottom:0;height:8px;background:var(--amber)}
+/* Generic */.map-grid{display:grid;grid-template-columns:repeat(5,1fr);gap:14px}.map-card{height:445px;background:#fff;border:1px solid var(--line);border-radius:11px;box-shadow:var(--shadow);text-align:center;overflow:hidden}.map-card>b{display:block;color:#fff;padding:13px;font-size:18px}.map-card.blue>b{background:var(--blue)}.map-card.teal>b{background:var(--teal)}.map-card.amber>b{background:var(--amber)}.map-card h3{font-family:var(--title);font-size:24px;color:var(--navy);margin:42px 18px 28px}.map-card p{font-family:var(--title);font-size:18px;font-style:italic;line-height:1.38;color:#5e6f7b;padding:0 20px}.callout{border:1px solid #e1b565;background:var(--soft-amber);border-radius:10px;padding:14px 18px;font-size:18px;margin-top:15px}.callout.small{font-size:16px;padding:11px 15px}.two-col{display:grid;grid-template-columns:1.05fr .95fr;gap:22px;align-items:stretch}.panel{background:#fff;border:1px solid var(--line);border-radius:11px;padding:26px 28px;box-shadow:var(--shadow)}.panel.strong{border-left:7px solid var(--amber)}.eyebrow,.section-label{font-size:13px;font-weight:700;letter-spacing:.15em;color:var(--amber);margin-bottom:9px}.panel h3,.exercise-left h3{font-family:var(--title);font-size:34px;line-height:1.08;color:var(--navy);margin:0 0 17px}.panel p,.exercise-left>p{font-size:18px;line-height:1.46;margin:0;color:#3e5360}.decision{margin-top:25px;background:var(--soft-blue);border-left:5px solid var(--blue);padding:16px 18px;font-size:17px;line-height:1.4}.stack{display:grid;grid-template-rows:repeat(4,1fr);gap:10px}.mini-step{background:#fff;border:1px solid var(--line);border-radius:10px;display:grid;grid-template-columns:50px 1fr;grid-template-rows:auto auto;padding:13px 16px;box-shadow:0 5px 15px rgba(23,58,94,.07)}.mini-step b{grid-row:1/3;width:38px;height:38px;border-radius:50%;display:grid;place-items:center;color:#fff;font-size:18px}.mini-step.blue b{background:var(--blue)}.mini-step.teal b{background:var(--teal)}.mini-step.amber b{background:var(--amber)}.mini-step.red b{background:var(--red)}.mini-step span{font-family:var(--title);font-size:21px;color:var(--navy);font-weight:600}.mini-step small{font-size:14px;color:#657681}.process{display:grid;grid-template-columns:1fr 35px 1fr 35px 1fr 35px 1fr 35px 1fr;gap:8px;align-items:center}.process>div{height:260px;background:#fff;border:1px solid var(--line);border-radius:10px;padding:25px 20px;text-align:center;box-shadow:var(--shadow)}.process>div b{font-family:var(--title);font-size:38px;color:var(--blue)}.process h3{font-family:var(--title);font-size:24px;color:var(--navy);margin:18px 0 13px}.process p{font-size:16px;color:#5f707b}.process i{font-size:30px;color:#87949c;text-align:center}.cert-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:14px;margin-top:20px}.cert-grid div{background:#fff;border:1px solid var(--line);border-radius:9px;padding:16px 18px;border-top:5px solid var(--blue)}.cert-grid div:nth-child(2){border-top-color:var(--teal)}.cert-grid div:nth-child(3){border-top-color:var(--amber)}.cert-grid span{display:block;color:#687883;font-size:13px;text-transform:uppercase;letter-spacing:.08em;margin-bottom:7px}.cert-grid b{font-size:16px;color:var(--navy)}
+.steps{font-size:18px;line-height:1.5;padding-left:25px}.steps li{margin:11px 0}.steps code{font-family:var(--mono);background:#eef2f5;padding:3px 6px;border-radius:4px}.syntax{display:grid;grid-template-columns:150px 1fr;gap:8px 12px;margin-top:24px;align-items:center}.syntax code{font-family:var(--mono);font-size:16px;background:#eef3f7;border:1px solid #d9e1e6;border-radius:5px;padding:8px}.syntax span{color:#5d6e79;font-size:16px}
+/* Colab simulator */.colab{height:500px;background:#f7f9fc;border:1px solid #dce1e7;border-radius:12px;box-shadow:0 9px 22px rgba(20,40,60,.11);overflow:hidden;color:#202124;font-family:Arial,sans-serif}.colab.tall{height:540px}.colab-top{height:45px;background:#fff;display:flex;align-items:center;gap:11px;padding:0 14px;border-bottom:1px solid #eceff3;font-size:15px}.colab-logo{position:relative;width:36px;color:#f9ab00;font-weight:700}.colab-logo b{color:#f9ab00;font-size:16px}.ring{position:absolute;left:-4px;top:-4px;width:21px;height:21px;border:6px solid #f9ab00;border-right-color:#e8710a;border-radius:50%}.drive{color:#34a853}.star{font-size:22px;color:#5f6368}.saved{color:#5f6368;font-size:13px}.share{margin-left:auto;border:0;background:#c2e7ff;color:#174ea6;border-radius:22px;padding:9px 17px;font-weight:600}.avatar{width:30px;height:30px;border-radius:50%;background:#2D6393;color:#fff;display:grid;place-items:center}.colab-menu,.colab-toolbar{height:32px;background:#fff;display:flex;align-items:center;gap:19px;padding:0 64px;font-size:13px}.colab-menu{border-bottom:1px solid #eceff3}.colab-toolbar{height:42px;background:#edf2f8;padding-left:12px;gap:24px}.cmd{background:#fff;border-radius:17px;padding:6px 12px}.connect{margin-left:auto;margin-right:18px}.colab-work{height:calc(100% - 119px);display:grid;grid-template-columns:48px 1fr}.rail{background:#f4f7fb;display:flex;flex-direction:column;align-items:center;gap:24px;padding-top:18px;font-size:19px}.nb-area{padding:17px 23px;overflow:auto}.cell{position:relative;background:#fff;border:1px solid #bcc4cc;border-radius:8px;min-height:105px;padding:16px 70px 16px 44px;box-shadow:0 1px 2px rgba(0,0,0,.03)}.bracket{position:absolute;left:-34px;top:18px;color:#5f6368;font-family:var(--mono);font-size:12px}.run{position:absolute;left:8px;top:17px;width:28px;height:28px;border-radius:50%;border:0;background:#303134;color:#fff;cursor:pointer}.cell pre{font-family:var(--mono);font-size:14px;line-height:1.48;margin:0;white-space:pre-wrap;outline:none;color:#202124}.copy{position:absolute;right:9px;top:9px;border:1px solid #d4d8de;background:#fff;border-radius:5px;padding:5px 8px;font-size:11px;color:#5f6368;cursor:pointer}.cell-output{display:none;margin:8px 0 0 11px;border-left:3px solid #e1e5ea;background:#fff;padding:10px 13px}.cell-output.show{display:block;animation:fadeup .28s ease}.cell-output pre{font-family:var(--mono);font-size:13px;line-height:1.42;margin:0;white-space:pre-wrap;color:#25323a}.out-label{font-size:11px;text-transform:uppercase;letter-spacing:.08em;color:#7a878f;margin-bottom:6px}.colab-note{margin:10px 0 0 11px;background:#fff8e6;border:1px solid #efcf91;border-radius:6px;padding:8px 11px;font-size:12px;color:#5a4a28}@keyframes fadeup{from{opacity:0;transform:translateY(-5px)}to{opacity:1;transform:none}}
+/* Cases */.case-hero{height:530px;display:grid;grid-template-columns:1.2fr .8fr;border-radius:14px;overflow:hidden;box-shadow:0 16px 38px rgba(23,58,94,.14);color:#fff}.case-copy{padding:46px 50px;background:linear-gradient(135deg,#173A5E,#0D273F);display:flex;flex-direction:column;justify-content:center}.case-hero.retail .case-copy{border-left:10px solid var(--blue)}.case-hero.flights .case-copy{border-left:10px solid var(--teal)}.case-hero.diamonds .case-copy{border-left:10px solid var(--amber)}.case-tag{font-size:14px;letter-spacing:.13em;color:#c5d8e6;font-weight:700;margin-bottom:19px}.case-copy h3{font-family:var(--title);font-size:43px;line-height:1.05;margin:0 0 20px}.case-copy p{font-size:19px;line-height:1.45;color:#dbe6ee;margin:0}.brief{margin-top:25px;background:rgba(255,255,255,.09);border:1px solid rgba(255,255,255,.18);border-radius:8px;padding:14px 16px;font-size:16px;line-height:1.4}.case-metrics{padding:35px 30px;background:#e9eef2;display:grid;grid-template-columns:1fr 1fr;gap:14px;align-content:center}.metric{background:#fff;border:1px solid var(--line);border-top:6px solid var(--blue);border-radius:10px;padding:18px;min-height:116px;color:var(--navy);box-shadow:0 7px 17px rgba(23,58,94,.08)}.metric.teal{border-top-color:var(--teal)}.metric.amber{border-top-color:var(--amber)}.metric b{font-family:var(--title);font-size:31px;display:block}.metric span{font-size:14px;color:#687883}.sourcebox{grid-column:1/-1;background:var(--navy);color:#d8e5ed;border-radius:8px;padding:13px 15px;font-size:13px;text-align:center;letter-spacing:.04em}
+.exercise-layout{display:grid;grid-template-columns:minmax(0,38fr) minmax(0,62fr);gap:20px;align-items:stretch;height:100%}.exercise-left,.exercise-right{min-height:0}.exercise-left{background:#fff;border:1px solid var(--line);border-left:6px solid var(--blue);border-radius:11px;padding:22px 24px;box-shadow:var(--shadow);overflow:auto}.qcard{display:grid;grid-template-columns:42px 1fr;gap:10px;border:1px solid var(--line);border-radius:8px;padding:11px 13px;margin-top:12px;background:#fff}.qnum{width:32px;height:32px;border-radius:50%;display:grid;place-items:center;color:#fff;background:var(--blue);font-weight:700}.qcard.teal .qnum{background:var(--teal)}.qcard.amber .qnum{background:var(--amber)}.qcard h4{font-size:17px;color:var(--navy);margin:0 0 3px}.qcard p{font-size:14px;line-height:1.35;margin:0;color:#62737e}.question-banner{display:flex;align-items:center;gap:18px;background:#fff;border:1px solid var(--line);border-radius:9px;padding:12px 18px;margin-bottom:12px;border-left:6px solid var(--amber)}.question-banner b{font-size:13px;letter-spacing:.12em;color:var(--amber)}.question-banner span{font-family:var(--title);font-size:22px;color:var(--navy)}.exam-box{background:#f9fbfc;border:1px solid #d9e1e6;border-radius:8px;padding:14px 16px;margin-bottom:12px}.exam-box p{font-size:16px;line-height:1.38;margin:7px 0}.exam-box.compact p{font-size:15px}.reveal-btn{border:0;background:var(--navy);color:#fff;border-radius:7px;padding:9px 13px;font-size:13px;cursor:pointer}.reveal{display:none;background:var(--soft-teal);border:1px solid #bddede;border-radius:8px;padding:11px 13px;margin-top:10px;font-size:14px;line-height:1.35}.reveal.show{display:block;animation:fadeup .3s ease}.reveal p{margin:5px 0}.reveal.two{display:none;grid-template-columns:1fr 1fr;gap:5px 12px}.reveal.two.show{display:grid}.exam-table{display:grid;gap:9px}.exam-table div{background:#f8fafb;border:1px solid var(--line);border-radius:7px;padding:10px 12px}.exam-table b{display:block;color:var(--navy);font-size:17px}.exam-table span{font-size:13px;color:#687883}.risk-grid,.formula-row,.central-grid,.grouped-grid{display:grid;grid-template-columns:1fr 1fr;gap:9px;margin-bottom:12px}.risk-grid div,.formula-row div,.central-grid div,.grouped-grid div{background:#f8fafb;border:1px solid var(--line);border-radius:8px;padding:10px 11px;text-align:center}.risk-grid b,.formula-row b,.central-grid b,.grouped-grid b{display:block;font-family:var(--title);font-size:22px;color:var(--navy)}.risk-grid span,.formula-row span,.central-grid span,.grouped-grid span{font-size:12px;color:#687883}.mini-table{display:grid;grid-template-columns:1.5fr repeat(5,.7fr);border:1px solid var(--line);border-radius:7px;overflow:hidden;margin-bottom:12px}.mini-table div{padding:8px;border-right:1px solid var(--line);border-bottom:1px solid var(--line);font-size:12px}.mini-table .th{background:var(--navy);color:#fff;font-weight:700}.hist-mock{height:170px;background:#fff;border:1px solid var(--line);border-radius:8px;position:relative;padding:15px 18px 10px}.bars{height:110px;display:flex;align-items:flex-end;gap:2px}.bars i{flex:1;background:var(--blue)}.bars i:nth-child(n+3){background:var(--teal)}.bars i:nth-child(n+7){background:var(--amber)}.hist-mock svg{position:absolute;left:18px;right:18px;bottom:8px;width:calc(100% - 36px);height:120px}.kpi-card{background:var(--navy);color:#fff;border-radius:9px;padding:15px 17px;margin-bottom:12px}.kpi-card span,.kpi-card small{display:block;color:#c9d9e5}.kpi-card b{font-family:var(--title);font-size:23px;display:block;margin:5px 0}.decision-line{margin-top:12px;padding:11px;text-align:center;background:var(--soft-amber);border:1px solid #e7c47e;border-radius:7px;color:var(--navy)}
+.checkpoint{height:485px;border-radius:14px;overflow:hidden;display:grid;grid-template-columns:44% 56%;box-shadow:var(--shadow);border:1px solid var(--line)}.check-left{background:var(--navy);color:#fff;padding:42px 46px;display:flex;flex-direction:column;justify-content:center}.check-icon{width:58px;height:58px;border-radius:50%;background:var(--blue);display:grid;place-items:center;font-size:32px;margin-bottom:20px}.checkpoint.teal .check-icon{background:var(--teal)}.checkpoint.amber .check-icon{background:var(--amber)}.check-left h3{font-family:var(--title);font-size:37px;margin:0 0 14px}.check-left p{font-size:18px;line-height:1.45;color:#d8e4ec;margin:0}.check-right{background:#fff;padding:40px;display:grid;grid-template-rows:repeat(3,1fr);gap:14px}.check-right div{border:1px solid var(--line);border-left:6px solid var(--blue);border-radius:8px;padding:16px 18px;display:flex;flex-direction:column;justify-content:center}.check-right div:nth-child(2){border-left-color:var(--teal)}.check-right div:nth-child(3){border-left-color:var(--amber)}.check-right b{font-family:var(--title);font-size:22px;color:var(--navy)}.check-right span{margin-top:5px;color:#687883;font-size:15px}
+.synthesis{display:grid;grid-template-rows:230px 1fr;gap:22px}.synth-flow{display:grid;grid-template-columns:1fr 50px 1fr 50px 1fr;align-items:center}.synth-flow div{height:200px;background:#fff;border:1px solid var(--line);border-radius:11px;padding:25px;text-align:center;box-shadow:var(--shadow)}.synth-flow b{display:block;font-family:var(--title);font-size:36px;color:var(--navy)}.synth-flow span{display:block;font-size:20px;color:var(--blue);font-weight:700;margin:8px}.synth-flow small{font-size:15px;color:#687883}.synth-flow i{text-align:center;font-size:34px;color:#89969e}.synth-bottom{display:grid;grid-template-columns:1fr 1fr;gap:20px}.synth-bottom .panel p{font-size:19px;line-height:1.45}.checklist-layout{display:grid;grid-template-columns:1fr .9fr;gap:22px}.checklist{background:#fff;border:1px solid var(--line);border-radius:11px;padding:24px 30px;box-shadow:var(--shadow)}.checklist h3{font-family:var(--title);font-size:30px;color:var(--navy);margin:0 0 14px}.checklist label{display:block;border-bottom:1px solid #e5eaee;padding:9px 4px;font-size:17px}.checklist input{width:18px;height:18px;margin-right:10px;vertical-align:-3px}.final-card{background:var(--navy);color:#fff;border-radius:13px;padding:38px;box-shadow:0 14px 34px rgba(23,58,94,.18);display:flex;flex-direction:column;justify-content:center}.final-kicker{font-size:13px;letter-spacing:.14em;color:#c9d9e5;font-weight:700}.final-card h3{font-family:var(--title);font-size:38px;line-height:1.06;margin:16px 0 20px}.final-card p{font-size:18px;line-height:1.45;color:#dbe6ed}.final-badge{margin-top:26px;background:var(--amber);color:#fff;align-self:flex-start;padding:9px 13px;border-radius:6px;font-weight:700}.source-note{font-size:11px;color:#70818c;margin-top:7px}
+/* controls */.dock{position:absolute;right:18px;bottom:18px;z-index:20;background:rgba(12,34,55,.92);border-radius:24px;padding:5px;display:flex;gap:4px;box-shadow:0 6px 20px rgba(0,0,0,.22)}.dock button{width:35px;height:35px;border:0;border-radius:50%;background:transparent;color:#fff;cursor:pointer;font-size:16px}.dock button:hover{background:rgba(255,255,255,.12)}.progress{position:absolute;left:0;bottom:0;height:4px;background:var(--teal);z-index:22;transition:width .25s ease}.menu{position:absolute;right:20px;top:20px;z-index:25;width:310px;max-height:780px;overflow:auto;background:#fff;border:1px solid var(--line);border-radius:10px;box-shadow:0 16px 42px rgba(12,34,55,.22);padding:10px;display:none}.menu.show{display:block}.menu button{display:block;width:100%;text-align:left;border:0;background:#fff;padding:9px 11px;border-radius:6px;color:var(--navy);cursor:pointer}.menu button:hover{background:#eef4f8}.menu button small{color:#788892;margin-right:8px}
+
+/* Ajuste v9: igualar altura de simuladores Colab con el bloque de trabajo */
+.body:has(> .question-banner){
+  display:grid;
+  grid-template-rows:auto minmax(0,1fr);
+  gap:12px;
+  justify-content:stretch;
+}
+.body:has(> .question-banner) .question-banner{margin-bottom:0}
+.body:has(> .question-banner) .exercise-layout{height:auto;min-height:0}
+.body:has(> .exercise-layout){justify-content:stretch}
+.two-col{height:100%;min-height:0}
+.two-col>div,.two-col>.panel{min-height:0}
+.two-col>div:has(.colab){display:flex;min-height:0}
+.two-col>div:has(.colab)>.colab{height:auto;min-height:0;flex:1}
+.exercise-layout{min-height:0}
+.exercise-left,.exercise-right{height:100%;min-height:0}
+.exercise-right{display:flex;align-items:stretch}
+.exercise-right>.colab,.exercise-layout .colab{height:auto!important;min-height:0;flex:1}
+.exercise-layout .colab-work{min-height:0}
+.exercise-layout .nb-area{min-height:0}
+
+
+/* v10: tablas, respuestas y construcción en vivo */
+.slide .body{justify-content:center}.colab.fill{height:100%;min-height:0}.freq-table{width:100%;border-collapse:separate;border-spacing:0;border:1px solid var(--line);border-radius:9px;overflow:hidden;background:#fff;box-shadow:0 7px 18px rgba(23,58,94,.06);font-size:13px}.freq-table th{background:var(--navy);color:#fff;font-size:12px;letter-spacing:.04em;text-align:center;padding:7px 6px;border-right:1px solid rgba(255,255,255,.18)}.freq-table td{padding:6px 7px;border-right:1px solid var(--line);border-bottom:1px solid var(--line);text-align:right;color:#263844}.freq-table td:first-child{text-align:left;font-family:var(--mono);color:var(--navy);font-size:12px}.freq-table tr:nth-child(even) td{background:#f8fafc}.freq-table tr.modal td{background:var(--soft-amber);font-weight:700}.freq-table.compact{font-size:11px}.freq-table.compact th{font-size:10px;padding:5px 4px}.freq-table.compact td{font-size:10.5px;padding:4px 5px}.freq-panel{background:#fff;border:1px solid var(--line);border-left:6px solid var(--blue);border-radius:11px;padding:18px 20px;box-shadow:var(--shadow);height:100%;display:grid;grid-template-rows:auto 1fr auto;gap:10px}.freq-panel h3{font-family:var(--title);font-size:27px;margin:0;color:var(--navy)}.freq-panel p{font-size:15px;line-height:1.35;margin:0;color:#405563}.freq-controls{display:flex;gap:8px;flex-wrap:wrap;margin-top:8px}.step-btn{border:1px solid #bfd0dc;background:#fff;color:var(--navy);border-radius:7px;padding:7px 10px;font-size:12px;font-weight:700;cursor:pointer}.step-btn:hover{background:var(--soft-blue)}.build-list{display:grid;gap:7px}.build-step{display:grid;grid-template-columns:38px 1fr;gap:10px;border:1px solid var(--line);border-radius:8px;padding:9px 10px;background:#fbfcfd;opacity:.52;transform:translateY(3px);transition:opacity .28s ease,transform .28s ease,box-shadow .28s ease}.build-step.on{opacity:1;transform:none;box-shadow:0 6px 14px rgba(23,58,94,.08);background:#fff}.build-step b{width:28px;height:28px;border-radius:50%;display:grid;place-items:center;background:var(--blue);color:#fff}.build-step:nth-child(2) b{background:var(--teal)}.build-step:nth-child(3) b{background:var(--amber)}.build-step:nth-child(4) b{background:var(--red)}.build-step strong{display:block;font-size:14px;color:var(--navy)}.build-step span{display:block;font-size:12.5px;color:#60717d;line-height:1.25}.answer-box{margin-top:10px;background:var(--soft-teal);border:1px solid #b8dbd9;border-radius:8px;padding:10px 12px;font-size:13.2px;line-height:1.32;color:#263e45}.answer-box b{color:var(--navy)}.answer-box.hidden{display:none}.answer-box.show{display:block;animation:fadeup .25s ease}.wide-table-layout{display:grid;grid-template-columns:minmax(0,1.45fr) minmax(0,.55fr);gap:18px;align-items:stretch;height:100%}.table-side{background:#fff;border:1px solid var(--line);border-left:6px solid var(--amber);border-radius:11px;padding:20px 20px;box-shadow:var(--shadow);display:flex;flex-direction:column;gap:12px}.table-side h3{font-family:var(--title);font-size:28px;line-height:1.05;color:var(--navy);margin:0}.table-side p{font-size:15px;line-height:1.35;color:#405563;margin:0}.formula-card{background:var(--soft-blue);border:1px solid #cbdce9;border-radius:8px;padding:11px 12px;color:var(--navy);font-size:14px}.formula-card code{font-family:var(--mono);background:#fff;padding:2px 4px;border-radius:3px}.chart-layout{display:grid;grid-template-columns:.9fr 1.1fr;gap:18px;height:100%;align-items:stretch}.chart-card{background:#fff;border:1px solid var(--line);border-radius:11px;box-shadow:var(--shadow);padding:18px 20px;display:flex;flex-direction:column}.chart-card h3{font-family:var(--title);font-size:27px;margin:0 0 9px;color:var(--navy)}.axis-chart{flex:1;position:relative;border-left:2px solid #9badba;border-bottom:2px solid #9badba;margin:14px 6px 10px 28px;min-height:270px}.axis-chart .bars{position:absolute;left:0;right:0;bottom:0;height:100%;display:flex;align-items:flex-end;gap:0}.axis-chart .bars i{flex:1;background:rgba(45,99,147,.62);border-right:1px solid #fff}.axis-chart svg{position:absolute;inset:0;width:100%;height:100%;overflow:visible}.axis-label{font-size:12px;color:#6a7c87;text-align:center}.chart-legend{display:flex;gap:14px;font-size:12px;color:#5c6d78}.chart-legend i{display:inline-block;width:12px;height:12px;margin-right:4px;background:rgba(45,99,147,.62);vertical-align:-2px}.chart-legend b{display:inline-block;width:12px;height:3px;margin-right:4px;background:var(--red);vertical-align:middle}.kpi-result{background:var(--navy);color:#fff;border-radius:9px;padding:15px;margin-top:10px}.kpi-result b{font-family:var(--title);font-size:28px}.kpi-result span{display:block;color:#d6e5ef;font-size:13px}.out-table{font-family:var(--mono);font-size:10.7px;line-height:1.2;white-space:pre;background:#fff;border:1px solid #dbe3e9;border-radius:6px;padding:8px;color:#1c2d39;overflow:auto;max-height:205px}.colab .cell-output.show{display:block}.colab .cell-output.preopen{display:block}
+
+.cell-output.preopen pre{font-size:10.5px;line-height:1.22;white-space:pre;overflow:auto;max-height:190px}.cell-output.preopen{max-height:225px;overflow:hidden}.slide code{font-family:var(--mono)}
+
+/* v12: ancho constante y construcción progresiva de tabla */
+.body>*{width:100%;max-width:100%}.two-col,.exercise-layout,.chart-layout,.wide-table-layout,.synthesis,.checklist-layout{width:100%;height:100%}.slide .body{align-items:stretch}.exercise-layout,.wide-table-layout{grid-template-columns:minmax(0,0.88fr) minmax(0,1.12fr)}
+.live-table-layout{height:100%;display:grid;grid-template-columns:360px minmax(0,1fr);gap:16px;align-items:stretch;width:100%}.live-board{background:#fff;border:1px solid var(--line);border-left:7px solid var(--amber);border-radius:11px;padding:18px 18px;box-shadow:var(--shadow);display:grid;grid-template-rows:auto auto auto 1fr auto;gap:10px;min-width:0}.live-board h3{font-family:var(--title);font-size:28px;line-height:1.05;margin:0;color:var(--navy)}.live-board p{margin:0;color:#405563;font-size:15px;line-height:1.35}.live-controls{display:grid;grid-template-columns:1fr 1fr;gap:7px}.live-step{border:1px solid #cbd8e2;background:#fff;border-radius:7px;padding:7px 8px;color:#173A5E;font-size:12px;font-weight:700;cursor:pointer;text-align:left}.live-step.active{background:var(--navy);color:#fff;border-color:var(--navy)}.live-step:nth-child(3n).active{background:var(--teal);border-color:var(--teal)}.live-step:nth-child(4n).active{background:var(--amber);border-color:var(--amber)}.live-explain{background:var(--soft-blue);border:1px solid #c9dae7;border-radius:8px;padding:10px 12px;color:#22384a;font-size:13.2px;line-height:1.28;min-height:98px}.live-explain b{color:var(--navy)}.mini-colab-query{background:#f7f9fc;border:1px solid #dce2e8;border-radius:8px;overflow:hidden;font-family:var(--mono);font-size:10.8px;line-height:1.25;color:#202124}.mini-colab-query .bar{background:#fff;border-bottom:1px solid #e2e7ec;padding:6px 9px;font-family:Arial,sans-serif;font-size:12px;color:#5f6368}.mini-colab-query pre{margin:0;padding:8px 10px;white-space:pre-wrap}.live-summary{display:none;background:var(--soft-amber);border:1px solid #e4c37d;border-radius:8px;padding:9px 11px;color:#3e382b;font-size:13px;line-height:1.25}.live-summary.show{display:block}.live-table-wrap{min-width:0;background:#fff;border:1px solid var(--line);border-radius:11px;box-shadow:var(--shadow);padding:14px 14px 12px;display:grid;grid-template-rows:auto 1fr auto;gap:8px}.live-table-title{display:flex;justify-content:space-between;align-items:end;gap:12px}.live-table-title h3{font-family:var(--title);font-size:27px;margin:0;color:var(--navy)}.live-table-title span{font-size:12px;color:#667682}.live-freq-table{width:100%;height:100%;border-collapse:collapse;table-layout:fixed;font-size:11px}.live-freq-table th{background:var(--navy);color:#fff;padding:5px 3px;border:1px solid rgba(255,255,255,.2);font-size:10.5px;line-height:1.05;text-align:center}.live-freq-table td{border:1px solid var(--line);padding:4px 4px;text-align:right;color:#273946;line-height:1.05;background:#fff}.live-freq-table tr:nth-child(even) td{background:#f8fafc}.live-freq-table td.interval{text-align:left;font-family:var(--mono);font-size:9.4px;color:var(--navy);font-weight:600}.live-freq-table tr.modal td{background:#fff7e8}.live-freq-table th.s1,.live-freq-table td.s1,.live-freq-table th.s2,.live-freq-table td.s2,.live-freq-table th.s3,.live-freq-table td.s3,.live-freq-table th.s4,.live-freq-table td.s4,.live-freq-table th.s5,.live-freq-table td.s5,.live-freq-table th.s6,.live-freq-table td.s6,.live-freq-table th.s7,.live-freq-table td.s7,.live-freq-table th.s8,.live-freq-table td.s8{opacity:.04;color:transparent;transition:opacity .28s ease,color .28s ease}.live-freq-table.reveal-1 th.s1,.live-freq-table.reveal-1 td.s1,.live-freq-table.reveal-2 th.s1,.live-freq-table.reveal-2 td.s1,.live-freq-table.reveal-2 th.s2,.live-freq-table.reveal-2 td.s2,.live-freq-table.reveal-3 th.s1,.live-freq-table.reveal-3 td.s1,.live-freq-table.reveal-3 th.s2,.live-freq-table.reveal-3 td.s2,.live-freq-table.reveal-3 th.s3,.live-freq-table.reveal-3 td.s3,.live-freq-table.reveal-4 th.s1,.live-freq-table.reveal-4 td.s1,.live-freq-table.reveal-4 th.s2,.live-freq-table.reveal-4 td.s2,.live-freq-table.reveal-4 th.s3,.live-freq-table.reveal-4 td.s3,.live-freq-table.reveal-4 th.s4,.live-freq-table.reveal-4 td.s4,.live-freq-table.reveal-5 th.s1,.live-freq-table.reveal-5 td.s1,.live-freq-table.reveal-5 th.s2,.live-freq-table.reveal-5 td.s2,.live-freq-table.reveal-5 th.s3,.live-freq-table.reveal-5 td.s3,.live-freq-table.reveal-5 th.s4,.live-freq-table.reveal-5 td.s4,.live-freq-table.reveal-5 th.s5,.live-freq-table.reveal-5 td.s5,.live-freq-table.reveal-6 th.s1,.live-freq-table.reveal-6 td.s1,.live-freq-table.reveal-6 th.s2,.live-freq-table.reveal-6 td.s2,.live-freq-table.reveal-6 th.s3,.live-freq-table.reveal-6 td.s3,.live-freq-table.reveal-6 th.s4,.live-freq-table.reveal-6 td.s4,.live-freq-table.reveal-6 th.s5,.live-freq-table.reveal-6 td.s5,.live-freq-table.reveal-6 th.s6,.live-freq-table.reveal-6 td.s6,.live-freq-table.reveal-7 th.s1,.live-freq-table.reveal-7 td.s1,.live-freq-table.reveal-7 th.s2,.live-freq-table.reveal-7 td.s2,.live-freq-table.reveal-7 th.s3,.live-freq-table.reveal-7 td.s3,.live-freq-table.reveal-7 th.s4,.live-freq-table.reveal-7 td.s4,.live-freq-table.reveal-7 th.s5,.live-freq-table.reveal-7 td.s5,.live-freq-table.reveal-7 th.s6,.live-freq-table.reveal-7 td.s6,.live-freq-table.reveal-7 th.s7,.live-freq-table.reveal-7 td.s7,.live-freq-table.reveal-8 th,.live-freq-table.reveal-8 td,.live-freq-table.reveal-9 th,.live-freq-table.reveal-9 td{opacity:1;color:inherit}.table-foot-formula{display:grid;grid-template-columns:1fr 1fr 1fr;gap:8px;font-size:12.5px}.table-foot-formula div{background:#f8fafc;border:1px solid #dbe4eb;border-radius:7px;padding:8px 9px;color:#344b5c}.table-foot-formula b{color:var(--navy)}.colab-contrast{height:100%;display:grid;grid-template-columns:minmax(0,.74fr) minmax(0,1.26fr);gap:18px;width:100%}.contrast-left{display:grid;grid-template-rows:auto 1fr auto;gap:12px}.contrast-left .panel{height:auto}.checks{display:grid;gap:9px}.checkrow{background:#fff;border:1px solid var(--line);border-radius:9px;padding:11px 13px;display:grid;grid-template-columns:32px 1fr;gap:10px;align-items:center;box-shadow:0 4px 12px rgba(23,58,94,.055)}.checkrow b{width:28px;height:28px;border-radius:50%;background:var(--teal);color:#fff;display:grid;place-items:center}.checkrow span{font-size:14px;color:#3f5361}.checkrow strong{display:block;color:var(--navy);font-size:16px}.colab.tallfill{height:100%}.colab.tallfill .colab-work{height:calc(100% - 119px)}.colab.tallfill .nb-area{height:100%;overflow:hidden}.colab.tallfill .cell pre{font-size:13px;line-height:1.24}.colab.tallfill .cell-output.preopen pre{font-size:10px;line-height:1.18;max-height:245px}
+
+
+/* v13 compact fix for final live-step: no overflow */
+.live-board{padding:14px 14px;gap:7px;overflow:hidden}.live-board h3{font-size:25px}.live-board p{font-size:13.5px;line-height:1.28}.live-controls{gap:5px}.live-step{padding:5px 7px;font-size:11.2px}.live-explain{min-height:68px;font-size:11.8px;line-height:1.22;padding:8px 9px}.mini-colab-query{font-size:9.5px;line-height:1.15}.mini-colab-query .bar{font-size:11px;padding:4px 8px}.mini-colab-query pre{padding:6px 8px}.live-summary{font-size:11.2px;line-height:1.14;padding:6px 8px}.live-table-wrap{padding:12px 14px 10px}.live-table-title h3{font-size:26px}.table-foot-formula div{padding:6px 8px;font-size:11.5px}.live-freq-table th{padding:4px 3px;font-size:10px}.live-freq-table td{padding:3px 4px;font-size:10.2px}.live-freq-table td.interval{font-size:8.8px}
+
+
+/* v14 refinements: maximal canvas use + stronger table pedagogy */
+.slide{padding-left:42px!important;padding-right:42px!important}
+.slide footer{margin-left:-42px!important;margin-right:-42px!important}
+.body{align-items:stretch!important;justify-content:center!important;width:100%;max-width:100%}
+.body>*{width:100%;max-width:100%}
+.wide-table-only{height:100%;display:grid;grid-template-rows:auto 1fr auto;gap:12px;width:100%}
+.wide-table-only .freq-table{height:auto;font-size:15px}
+.wide-table-only .freq-table th{font-size:13px;padding:8px 6px}
+.wide-table-only .freq-table td{font-size:14px;padding:7px 7px}
+.cat-build{height:100%;display:grid;grid-template-columns:0.82fr 1.18fr;gap:20px;align-items:stretch;width:100%}
+.cat-build .panel{height:100%;display:flex;flex-direction:column;justify-content:space-between}
+.need-chain{display:grid;grid-template-columns:repeat(4,1fr);gap:10px;margin-top:14px}
+.need-chain div{border:1px solid var(--line);background:#fff;border-radius:9px;padding:12px 10px;text-align:center;box-shadow:0 4px 10px rgba(23,58,94,.06)}
+.need-chain b{display:block;color:var(--navy);font-family:var(--title);font-size:21px;margin-bottom:4px}.need-chain span{font-size:12px;color:#5c6d78}
+.measure-layout{height:100%;display:grid;grid-template-columns:0.78fr 1.22fr;gap:20px;align-items:stretch;width:100%}
+.measure-left{background:#fff;border:1px solid var(--line);border-left:7px solid var(--amber);border-radius:11px;box-shadow:var(--shadow);padding:22px 24px;display:flex;flex-direction:column;gap:12px;justify-content:space-between}.measure-left h3{font-family:var(--title);font-size:31px;line-height:1.05;color:var(--navy);margin:0}.measure-left p{font-size:16px;line-height:1.36;color:#405563;margin:0}.formula-big{background:var(--soft-blue);border:1px solid #cbdce9;border-radius:9px;padding:14px 16px;font-size:18px;color:#173A5E;line-height:1.35}.formula-big .math{display:block;font-family:Georgia,serif;font-size:28px;text-align:center;margin:6px 0;color:#0d273f}.micro-steps{display:grid;gap:8px}.micro{display:grid;grid-template-columns:36px 1fr;gap:10px;align-items:center;background:#fbfcfd;border:1px solid var(--line);border-radius:9px;padding:10px}.micro b{width:30px;height:30px;border-radius:50%;display:grid;place-items:center;background:var(--blue);color:#fff}.micro:nth-child(2) b{background:var(--teal)}.micro:nth-child(3) b{background:var(--amber)}.micro:nth-child(4) b{background:var(--red)}.micro strong{color:var(--navy);display:block;font-size:15px}.micro span{font-size:13px;color:#5f707b}
+.calc-board{background:#fff;border:1px solid var(--line);border-radius:11px;box-shadow:var(--shadow);padding:18px 20px;display:grid;grid-template-rows:auto 1fr auto;gap:12px;min-width:0}.calc-board h3{font-family:var(--title);font-size:27px;margin:0;color:var(--navy)}.formula-table{width:100%;border-collapse:collapse;font-size:15px}.formula-table th{background:var(--navy);color:#fff;padding:9px 8px;text-align:left;border:1px solid rgba(255,255,255,.25)}.formula-table td{border:1px solid var(--line);padding:9px 8px;color:#273946;line-height:1.25}.formula-table tr:nth-child(even) td{background:#f8fafc}.formula-table .hi td{background:var(--soft-amber)!important;font-weight:700}.result-strip{display:grid;grid-template-columns:repeat(3,1fr);gap:10px}.result-strip div{background:var(--navy);color:#fff;border-radius:8px;padding:12px 14px}.result-strip b{font-family:var(--title);font-size:26px;display:block}.result-strip span{font-size:13px;color:#d6e5ef}
+.poly-layout{height:100%;display:grid;grid-template-columns:.9fr 1.1fr;gap:20px;width:100%;align-items:stretch}.poly-card{background:#fff;border:1px solid var(--line);border-radius:11px;box-shadow:var(--shadow);padding:18px 20px;display:flex;flex-direction:column}.poly-card h3{font-family:var(--title);font-size:29px;color:var(--navy);margin:0 0 10px}.poly-chart{position:relative;flex:1;border-left:2px solid #8799a8;border-bottom:2px solid #8799a8;margin:15px 12px 12px 36px;min-height:320px}.poly-bars{position:absolute;left:0;right:0;bottom:0;height:100%;display:flex;align-items:flex-end;gap:0}.poly-bars i{flex:1;background:rgba(45,99,147,.55);border-right:1px solid #fff}.poly-chart svg{position:absolute;inset:0;width:100%;height:100%;overflow:visible}.point-label{font-size:11px;color:#6b7b86;text-align:center}.concept-table{width:100%;border-collapse:collapse;font-size:14px;margin-top:8px}.concept-table th{background:var(--navy);color:#fff;padding:8px;border:1px solid rgba(255,255,255,.2);text-align:left}.concept-table td{padding:8px;border:1px solid var(--line)}
+
+
+/* v15 · revisión integral: ancho máximo, tipografía normal, render matemático y tablas robustas */
+:root{
+  --body: Calibri, "Segoe UI", Arial, sans-serif;
+  --title: "Calibri Light", Calibri, "Segoe UI", Arial, sans-serif;
+  --mono: "Cascadia Mono", Consolas, "Courier New", monospace;
+}
+*{font-stretch:normal!important;text-rendering:geometricPrecision;-webkit-font-smoothing:antialiased;}
+.slide{
+  padding:28px 32px 36px!important;
+  grid-template-rows:94px minmax(0,1fr) 28px!important;
+  gap:13px!important;
+}
+.slide footer{margin-left:-32px!important;margin-right:-32px!important;margin-bottom:-36px!important;}
+.head{width:100%;min-width:0;padding:13px 22px 12px 24px!important;border-radius:10px!important;}
+.head h2{font-size:36px!important;line-height:1.03!important;letter-spacing:-.015em!important;}
+.head p{font-size:17px!important;line-height:1.18!important;}
+.body{height:100%;width:100%;max-width:none!important;min-width:0;min-height:0;align-items:stretch!important;justify-content:stretch!important;overflow:hidden!important;}
+.body>*{width:100%!important;max-width:none!important;min-width:0;}
+.two-col,.cat-build,.exercise-layout,.wide-table-layout,.chart-layout,.live-table-layout,.measure-layout,.poly-layout,.synthesis,.checklist-layout,.colab-contrast,.problem-layout,.dataset-overview{width:100%!important;max-width:none!important;height:100%!important;min-height:0!important;min-width:0!important;}
+.panel,.exercise-left,.exercise-right,.table-side,.chart-card,.freq-panel,.live-board,.live-table-wrap,.measure-left,.calc-board,.poly-card,.checkpoint,.check-left,.check-right,.final-card,.checklist{min-width:0!important;min-height:0!important;overflow:hidden;}
+.panel{padding:22px 24px!important;}
+.panel h3,.exercise-left h3,.measure-left h3{line-height:1.07!important;}
+.question-banner{flex:0 0 auto!important;width:100%!important;margin:0!important;}
+.exercise-layout{grid-template-columns:minmax(0,.86fr) minmax(0,1.14fr)!important;gap:18px!important;}
+.exercise-left,.exercise-right{height:100%!important;}
+.exercise-right{display:flex!important;align-items:stretch!important;}
+.exercise-right>.colab,.exercise-layout .colab{height:100%!important;min-height:0!important;flex:1 1 auto!important;}
+.colab{height:100%!important;min-height:0!important;border-radius:12px!important;}
+.colab-work{height:calc(100% - 119px)!important;min-height:0!important;}
+.nb-area{min-height:0!important;overflow:hidden!important;}
+.cell pre{font-size:13px!important;line-height:1.26!important;}
+.cell-output pre{font-size:11px!important;line-height:1.22!important;}
+.cell-output.preopen pre{font-size:10.7px!important;line-height:1.17!important;max-height:215px!important;}
+.map-grid{width:100%!important;grid-template-columns:repeat(5,minmax(0,1fr))!important;gap:14px!important;}
+.map-card{height:100%!important;min-height:430px!important;}
+.process{width:100%!important;grid-template-columns:repeat(5,minmax(0,1fr))!important;gap:12px!important;}
+.process>i{display:none!important;}
+.process>div{height:100%!important;min-height:330px!important;}
+.cert-grid{width:100%!important;grid-template-columns:repeat(3,minmax(0,1fr))!important;}
+.cat-build{grid-template-columns:minmax(0,.75fr) minmax(0,1.25fr)!important;gap:18px!important;}
+.wide-table-layout{grid-template-columns:minmax(0,1.23fr) minmax(0,.77fr)!important;gap:18px!important;}
+.live-table-layout{grid-template-columns:minmax(300px,.34fr) minmax(0,.66fr)!important;gap:18px!important;}
+.live-table-wrap{grid-template-rows:auto minmax(0,1fr) auto!important;}
+.live-freq-table{width:100%!important;height:100%!important;table-layout:fixed!important;font-size:10.5px!important;}
+.live-freq-table th{font-size:9.8px!important;line-height:1.08!important;padding:4px 3px!important;}
+.live-freq-table td{font-size:10.1px!important;line-height:1.08!important;padding:3px 4px!important;}
+.live-freq-table td.interval{font-size:8.8px!important;}
+.table-foot-formula{grid-template-columns:repeat(3,minmax(0,1fr))!important;}
+.measure-layout{grid-template-columns:minmax(0,.74fr) minmax(0,1.26fr)!important;gap:18px!important;}
+.calc-board{grid-template-rows:auto minmax(0,1fr) auto!important;}
+.formula-table{font-size:14.4px!important;}
+.formula-table th,.formula-table td{padding:7px 8px!important;line-height:1.18!important;}
+.poly-layout{grid-template-columns:minmax(0,1.06fr) minmax(0,.94fr)!important;gap:18px!important;}
+.poly-chart{min-height:0!important;height:100%!important;}
+.poly-card{padding:16px 18px!important;}
+.poly-card h3{font-size:27px!important;}
+.formula-big{font-size:16px!important;line-height:1.28!important;}
+.formula-big .math,.math{display:block;text-align:center;margin:5px 0;color:#0d273f;font-size:24px!important;line-height:1.2!important;font-family:var(--body)!important;}
+.mjx-container{max-width:100%!important;overflow-x:hidden!important;overflow-y:hidden!important;color:#0d273f!important;}
+.mjx-container[jax="SVG"] svg{max-width:100%!important;height:auto!important;}
+/* Tablas finales: que no se vean comprimidas ni centradas artificialmente */
+.freq-table,.concept-table,.formula-table{width:100%!important;}
+.freq-table th,.concept-table th{line-height:1.12!important;}
+.freq-table td,.concept-table td{line-height:1.18!important;}
+/* más robustez visual sin sacrificar legibilidad */
+.need-chain{grid-template-columns:repeat(4,minmax(0,1fr))!important;}
+.result-strip{grid-template-columns:repeat(3,minmax(0,1fr))!important;}
+.decision,.answer-box,.callout{line-height:1.32!important;}
+
+
+
+/* v15 final · MathML self-contained */
+math{font-family:"Cambria Math","Latin Modern Math","STIX Two Math","Times New Roman",serif;font-size:1.02em;line-height:1.15;color:#0d273f;}
+.math math{width:100%;}
+.mini-formula-table math{font-size:.96em;}
+.formula-big .math{min-height:34px;display:flex;align-items:center;justify-content:center;}
+/* Garantía adicional de ancho: ningún bloque central queda angosto por tamaño intrínseco */
+.slide > .body, .slide > header, .slide > footer{width:100%!important;max-width:none!important;}
+.body .panel, .body .colab, .body table, .body .chart-card, .body .poly-card, .body .calc-board{max-width:none!important;}
+</style>
+<style>
+.analyst-rule{background:#fff7e8;border:1px solid #e0bd78;border-radius:8px;padding:7px 9px;color:#433826;font-size:11.6px;line-height:1.18}.analyst-rule b{color:#173A5E}.calc-mini-grid{display:grid;grid-template-columns:1fr;gap:8px;margin:6px 0}.calc-mini-grid div{display:grid;grid-template-columns:34px 1fr;grid-template-rows:auto auto;gap:0 9px;background:#fbfcfd;border:1px solid var(--line);border-radius:9px;padding:9px 10px}.calc-mini-grid b{grid-row:1/3;width:28px;height:28px;border-radius:50%;display:grid;place-items:center;background:var(--blue);color:#fff}.calc-mini-grid div:nth-child(2) b{background:var(--teal)}.calc-mini-grid div:nth-child(3) b{background:var(--amber)}.calc-mini-grid strong{font-size:15px;color:var(--navy)}.calc-mini-grid span{font-size:12.8px;color:#60717d}.mini-formula-table{font-size:13.2px!important}.mini-formula-table th,.mini-formula-table td{padding:6px 7px!important}
+</style>
+<style>
+/* v16 · revisión completa: coherencia visual, matemáticas HTML y secuencialidad */
+.eq-inline{font-family:"Cambria Math","Times New Roman",serif;color:#0d273f;font-weight:600;white-space:nowrap}.eq{font-family:"Cambria Math","Times New Roman",serif;color:#0d273f;display:flex;align-items:center;justify-content:center;gap:7px}.eq-large{font-size:28px;line-height:1.15}.frac{display:inline-grid;grid-template-rows:auto auto;align-items:center;text-align:center;vertical-align:middle}.frac>span:first-child{border-bottom:1.8px solid #0d273f;padding:0 6px 2px}.frac>span:last-child{padding-top:2px}.v16-live{grid-template-columns:minmax(0,.32fr) minmax(0,.68fr)!important}.v16-live .live-board{grid-template-rows:auto auto auto auto minmax(0,1fr) auto auto!important}.v16-live .live-controls{grid-template-columns:repeat(2,minmax(0,1fr))!important;gap:6px!important}.v16-live .live-step{font-size:11.6px!important;padding:6px 7px!important;line-height:1.12!important}.v16-live .live-table-title h3{font-size:26px!important}.v16-live .live-table-title span{max-width:390px}.v16-live .live-summary{font-size:12px!important}.v16-live .live-explain{min-height:76px!important;font-size:12.4px!important}.v16-live .mini-colab-query{font-size:10.1px!important}.live-freq-table th,.live-freq-table td{vertical-align:middle!important}.live-freq-table.reveal-0 th.s1,.live-freq-table.reveal-0 td.s1,.live-freq-table.reveal-0 th.s2,.live-freq-table.reveal-0 td.s2,.live-freq-table.reveal-0 th.s3,.live-freq-table.reveal-0 td.s3,.live-freq-table.reveal-0 th.s4,.live-freq-table.reveal-0 td.s4,.live-freq-table.reveal-0 th.s5,.live-freq-table.reveal-0 td.s5,.live-freq-table.reveal-0 th.s6,.live-freq-table.reveal-0 td.s6,.live-freq-table.reveal-0 th.s7,.live-freq-table.reveal-0 td.s7,.live-freq-table.reveal-0 th.s8,.live-freq-table.reveal-0 td.s8{opacity:.05!important;color:transparent!important}.live-freq-table.reveal-9 th,.live-freq-table.reveal-9 td{opacity:1!important;color:inherit!important}.v16-measure{grid-template-columns:minmax(0,.36fr) minmax(0,.64fr)!important}.v16-measure .measure-left{overflow:hidden!important}.v16-flow{gap:6px!important}.v16-flow .micro{padding:8px 9px!important}.v16-flow .micro strong{font-size:14.2px!important}.v16-flow .micro span{font-size:12.1px!important}.v16-calc .formula-table{font-size:13.6px!important}.v16-calc .result-strip div{padding:9px 12px!important}.v16-calc .result-strip b{font-size:24px!important}.v16-poly{grid-template-columns:minmax(0,.43fr) minmax(0,.57fr)!important}.chart-build-steps{display:grid;grid-template-columns:1fr;gap:7px;margin:0 0 9px}.chart-build-steps div{display:grid;grid-template-columns:28px 1fr;grid-template-rows:auto auto;gap:0 8px;border:1px solid var(--line);border-radius:8px;background:#fbfcfd;padding:8px 9px}.chart-build-steps b{grid-row:1/3;width:24px;height:24px;border-radius:50%;background:var(--blue);color:#fff;display:grid;place-items:center;font-size:12px}.chart-build-steps div:nth-child(2) b{background:var(--teal)}.chart-build-steps div:nth-child(3) b{background:var(--amber)}.chart-build-steps div:nth-child(4) b{background:var(--red)}.chart-build-steps strong{font-size:13.8px;color:var(--navy)}.chart-build-steps span{font-size:12.1px;color:#647581}.concept-table.compact{font-size:12.3px!important}.concept-table.compact th,.concept-table.compact td{padding:6px 7px!important}.chart-focus{gap:8px}.hist-svg{width:100%;height:100%;min-height:390px;background:#fff;border:1px solid #d8e0e6;border-radius:8px}.hist-svg .axis{stroke:#7f93a2;stroke-width:2}.hist-svg .hbar{fill:rgba(45,99,147,.55);stroke:#fff;stroke-width:.8}.hist-svg .hpoly{fill:none;stroke:#B54A4A;stroke-width:2.6;stroke-linejoin:round}.hist-svg .hpoint{fill:#B54A4A;stroke:#fff;stroke-width:1.5}.hist-svg .axis-txt{font-family:Calibri,Arial,sans-serif;font-size:12px;fill:#62737f}.chart-legend.v16{display:flex;gap:18px;align-items:center}.v16-conclusion .panel{display:flex;flex-direction:column;justify-content:center}.answer-sequence{display:grid;grid-template-columns:repeat(2,1fr);gap:10px}.answer-sequence div{display:grid;grid-template-columns:36px 1fr;grid-template-rows:auto auto;gap:0 9px;background:#fbfcfd;border:1px solid var(--line);border-radius:9px;padding:12px}.answer-sequence b{grid-row:1/3;width:30px;height:30px;background:var(--blue);color:#fff;border-radius:50%;display:grid;place-items:center}.answer-sequence div:nth-child(2) b{background:var(--teal)}.answer-sequence div:nth-child(3) b{background:var(--amber)}.answer-sequence div:nth-child(4) b{background:var(--red)}.answer-sequence strong{font-size:17px;color:var(--navy)}.answer-sequence span{font-size:13px;color:#61727e}.v16-exercise-table{grid-template-columns:minmax(0,.48fr) minmax(0,.52fr)!important}.v16-exercise-table .exercise-left{display:flex;flex-direction:column;justify-content:space-between}.v16-exercise-table .calc-mini-grid{gap:6px!important}.v16-exercise-table .mini-formula-table{font-size:12.6px!important}.v16-exercise-table .colab{height:100%!important}.stage{background:var(--paper)!important}.slide{overflow:hidden!important}.slide .body{padding:0!important}.body > .question-banner + *{height:calc(100% - 64px)!important}.slide:not(.cover) .body{display:flex!important}.table-foot-formula .eq-inline{font-size:13px}.formula-big p{font-size:13px!important;line-height:1.28!important;margin:8px 0 0!important}.cell-output.preopen{display:block!important}
+</style>
+<style>
+/* v16b · ajustes finales de encaje */
+.cover{padding:0!important;display:block!important;}
+.cover-split{height:892px!important;}
+.cover-bottom{height:8px!important;}
+.v16-measure .measure-left{padding:18px 20px!important;gap:7px!important;}
+.v16-measure .measure-left h3{font-size:29px!important;line-height:1.02!important;}
+.v16-measure .measure-left p{font-size:14.7px!important;line-height:1.28!important;}
+.v16-measure .formula-big{padding:10px 12px!important;}
+.v16-measure .formula-big .eq-large{font-size:25px!important;}
+.v16-measure .formula-big p{font-size:12px!important;line-height:1.2!important;}
+.v16-flow .micro{padding:6px 8px!important;grid-template-columns:32px 1fr!important;}
+.v16-flow .micro b{width:26px!important;height:26px!important;font-size:13px!important;}
+.v16-flow .micro strong{font-size:13.4px!important;}
+.v16-flow .micro span{font-size:11.6px!important;line-height:1.18!important;}
+</style>
+<style>
+/* v17 final · render matemático estable sin depender de conexión externa */
+.slide{grid-template-rows:95px minmax(0,1fr) 28px!important;}
+.body{width:100%!important;max-width:100%!important;align-items:stretch!important;justify-content:center!important;overflow:hidden!important;}
+.body>*{width:100%!important;max-width:100%!important;min-width:0!important;}
+.exercise-layout,.two-col,.measure-layout,.poly-layout,.live-table-layout,.colab-contrast,.wide-table-layout,.chart-layout,.case-hero,.checkpoint,.checklist-layout,.synthesis{width:100%!important;max-width:100%!important;}
+.mexpr{font-family:"Cambria Math","Latin Modern Math","STIX Two Math","Times New Roman",serif!important;color:#0D273F!important;font-weight:600!important;white-space:nowrap;letter-spacing:0!important;font-stretch:normal!important;line-height:1.08!important;}
+.eq-inline{font-family:inherit!important;font-weight:600!important;color:#0D273F!important;white-space:nowrap;display:inline-flex;align-items:center;vertical-align:middle;line-height:1.08!important;}
+.xbar{text-decoration:overline;text-decoration-thickness:1.4px;text-decoration-skip-ink:none;padding:0 .03em;}
+.frac{display:inline-grid!important;grid-template-rows:auto auto;justify-items:center;align-items:center;vertical-align:middle;margin:0 .18em;line-height:1!important;min-width:34px;}
+.frac .top{border-bottom:1.6px solid #0D273F;padding:0 .25em .10em;display:block;width:100%;text-align:center}.frac .bottom{padding:.08em .25em 0;display:block;text-align:center}.formula-line{font-size:1.05em}.formula-big .math{font-family:inherit!important;font-size:23px!important;line-height:1.15!important;min-height:38px!important;display:flex!important;align-items:center!important;justify-content:center!important;overflow:visible!important;}.formula-big .formula-line{font-size:1.1em!important}.table-foot-formula .mexpr{font-size:12.8px!important}.formula-table .mexpr{font-size:1em!important}.freq-table th .mexpr,.freq-table td .mexpr{font-size:.96em!important}.live-freq-table th .mexpr,.live-freq-table td .mexpr{font-size:.92em!important}.live-summary .mexpr{font-size:1em!important}.micro strong .mexpr{font-size:1em!important}.live-summary{white-space:normal!important;}.measure-left,.calc-board,.poly-card,.live-board,.exercise-left{min-height:0!important;overflow:hidden!important}.live-freq-table th,.live-freq-table td{vertical-align:middle!important}.formula-table td,.formula-table th{vertical-align:middle!important}.table-foot-formula div{min-width:0;overflow:hidden}.math-check{background:#fff;border:1px solid var(--line);border-left:5px solid var(--teal);border-radius:8px;padding:10px 12px;color:#21394b}
+</style>
+<style>
+/* v17.1 · ajuste fino para fórmulas en pasos dinámicos */
+.live-explain .mexpr,.qcard .mexpr,.exam-box .mexpr{font-size:1em!important;}
+.micro strong .mexpr{display:inline-block!important;}
+.formula-table .mexpr{white-space:nowrap!important;}
+</style>
+<style>
+/* v18 · mejora de renderización matemática */
+sub, sup{font-size:.72em!important; line-height:0!important; position:relative!important; vertical-align:baseline!important; font-family:inherit!important;}
+sub{bottom:-.22em!important;}
+sup{top:-.48em!important;}
+.mexpr,.eq-inline,.eq,.formula-big .math,.math-check{font-family:"Cambria Math","STIX Two Math","Latin Modern Math","Times New Roman",serif!important; letter-spacing:0!important; font-variant-ligatures:none!important;}
+.mexpr{display:inline-flex!important; align-items:flex-end!important; gap:.03em!important; line-height:1.12!important; white-space:nowrap!important;}
+.mexpr.formula-line{display:inline-flex!important; align-items:center!important; gap:.14em!important; line-height:1.18!important;}
+.eq-inline{display:inline-flex!important; align-items:center!important; flex-wrap:wrap!important; gap:.12em!important; line-height:1.16!important; white-space:normal!important;}
+.eq{display:inline-flex!important; align-items:center!important; justify-content:center!important; flex-wrap:wrap!important; gap:.16em!important; line-height:1.18!important; white-space:normal!important; max-width:100%!important;}
+.eq-large{font-size:30px!important; line-height:1.2!important;}
+.frac{display:inline-grid!important; grid-template-rows:auto auto!important; align-items:center!important; justify-items:center!important; vertical-align:middle!important; margin:0 .18em!important; min-width:max-content!important; line-height:1!important;}
+.frac>span:first-child,.frac .top{border-bottom:1.9px solid #0D273F!important; padding:0 .34em .12em!important; width:100%!important; text-align:center!important;}
+.frac>span:last-child,.frac .bottom{padding:.12em .34em 0!important; text-align:center!important;}
+.formula-big{padding:14px 16px 12px!important;}
+.formula-big .eq{margin:2px 0 4px!important;}
+.formula-big p{margin:8px 0 0!important; font-size:14px!important; line-height:1.28!important; color:#365064!important;}
+.formula-table td .mexpr,.formula-table th .mexpr,.table-foot-formula .mexpr,.live-summary .mexpr,.micro strong .mexpr{font-size:1em!important;}
+.xbar{display:inline-block!important; text-decoration:overline!important; text-decoration-thickness:1.6px!important; text-decoration-skip-ink:none!important; padding:0 .02em!important; line-height:1!important;}
+.math-check{font-size:14px!important; line-height:1.32!important;}
+</style>
+<style>
+/* v19 · robustecimiento visual solo slide 3 */
+.slide[data-title="El trabajo de un analista"] .two-col{grid-template-columns:minmax(0,1.08fr) minmax(0,.92fr)!important;gap:20px!important;align-items:stretch!important;}
+.slide[data-title="El trabajo de un analista"] .panel.strong{display:grid!important;grid-template-rows:auto auto auto auto auto!important;gap:14px!important;}
+.slide[data-title="El trabajo de un analista"] .panel.strong p{font-size:18px!important;line-height:1.42!important;}
+.slide[data-title="El trabajo de un analista"] .decision{margin-top:4px!important;}
+.slide[data-title="El trabajo de un analista"] .analyst-visual-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px;margin-top:2px;}
+.slide[data-title="El trabajo de un analista"] .visual-card{background:linear-gradient(180deg,#fbfdff 0%,#f3f7fa 100%);border:1px solid var(--line);border-radius:10px;padding:12px 12px 10px;display:grid;grid-template-columns:64px 1fr;gap:12px;align-items:center;box-shadow:0 6px 14px rgba(23,58,94,.06);min-height:94px;}
+.slide[data-title="El trabajo de un analista"] .visual-icon{width:64px;height:64px;border-radius:14px;display:grid;place-items:center;background:#fff;box-shadow:inset 0 0 0 1px #d9e3ea;}
+.slide[data-title="El trabajo de un analista"] .visual-icon svg{width:48px;height:48px;display:block;}
+.slide[data-title="El trabajo de un analista"] .visual-copy b{display:block;font-family:var(--title);font-size:21px;line-height:1.04;color:var(--navy);margin-bottom:4px;}
+.slide[data-title="El trabajo de un analista"] .visual-copy span{display:block;font-size:13.2px;line-height:1.24;color:#5f707b;}
+.slide[data-title="El trabajo de un analista"] .stack{gap:12px!important;}
+.slide[data-title="El trabajo de un analista"] .mini-step{grid-template-columns:52px 42px 1fr!important;grid-template-rows:auto auto!important;align-items:center!important;padding:14px 16px!important;column-gap:12px!important;}
+.slide[data-title="El trabajo de un analista"] .mini-step b{grid-row:1/3!important;}
+.slide[data-title="El trabajo de un analista"] .mini-step .step-icon{width:36px;height:36px;display:grid;place-items:center;background:#f7fbfd;border-radius:10px;border:1px solid #dde6ec;grid-row:1/3;}
+.slide[data-title="El trabajo de un analista"] .mini-step .step-icon svg{width:24px;height:24px;display:block;}
+.slide[data-title="El trabajo de un analista"] .mini-step span{grid-column:3;grid-row:1;font-size:22px!important;line-height:1.05!important;}
+.slide[data-title="El trabajo de un analista"] .mini-step small{grid-column:3;grid-row:2;font-size:14px!important;line-height:1.22!important;}
+</style>
+<style>
+/* v20 · ajuste solicitado: slide 3, cuadros derechos */
+.slide[data-title="El trabajo de un analista"] .stack{
+  gap:14px!important;
+}
+
+.slide[data-title="El trabajo de un analista"] .mini-step{
+  grid-template-columns:58px 58px 1fr!important;
+  padding:16px 18px!important;
+  min-height:118px!important;
+}
+
+.slide[data-title="El trabajo de un analista"] .mini-step b{
+  width:46px!important;
+  height:46px!important;
+  font-size:22px!important;
+}
+
+.slide[data-title="El trabajo de un analista"] .mini-step .step-icon{
+  width:50px!important;
+  height:50px!important;
+  border-radius:13px!important;
+}
+
+.slide[data-title="El trabajo de un analista"] .mini-step .step-icon svg{
+  width:36px!important;
+  height:36px!important;
+}
+
+.slide[data-title="El trabajo de un analista"] .mini-step span{
+  font-size:26px!important;
+  line-height:1.02!important;
+}
+
+.slide[data-title="El trabajo de un analista"] .mini-step small{
+  font-size:16px!important;
+  line-height:1.2!important;
+}
+</style>
+<style>
+/* v21 · solo slide 4: agregar imágenes/íconos a cada caja */
+.slide[data-title="La línea de trabajo"] .process{grid-template-columns:repeat(5,minmax(0,1fr))!important;gap:14px!important;align-items:stretch!important;}
+.slide[data-title="La línea de trabajo"] .process > div{display:grid!important;grid-template-rows:auto auto auto 1fr!important;justify-items:center!important;align-items:start!important;padding:22px 16px 18px!important;min-height:350px!important;}
+.slide[data-title="La línea de trabajo"] .process > div .process-icon{width:92px;height:92px;border-radius:18px;display:grid;place-items:center;background:linear-gradient(180deg,#fbfdff 0%,#eef4f8 100%);box-shadow:inset 0 0 0 1px #d9e3ea, 0 8px 16px rgba(23,58,94,.08);margin:4px 0 16px;}
+.slide[data-title="La línea de trabajo"] .process > div .process-icon svg{width:68px;height:68px;display:block;}
+.slide[data-title="La línea de trabajo"] .process > div h3{margin:14px 0 10px!important;}
+.slide[data-title="La línea de trabajo"] .process > div p{margin:0!important;font-size:17px!important;line-height:1.34!important;max-width:220px;}
+.slide[data-title="La línea de trabajo"] .cert-grid{margin-top:16px!important;}
+</style>
+<style>
+/* v22 · códigos consistentes: celdas con snippets completos */
+.cell pre{font-size:12.6px!important;line-height:1.22!important;}
+.cell-output pre{font-size:10.5px!important;line-height:1.18!important;}
+</style>
+</head><body><div class="viewport"><div class="stage"><section class="slide cover active" data-title="Portada">
+<div class="cover-split"><div class="cover-left"><div class="cover-kicker">LABORATORIO COMPUTACIONAL · CERTAMEN 1</div><h1>Estadística Descriptiva<br/><span>con Python</span></h1><div class="cover-rule"></div><p class="cover-lead">Tres problemas reales. Tres bases de datos voluminosas. Un objetivo: transformar registros en evidencia para decidir.</p><div class="cover-meta">Lunes 07 · 09 · 2026 · Google Colab · 70 minutos</div><div class="cover-pills"><span>Auditoría de datos</span><span>Tabulación y gráficos</span><span>Medidas centrales</span><span>KPI</span></div></div>
+<div class="cover-right"><div class="cover-dash"><div class="dash-title">DESCRIPTIVE ANALYTICS · LIVE BRIEF</div><div class="dash-metrics"><div><b>541.909</b><span>líneas retail</span></div><div><b>336.776</b><span>vuelos</span></div><div><b>53.940</b><span>diamantes</span></div></div><div class="dash-chart"><i style="height:45%"></i><i style="height:73%"></i><i style="height:55%"></i><i style="height:88%"></i><i style="height:63%"></i><i style="height:79%"></i><i style="height:52%"></i><i style="height:91%"></i><i style="height:66%"></i><i style="height:81%"></i></div><div class="dash-flow"><span>datos</span><b>→</b><span>calidad</span><b>→</b><span>resumen</span><b>→</b><span>decisión</span></div></div></div></div><div class="cover-bottom"></div></section><section class="slide" data-title="¿Qué haremos hoy?">
+<div class="stripe"><i></i><b></b><em></em></div>
+<header class="head"><div><div class="kicker">EST-001A · ESTADÍSTICA DESCRIPTIVA</div><h2>¿Qué haremos hoy?</h2><p>Mapa de la clase · 70 min</p></div><div class="num">02</div></header>
+<main class="body"><div class="map-grid">
+<div class="map-card amber"><b>0–7'</b><h3>Puesta en marcha</h3><p>Entrar a Colab · reconocer celdas · cargar librerías.</p></div>
+<div class="map-card blue"><b>7–20'</b><h3>Problema 1</h3><p>Retail: estructura, variables y calidad de datos.</p></div>
+<div class="map-card teal"><b>20–43'</b><h3>Problema 2</h3><p>Vuelos: frecuencias, Sturges, gráficos y KPI.</p></div>
+<div class="map-card blue"><b>43–64'</b><h3>Problema 3</h3><p>Diamantes: media, mediana, moda y agrupación.</p></div>
+<div class="map-card amber"><b>64–70'</b><h3>Cierre</h3><p>Checklist del Certamen 1 y criterio analítico.</p></div>
+</div><div class="callout">Hoy Python no es el contenido de la clase: es la herramienta que hace posible aplicar la estadística cuando los datos dejan de caber en una hoja.</div></main>
+<footer><span>EST-001A · Estadística Descriptiva · UTFSM Viña del Mar</span><span>Víctor Vallejo Palacios</span><span>02</span></footer>
+</section><section class="slide" data-title="El trabajo de un analista">
+<div class="stripe"><i></i><b></b><em></em></div>
+<header class="head"><div><div class="kicker">EST-001A · ESTADÍSTICA DESCRIPTIVA</div><h2>El trabajo de un analista</h2><p>La estadística descriptiva empieza antes del primer cálculo</p></div><div class="num">03</div></header>
+<main class="body"><div class="two-col"><div class="panel strong"><div class="eyebrow">ENCARGO DE ANÁLISIS</div><h3>No basta con “calcular”</h3><p>Un analista recibe registros, no ejercicios ordenados. Antes de reportar una media o un gráfico debe verificar qué representa cada fila, cómo están codificadas las variables, si existen valores faltantes y si los resultados responden a una decisión.</p><div class="decision">Pregunta rectora: <b>¿qué información necesita la organización y qué evidencia descriptiva permite responderla?</b></div>
+<div class="analyst-visual-grid">
+<div class="visual-card">
+<div class="visual-icon">
+<svg fill="none" viewbox="0 0 64 64" xmlns="http://www.w3.org/2000/svg">
+<ellipse cx="32" cy="14" fill="#D18A18" rx="18" ry="7"></ellipse>
+<path d="M14 14V24C14 27.866 22.059 31 32 31C41.941 31 50 27.866 50 24V14" fill="#E8B35B"></path>
+<ellipse cx="32" cy="24" fill="#2C8791" fill-opacity="0.18" rx="18" ry="7" stroke="#2C8791" stroke-width="2"></ellipse>
+<path d="M14 24V35C14 38.866 22.059 42 32 42C41.941 42 50 38.866 50 35V24" fill="#4CA8B1" fill-opacity="0.18"></path>
+<ellipse cx="32" cy="35" fill="#173A5E" fill-opacity="0.18" rx="18" ry="7" stroke="#173A5E" stroke-width="2"></ellipse>
+<path d="M14 35V46C14 49.866 22.059 53 32 53C41.941 53 50 49.866 50 46V35" fill="#2D6393" fill-opacity="0.18"></path>
+<ellipse cx="32" cy="46" fill="#F4F6F8" rx="18" ry="7" stroke="#173A5E" stroke-width="2"></ellipse>
+</svg>
+</div>
+<div class="visual-copy">
+<b>Base de datos</b>
+<span>Cada fila representa una unidad de análisis y cada columna una variable que luego debe interpretarse.</span>
+</div>
+</div>
+<div class="visual-card">
+<div class="visual-icon">
+<svg fill="none" viewbox="0 0 64 64" xmlns="http://www.w3.org/2000/svg">
+<rect fill="#F4F6F8" height="40" rx="4" stroke="#173A5E" stroke-width="2" width="28" x="14" y="10"></rect>
+<path d="M21 21H35" stroke="#2D6393" stroke-linecap="round" stroke-width="3"></path>
+<path d="M21 29H35" stroke="#2C8791" stroke-linecap="round" stroke-width="3"></path>
+<path d="M21 37H30" stroke="#D18A18" stroke-linecap="round" stroke-width="3"></path>
+<circle cx="42" cy="42" fill="#fff" r="9" stroke="#173A5E" stroke-width="3"></circle>
+<path d="M48.5 48.5L54 54" stroke="#173A5E" stroke-linecap="round" stroke-width="3.5"></path>
+<path d="M39 42L41.5 44.5L45.5 39.5" stroke="#2C8791" stroke-linecap="round" stroke-linejoin="round" stroke-width="2.6"></path>
+</svg>
+</div>
+<div class="visual-copy">
+<b>Auditoría</b>
+<span>Primero se detectan tipos, faltantes, códigos extraños y posibles errores antes de resumir.</span>
+</div>
+</div>
+<div class="visual-card">
+<div class="visual-icon">
+<svg fill="none" viewbox="0 0 64 64" xmlns="http://www.w3.org/2000/svg">
+<path d="M12 50H54" stroke="#173A5E" stroke-linecap="round" stroke-width="2.4"></path>
+<path d="M14 50V16" stroke="#173A5E" stroke-linecap="round" stroke-width="2.4"></path>
+<rect fill="#D18A18" height="16" width="7" x="18" y="34"></rect>
+<rect fill="#2C8791" height="22" width="7" x="26" y="28"></rect>
+<rect fill="#2D6393" height="30" width="7" x="34" y="20"></rect>
+<rect fill="#4F86B9" height="26" width="7" x="42" y="24"></rect>
+<path d="M21.5 31C24 28 30 23 37.5 19.5C41 18 45.5 18 49 16" stroke="#B54A4A" stroke-linecap="round" stroke-linejoin="round" stroke-width="2.8"></path>
+<circle cx="21.5" cy="31" fill="#B54A4A" r="2.2"></circle>
+<circle cx="29.5" cy="25.5" fill="#B54A4A" r="2.2"></circle>
+<circle cx="37.5" cy="19.5" fill="#B54A4A" r="2.2"></circle>
+<circle cx="45" cy="18" fill="#B54A4A" r="2.2"></circle>
+<circle cx="49" cy="16" fill="#B54A4A" r="2.2"></circle>
+</svg>
+</div>
+<div class="visual-copy">
+<b>Descripción</b>
+<span>Tablas, histogramas, polígonos y medidas centrales convierten los datos en evidencia legible.</span>
+</div>
+</div>
+<div class="visual-card">
+<div class="visual-icon">
+<svg fill="none" viewbox="0 0 64 64" xmlns="http://www.w3.org/2000/svg">
+<rect fill="#F4F6F8" height="30" rx="4" stroke="#173A5E" stroke-width="2" width="40" x="12" y="12"></rect>
+<path d="M20 22H44" stroke="#2D6393" stroke-linecap="round" stroke-width="3"></path>
+<path d="M20 30H36" stroke="#2C8791" stroke-linecap="round" stroke-width="3"></path>
+<path d="M32 42V52" stroke="#173A5E" stroke-linecap="round" stroke-width="2.4"></path>
+<path d="M24 52H40" stroke="#173A5E" stroke-linecap="round" stroke-width="2.4"></path>
+<path d="M48 46L56 38" stroke="#D18A18" stroke-linecap="round" stroke-width="3.2"></path>
+<path d="M51 37.8H56V42.8" stroke="#D18A18" stroke-linecap="round" stroke-linejoin="round" stroke-width="3.2"></path>
+</svg>
+</div>
+<div class="visual-copy">
+<b>Decisión</b>
+<span>El análisis termina cuando la organización puede actuar con hallazgos, riesgos y recomendaciones.</span>
+</div>
+</div>
+</div>
+</div><div class="stack"><div class="mini-step blue"><b>1</b><div class="step-icon"><svg fill="none" viewbox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><ellipse cx="12" cy="6" fill="#D18A18" rx="6" ry="2.5"></ellipse><path d="M6 6V10C6 11.5 8.7 13 12 13C15.3 13 18 11.5 18 10V6" fill="#E8B35B"></path><ellipse cx="12" cy="10" fill="#fff" rx="6" ry="2.5" stroke="#173A5E" stroke-width="1.5"></ellipse><path d="M6 10V14C6 15.5 8.7 17 12 17C15.3 17 18 15.5 18 14V10" fill="#2D6393" fill-opacity=".12"></path><ellipse cx="12" cy="14" fill="#fff" rx="6" ry="2.5" stroke="#173A5E" stroke-width="1.5"></ellipse></svg></div><span>Comprender la base</span><small>unidad · población · fuente · variables</small></div><div class="mini-step teal"><b>2</b><div class="step-icon"><svg fill="none" viewbox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><rect fill="#fff" height="15" rx="2" stroke="#173A5E" stroke-width="1.4" width="10.5" x="4.5" y="3.5"></rect><path d="M7 8H12.5" stroke="#2D6393" stroke-linecap="round" stroke-width="1.8"></path><path d="M7 11H12.5" stroke="#2C8791" stroke-linecap="round" stroke-width="1.8"></path><circle cx="15.7" cy="15.7" fill="#fff" r="3.4" stroke="#173A5E" stroke-width="1.6"></circle><path d="M18.2 18.2L21 21" stroke="#173A5E" stroke-linecap="round" stroke-width="1.8"></path></svg></div><span>Auditar antes de resumir</span><small>tipos · faltantes · códigos · valores imposibles</small></div><div class="mini-step amber"><b>3</b><div class="step-icon"><svg fill="none" viewbox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M4 19.5H20" stroke="#173A5E" stroke-linecap="round" stroke-width="1.6"></path><rect fill="#D18A18" height="7.5" width="2.7" x="5.3" y="12"></rect><rect fill="#2C8791" height="10.2" width="2.7" x="9.1" y="9.3"></rect><rect fill="#2D6393" height="13.1" width="2.7" x="12.9" y="6.4"></rect><rect fill="#4F86B9" height="11.1" width="2.7" x="16.7" y="8.4"></rect><path d="M6.7 10.9L10.4 8.2L14.2 6.1L18 7" stroke="#B54A4A" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.8"></path></svg></div><span>Describir con criterio</span><small>tabla · gráfico · media · mediana · moda</small></div><div class="mini-step red"><b>4</b><div class="step-icon"><svg fill="none" viewbox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><rect fill="#fff" height="10" rx="2" stroke="#173A5E" stroke-width="1.4" width="13" x="4" y="4"></rect><path d="M7 8H14" stroke="#2D6393" stroke-linecap="round" stroke-width="1.8"></path><path d="M7 11H12" stroke="#2C8791" stroke-linecap="round" stroke-width="1.8"></path><path d="M10.5 14V19" stroke="#173A5E" stroke-linecap="round" stroke-width="1.6"></path><path d="M7.5 19H13.5" stroke="#173A5E" stroke-linecap="round" stroke-width="1.6"></path><path d="M16 17L20 13" stroke="#D18A18" stroke-linecap="round" stroke-width="2"></path><path d="M18 13H20V15" stroke="#D18A18" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"></path></svg></div><span>Comunicar una decisión</span><small>hallazgo · evidencia · riesgo · acción</small></div></div></div></main>
+<footer><span>EST-001A · Estadística Descriptiva · UTFSM Viña del Mar</span><span>Víctor Vallejo Palacios</span><span>03</span></footer>
+</section><section class="slide" data-title="La línea de trabajo">
+<div class="stripe"><i></i><b></b><em></em></div>
+<header class="head"><div><div class="kicker">EST-001A · ESTADÍSTICA DESCRIPTIVA</div><h2>La línea de trabajo</h2><p>Cada comando de Python aparece porque responde una necesidad estadística · redondeo a 3 decimales</p></div><div class="num">04</div></header>
+<main class="body"><div class="process"><div><b>01</b><div class="process-icon"><svg fill="none" viewbox="0 0 64 64" xmlns="http://www.w3.org/2000/svg"><rect fill="#F4F6F8" height="26" rx="5" stroke="#173A5E" stroke-width="2" width="34" x="10" y="12"></rect><path d="M17 21H37" stroke="#2D6393" stroke-linecap="round" stroke-width="3"></path><path d="M17 28H31" stroke="#2C8791" stroke-linecap="round" stroke-width="3"></path><circle cx="47" cy="42" fill="#FFF6E8" r="10" stroke="#D18A18" stroke-width="3"></circle><path d="M47 35V49" stroke="#D18A18" stroke-linecap="round" stroke-width="3"></path><path d="M40 42H54" stroke="#D18A18" stroke-linecap="round" stroke-width="3"></path></svg></div><h3>Contexto</h3><p>¿Qué decisión debe tomarse?</p></div><i>→</i><div><b>02</b><div class="process-icon"><svg fill="none" viewbox="0 0 64 64" xmlns="http://www.w3.org/2000/svg"><rect fill="#fff" height="36" rx="6" stroke="#173A5E" stroke-width="2" width="44" x="10" y="10"></rect><path d="M10 22H54" stroke="#D6DEE4" stroke-width="2"></path><path d="M24 10V46" stroke="#D6DEE4" stroke-width="2"></path><rect fill="#2C8791" height="6" rx="1.5" width="6" x="15" y="27"></rect><rect fill="#2D6393" height="6" rx="1.5" width="9" x="28" y="27"></rect><rect fill="#D18A18" height="6" rx="1.5" width="9" x="40" y="27"></rect><path d="M16 52H48" stroke="#173A5E" stroke-linecap="round" stroke-width="2.5"></path></svg></div><h3>Datos</h3><p>¿Qué representa una fila?</p></div><i>→</i><div><b>03</b><div class="process-icon"><svg fill="none" viewbox="0 0 64 64" xmlns="http://www.w3.org/2000/svg"><rect fill="#F4F6F8" height="34" rx="4" stroke="#173A5E" stroke-width="2" width="24" x="13" y="10"></rect><path d="M19 20H31" stroke="#2D6393" stroke-linecap="round" stroke-width="3"></path><path d="M19 27H31" stroke="#2C8791" stroke-linecap="round" stroke-width="3"></path><path d="M19 34H27" stroke="#D18A18" stroke-linecap="round" stroke-width="3"></path><circle cx="41" cy="39" fill="#fff" r="9" stroke="#173A5E" stroke-width="3"></circle><path d="M47.5 45.5L53 51" stroke="#173A5E" stroke-linecap="round" stroke-width="3.5"></path><path d="M38 39L40.5 41.5L44.5 36.5" stroke="#2C8791" stroke-linecap="round" stroke-linejoin="round" stroke-width="2.6"></path></svg></div><h3>Calidad</h3><p>¿La base es analizable?</p></div><i>→</i><div><b>04</b><div class="process-icon"><svg fill="none" viewbox="0 0 64 64" xmlns="http://www.w3.org/2000/svg"><path d="M12 50H54" stroke="#173A5E" stroke-linecap="round" stroke-width="2.4"></path><path d="M14 50V16" stroke="#173A5E" stroke-linecap="round" stroke-width="2.4"></path><rect fill="#D18A18" height="17" width="7" x="18" y="33"></rect><rect fill="#2C8791" height="24" width="7" x="27" y="26"></rect><rect fill="#2D6393" height="31" width="7" x="36" y="19"></rect><path d="M21.5 30.5C25 27.5 29 24.5 33 23C37 21.5 41 20.5 45 18" stroke="#B54A4A" stroke-linecap="round" stroke-linejoin="round" stroke-width="2.8"></path><circle cx="21.5" cy="30.5" fill="#B54A4A" r="2.2"></circle><circle cx="30" cy="25.5" fill="#B54A4A" r="2.2"></circle><circle cx="38" cy="21.5" fill="#B54A4A" r="2.2"></circle><circle cx="45" cy="18" fill="#B54A4A" r="2.2"></circle></svg></div><h3>Resumen</h3><p>¿Qué tabla, gráfico o medida corresponde?</p></div><i>→</i><div><b>05</b><div class="process-icon"><svg fill="none" viewbox="0 0 64 64" xmlns="http://www.w3.org/2000/svg"><rect fill="#fff" height="24" rx="4" stroke="#173A5E" stroke-width="2" width="32" x="10" y="12"></rect><path d="M16 22H34" stroke="#2D6393" stroke-linecap="round" stroke-width="3"></path><path d="M16 29H28" stroke="#2C8791" stroke-linecap="round" stroke-width="3"></path><path d="M26 36V48" stroke="#173A5E" stroke-linecap="round" stroke-width="2.4"></path><path d="M18 48H34" stroke="#173A5E" stroke-linecap="round" stroke-width="2.4"></path><path d="M42 46L54 34" stroke="#D18A18" stroke-linecap="round" stroke-width="4"></path><path d="M46 34H54V42" stroke="#D18A18" stroke-linecap="round" stroke-linejoin="round" stroke-width="4"></path></svg></div><h3>Decisión</h3><p>¿Qué concluimos y con qué evidencia?</p></div></div><div class="cert-grid"><div><span>P1 tipo Certamen</span><b>unidad · población · fuente · variables · escalas</b></div><div><span>P2 tipo Certamen</span><b>Sturges · tabla completa · histograma · KPI</b></div><div><span>P3 tipo Certamen</span><b>media · mediana · moda · datos agrupados · interpretación</b></div></div></main>
+<footer><span>EST-001A · Estadística Descriptiva · UTFSM Viña del Mar</span><span>Víctor Vallejo Palacios</span><span>04</span></footer>
+</section><section class="slide" data-title="Google Colab: puesta en marcha">
+<div class="stripe"><i></i><b></b><em></em></div>
+<header class="head"><div><div class="kicker">EST-001A · ESTADÍSTICA DESCRIPTIVA</div><h2>Google Colab: puesta en marcha</h2><p>La interfaz mínima que necesitamos para trabajar hoy</p></div><div class="num">05</div></header>
+<main class="body"><div class="two-col access"><div class="panel"><div class="eyebrow">ACCESO EN 90 SEGUNDOS</div><ol class="steps"><li><b>Abra</b> colab.research.google.com en Chrome o Edge.</li><li><b>Inicie sesión</b> con una cuenta Google.</li><li><b>Nuevo cuaderno</b> → cambie el nombre a <code>lab_certamen1.ipynb</code>.</li><li>Espere a que aparezca <b>Conectar</b>. No instale nada en el PC.</li></ol><div class="callout small">Los cálculos se ejecutan en la nube. El computador de la universidad solo muestra el navegador.</div></div><div><div class="colab">
+<div class="colab-top"><div class="colab-logo"><span class="ring"></span><b>CO</b></div><span class="drive">▲</span><strong>lab_certamen1.ipynb</strong><span class="star">☆</span><span class="saved">Guardado en Drive</span><button class="share">Compartir</button><span class="avatar">V</span></div>
+<div class="colab-menu"><span>Archivo</span><span>Editar</span><span>Ver</span><span>Insertar</span><span>Entorno de ejecución</span><span>Herramientas</span><span>Ayuda</span></div>
+<div class="colab-toolbar"><span class="cmd">⌕ Comandos</span><span>＋ Código</span><span>＋ Texto</span><span>▶ Ejecutar todas</span><span class="connect">Conectar ▾</span></div>
+<div class="colab-work"><div class="rail"><span>☷</span><span>▧</span><span>&lt;&gt;</span><span>◉</span><span>⌕</span><span>▢</span></div><div class="nb-area">
+<div class="cell"><div class="bracket">[ ]</div><button aria-label="Ejecutar" class="run">▶</button><pre contenteditable="true"># Primera prueba
+print('Colab listo para trabajar')</pre><button class="copy">Copiar</button></div>
+<div class="cell-output"><div class="out-label">Salida</div><pre>Colab listo para trabajar</pre></div>
+<div class="colab-note">▶ Ejecuta con el botón de la celda o con Shift + Enter.</div>
+</div></div>
+</div></div></div></main>
+<footer><span>EST-001A · Estadística Descriptiva · UTFSM Viña del Mar</span><span>Víctor Vallejo Palacios</span><span>05</span></footer>
+</section><section class="slide" data-title="Python mínimo para hoy">
+<div class="stripe"><i></i><b></b><em></em></div>
+<header class="head"><div><div class="kicker">EST-001A · ESTADÍSTICA DESCRIPTIVA</div><h2>Python mínimo para hoy</h2><p>Primero dejamos listo el entorno; luego analizamos</p></div><div class="num">06</div></header>
+<main class="body"><div class="two-col"><div class="panel"><div class="eyebrow">PREÁMBULO DE TRABAJO</div><h3>Una sola celda para preparar el entorno</h3><p>Usaremos <b>pandas</b> para tablas, <b>NumPy</b> para operaciones numéricas y <b>Matplotlib</b> para gráficos. No necesitamos aprender una sintaxis extensa: cada instrucción estará ligada a una pregunta estadística.</p><div class="syntax"><code>df</code><span>DataFrame: tabla de datos</span><code>df['variable']</code><span>una variable/columna</span><code>función()</code><span>una operación aplicada a los datos</span></div></div><div><div class="colab">
+<div class="colab-top"><div class="colab-logo"><span class="ring"></span><b>CO</b></div><span class="drive">▲</span><strong>lab_certamen1.ipynb</strong><span class="star">☆</span><span class="saved">Guardado en Drive</span><button class="share">Compartir</button><span class="avatar">V</span></div>
+<div class="colab-menu"><span>Archivo</span><span>Editar</span><span>Ver</span><span>Insertar</span><span>Entorno de ejecución</span><span>Herramientas</span><span>Ayuda</span></div>
+<div class="colab-toolbar"><span class="cmd">⌕ Comandos</span><span>＋ Código</span><span>＋ Texto</span><span>▶ Ejecutar todas</span><span class="connect">Conectar ▾</span></div>
+<div class="colab-work"><div class="rail"><span>☷</span><span>▧</span><span>&lt;&gt;</span><span>◉</span><span>⌕</span><span>▢</span></div><div class="nb-area">
+<div class="cell"><div class="bracket">[ ]</div><button aria-label="Ejecutar" class="run">▶</button><pre contenteditable="true">import pandas as pd
+import numpy as np
+import matplotlib.pyplot as plt
+
+pd.set_option('display.max_columns', 30)</pre><button class="copy">Copiar</button></div>
+<div class="cell-output"><div class="out-label">Salida</div><pre>Entorno preparado. No aparece error.</pre></div>
+<div class="colab-note">Si una celda termina sin error, el entorno está listo.</div>
+</div></div>
+</div></div></div></main>
+<footer><span>EST-001A · Estadística Descriptiva · UTFSM Viña del Mar</span><span>Víctor Vallejo Palacios</span><span>06</span></footer>
+</section><section class="slide" data-title="Problema 1 · Online Retail">
+<div class="stripe"><i></i><b></b><em></em></div>
+<header class="head"><div><div class="kicker">EST-001A · ESTADÍSTICA DESCRIPTIVA</div><h2>Problema 1 · Online Retail</h2><p>Antes de resumir: comprender y auditar la base</p></div><div class="num">07</div></header>
+<main class="body"><div class="case-hero retail"><div class="case-copy"><div class="case-tag">PROBLEMA 1 · AUDITORÍA DE BASE</div><h3>¿Podemos confiar en los registros antes de describir las ventas?</h3><p>Una empresa de comercio electrónico entrega al equipo de analítica su historial transaccional. La gerencia quiere comparar mercados y comportamiento de compra, pero antes de cualquier indicador necesita saber si la base está correctamente estructurada y qué registros requieren tratamiento.</p><div class="brief"><b>Encargo:</b> validar la base y dejar documentado qué puede analizarse directamente y qué exige una regla de tratamiento.</div></div><div class="case-metrics"><div class="metric blue"><b>541.909</b><span>líneas transaccionales</span></div><div class="metric teal"><b>8</b><span>variables</span></div><div class="metric amber"><b>2010–2011</b><span>periodo</span></div><div class="sourcebox">UCI Machine Learning Repository · Online Retail</div></div></div></main>
+<footer><span>EST-001A · Estadística Descriptiva · UTFSM Viña del Mar</span><span>Víctor Vallejo Palacios</span><span>07</span></footer>
+</section><section class="slide" data-title="P1 · Reconocer la base">
+<div class="stripe"><i></i><b></b><em></em></div>
+<header class="head"><div><div class="kicker">EST-001A · ESTADÍSTICA DESCRIPTIVA</div><h2>P1 · Reconocer la base</h2><p>Python responde primero una necesidad de estructura, no de cálculo</p></div><div class="num">08</div></header>
+<main class="body"><div class="exercise-layout"><div class="exercise-left"><div class="section-label">NECESIDAD</div><h3>Primero debemos saber qué recibimos</h3><p>Una base con más de medio millón de filas no se “revisa” desplazándose por Excel. Necesitamos inspeccionar su dimensión, nombres de variables y primeras observaciones.</p><div class="qcard blue"><div class="qnum">1</div><div><h4>Control de consistencia</h4><p>¿La base cargó completa? ¿Cuántas filas y columnas tiene?</p></div></div><div class="qcard teal"><div class="qnum">2</div><div><h4>Lectura estructural</h4><p>¿Qué representa una fila y qué variables están disponibles?</p></div></div><div class="qcard amber"><div class="qnum">3</div><div><h4>Fuente</h4><p>¿Para nosotros es fuente primaria o secundaria? ¿Cuál fue el origen operativo de los datos?</p></div></div></div><div class="exercise-right"><div class="colab tall">
+<div class="colab-top"><div class="colab-logo"><span class="ring"></span><b>CO</b></div><span class="drive">▲</span><strong>P1_online_retail.ipynb</strong><span class="star">☆</span><span class="saved">Guardado en Drive</span><button class="share">Compartir</button><span class="avatar">V</span></div>
+<div class="colab-menu"><span>Archivo</span><span>Editar</span><span>Ver</span><span>Insertar</span><span>Entorno de ejecución</span><span>Herramientas</span><span>Ayuda</span></div>
+<div class="colab-toolbar"><span class="cmd">⌕ Comandos</span><span>＋ Código</span><span>＋ Texto</span><span>▶ Ejecutar todas</span><span class="connect">Conectar ▾</span></div>
+<div class="colab-work"><div class="rail"><span>☷</span><span>▧</span><span>&lt;&gt;</span><span>◉</span><span>⌕</span><span>▢</span></div><div class="nb-area">
+<div class="cell"><div class="bracket">[ ]</div><button aria-label="Ejecutar" class="run">▶</button><pre contenteditable="true"># Base real: Online Retail (UCI)
+!wget -q https://archive.ics.uci.edu/static/public/352/online+retail.zip -O retail.zip
+!unzip -o -q retail.zip
+retail = pd.read_excel('Online Retail.xlsx')
+
+retail.shape</pre><button class="copy">Copiar</button></div>
+<div class="cell-output"><div class="out-label">Salida</div><pre>(541909, 8)</pre></div>
+<div class="colab-note">Después ejecuta: retail.head() y retail.columns.</div>
+</div></div>
+</div></div></div></main>
+<footer><span>EST-001A · Estadística Descriptiva · UTFSM Viña del Mar</span><span>Víctor Vallejo Palacios</span><span>08</span></footer>
+</section><section class="slide" data-title="P1 · Pregunta 1">
+<div class="stripe"><i></i><b></b><em></em></div>
+<header class="head"><div><div class="kicker">EST-001A · ESTADÍSTICA DESCRIPTIVA</div><h2>P1 · Pregunta 1</h2><p>Comprender qué significa cada observación antes de calcular</p></div><div class="num">09</div></header>
+<main class="body"><div class="question-banner"><b>PREGUNTA 1</b><span>Unidad de análisis · población · fuente</span></div><div class="exercise-layout"><div class="exercise-left"><div class="exam-box"><p><b>a)</b> Identifique la unidad de análisis de la tabla.</p><p><b>b)</b> Describa la población que representa el archivo durante el periodo observado.</p><p><b>c)</b> Identifique la fuente para el analista actual y distíngala del sistema que originó los registros.</p></div><button class="reveal-btn">Ver pauta de comprobación</button><div class="reveal"><p><b>Unidad:</b> una línea de producto registrada dentro de una factura/transacción.</p><p><b>Población representada:</b> las líneas transaccionales registradas por el retailer entre 01/12/2010 y 09/12/2011.</p><p><b>Fuente:</b> secundaria para nosotros (dataset existente); su origen es el sistema transaccional de la empresa.</p></div></div><div class="exercise-right"><div class="colab">
+<div class="colab-top"><div class="colab-logo"><span class="ring"></span><b>CO</b></div><span class="drive">▲</span><strong>P1_online_retail.ipynb</strong><span class="star">☆</span><span class="saved">Guardado en Drive</span><button class="share">Compartir</button><span class="avatar">V</span></div>
+<div class="colab-menu"><span>Archivo</span><span>Editar</span><span>Ver</span><span>Insertar</span><span>Entorno de ejecución</span><span>Herramientas</span><span>Ayuda</span></div>
+<div class="colab-toolbar"><span class="cmd">⌕ Comandos</span><span>＋ Código</span><span>＋ Texto</span><span>▶ Ejecutar todas</span><span class="connect">Conectar ▾</span></div>
+<div class="colab-work"><div class="rail"><span>☷</span><span>▧</span><span>&lt;&gt;</span><span>◉</span><span>⌕</span><span>▢</span></div><div class="nb-area">
+<div class="cell"><div class="bracket">[ ]</div><button aria-label="Ejecutar" class="run">▶</button><pre contenteditable="true">retail.head()
+retail.info()
+retail[['InvoiceNo','Quantity','UnitPrice','CustomerID','Country']].head(8)</pre><button class="copy">Copiar</button></div>
+<div class="cell-output"><div class="out-label">Salida</div><pre>RangeIndex: 541909 entries
+Columnas: InvoiceNo, StockCode, Description, Quantity, InvoiceDate, UnitPrice, CustomerID, Country
+Tipos de almacenamiento: object, int64, datetime64, float64</pre></div>
+<div class="colab-note">Dtype de almacenamiento ≠ tipo estadístico. CustomerID es el ejemplo clave.</div>
+</div></div>
+</div></div></div></main>
+<footer><span>EST-001A · Estadística Descriptiva · UTFSM Viña del Mar</span><span>Víctor Vallejo Palacios</span><span>09</span></footer>
+</section><section class="slide" data-title="P1 · Pregunta 2">
+<div class="stripe"><i></i><b></b><em></em></div>
+<header class="head"><div><div class="kicker">EST-001A · ESTADÍSTICA DESCRIPTIVA</div><h2>P1 · Pregunta 2</h2><p>El computador reconoce tipos de almacenamiento; el analista clasifica variables</p></div><div class="num">10</div></header>
+<main class="body"><div class="question-banner"><b>PREGUNTA 2</b><span>Variables · tipo · escala · medida central admisible</span></div><div class="exercise-layout"><div class="exercise-left"><div class="exam-table"><div><b>Country</b><span>¿tipo? · ¿escala? · ¿medida central?</span></div><div><b>Quantity</b><span>¿tipo? · ¿escala? · ¿medida central?</span></div><div><b>UnitPrice</b><span>¿tipo? · ¿escala? · ¿medida central?</span></div><div><b>CustomerID</b><span>¿tipo? · ¿escala? · ¿por qué no promediar?</span></div></div><button class="reveal-btn">Comprobar clasificación</button><div class="reveal two"><p><b>Country:</b> cualitativa nominal → moda.</p><p><b>Quantity:</b> cuantitativa discreta, razón → media/mediana/moda.</p><p><b>UnitPrice:</b> cuantitativa continua, razón → media/mediana/moda.</p><p><b>CustomerID:</b> identificador nominal aunque esté almacenado como float.</p></div></div><div class="exercise-right"><div class="colab">
+<div class="colab-top"><div class="colab-logo"><span class="ring"></span><b>CO</b></div><span class="drive">▲</span><strong>P1_online_retail.ipynb</strong><span class="star">☆</span><span class="saved">Guardado en Drive</span><button class="share">Compartir</button><span class="avatar">V</span></div>
+<div class="colab-menu"><span>Archivo</span><span>Editar</span><span>Ver</span><span>Insertar</span><span>Entorno de ejecución</span><span>Herramientas</span><span>Ayuda</span></div>
+<div class="colab-toolbar"><span class="cmd">⌕ Comandos</span><span>＋ Código</span><span>＋ Texto</span><span>▶ Ejecutar todas</span><span class="connect">Conectar ▾</span></div>
+<div class="colab-work"><div class="rail"><span>☷</span><span>▧</span><span>&lt;&gt;</span><span>◉</span><span>⌕</span><span>▢</span></div><div class="nb-area">
+<div class="cell"><div class="bracket">[ ]</div><button aria-label="Ejecutar" class="run">▶</button><pre contenteditable="true"># Revisar tipos, cardinalidad y ejemplos
+for c in ['Country','Quantity','UnitPrice','CustomerID']:
+    print(c, '| dtype:', retail[c].dtype,
+          '| distintos:', retail[c].nunique(dropna=True),
+          '| ejemplo:', retail[c].dropna().iloc[0])</pre><button class="copy">Copiar</button></div>
+<div class="cell-output"><div class="out-label">Salida</div><pre>Country    | dtype: object  | ...
+Quantity   | dtype: int64   | ...
+UnitPrice  | dtype: float64 | ...
+CustomerID | dtype: float64 | ...
+
+Ojo: CustomerID se guarda como número, pero estadísticamente es un identificador nominal.</pre></div>
+</div></div>
+</div></div></div></main>
+<footer><span>EST-001A · Estadística Descriptiva · UTFSM Viña del Mar</span><span>Víctor Vallejo Palacios</span><span>10</span></footer>
+</section><section class="slide" data-title="P1 · Tabla de frecuencias">
+<div class="stripe"><i></i><b></b><em></em></div>
+<header class="head"><div><div class="kicker">EST-001A · ESTADÍSTICA DESCRIPTIVA</div><h2>P1 · Tabla de frecuencias categórica</h2><p>La tabla se construye porque el volumen impide leer fila por fila</p></div><div class="num">11</div></header>
+<main class="body">
+<div class="question-banner"><b>PREGUNTA 2B</b><span>Construya una tabla de frecuencias para una variable cualitativa nominal y determine su moda</span></div>
+<div class="cat-build">
+<div class="panel strong"><div><div class="eyebrow">NECESIDAD ANALÍTICA</div><h3>¿Desde qué países provienen las transacciones?</h3><p>La gerencia no puede revisar cientos de miles de filas una por una. Necesita una tabla que resuma concentración, participación relativa y categoría modal.</p>
+<div class="need-chain"><div><b>1</b><span>elegir variable</span></div><div><b>2</b><span>contar categorías</span></div><div><b>3</b><span>calcular porcentajes</span></div><div><b>4</b><span>interpretar</span></div></div></div>
+<div class="formula-big"><span class="math"><span class="mexpr formula-line">fr<sub>i</sub> = <span class="mexpr frac"><span class="top">f<sub>i</sub></span><span class="bottom">n</span></span>   ;   f<sub>i</sub>% = 100 · fr<sub>i</sub></span></span><p>Para variables nominales no se calculan media ni mediana: la medida central pertinente es la <b>moda</b>.</p></div></div>
+<div class="wide-table-only">
+<table class="freq-table"><thead><tr><th>País</th><th><span class="mexpr">f<sub>i</sub></span></th><th><span class="mexpr">fr<sub>i</sub></span></th><th><span class="mexpr">f<sub>i</sub>%</span></th><th><span class="mexpr">F<sub>i</sub></span></th><th><span class="mexpr">F<sub>i</sub>%</span></th></tr></thead><tbody>
+<tr class="modal"><td>United Kingdom</td><td>495.478</td><td>0,914</td><td>91,432%</td><td>495.478</td><td>91,432%</td></tr>
+<tr><td>Germany</td><td>9.495</td><td>0,018</td><td>1,752%</td><td>504.973</td><td>93,184%</td></tr>
+<tr><td>France</td><td>8.557</td><td>0,016</td><td>1,579%</td><td>513.530</td><td>94,763%</td></tr>
+<tr><td>EIRE</td><td>8.196</td><td>0,015</td><td>1,512%</td><td>521.726</td><td>96,276%</td></tr>
+<tr><td>Spain</td><td>2.533</td><td>0,005</td><td>0,467%</td><td>524.259</td><td>96,743%</td></tr>
+<tr><td>Netherlands</td><td>2.371</td><td>0,004</td><td>0,438%</td><td>526.630</td><td>97,181%</td></tr>
+<tr><td>Belgium</td><td>2.069</td><td>0,004</td><td>0,382%</td><td>528.699</td><td>97,562%</td></tr>
+<tr><td>Switzerland</td><td>2.002</td><td>0,004</td><td>0,369%</td><td>530.701</td><td>97,932%</td></tr>
+<tr><td>Otros países</td><td>11.208</td><td>0,021</td><td>2,068%</td><td>541.909</td><td>100,000%</td></tr>
+</tbody></table>
+<div class="answer-box"><b>Respuesta tipo Certamen:</b> la unidad de análisis es la línea de transacción. La variable <i>Country</i> es cualitativa nominal. La moda es United Kingdom, con 91,43% de las líneas registradas; por tanto, el comportamiento global queda fuertemente dominado por ese país.</div>
+</div>
+</div></main>
+<footer><span>EST-001A · Estadística Descriptiva · UTFSM Viña del Mar</span><span>Víctor Vallejo Palacios</span><span>11</span></footer></section><section class="slide" data-title="P1 · Pregunta 3">
+<div class="stripe"><i></i><b></b><em></em></div>
+<header class="head"><div><div class="kicker">EST-001A · ESTADÍSTICA DESCRIPTIVA</div><h2>P1 · Pregunta 3</h2><p>Antes del KPI viene la auditoría de datos</p></div><div class="num">12</div></header>
+<main class="body"><div class="question-banner"><b>PREGUNTA 3</b><span>¿La base está lista para análisis?</span></div><div class="exercise-layout"><div class="exercise-left"><div class="risk-grid"><div><b>135.080</b><span>CustomerID faltantes</span></div><div><b>9.288</b><span>líneas de cancelación</span></div><div><b>10.624</b><span>cantidades no positivas</span></div><div><b>2.517</b><span>precios no positivos</span></div></div><div class="exam-box compact"><p>Redacte una conclusión de 3–4 líneas: ¿es correcto calcular inmediatamente ventas promedio? Identifique al menos dos riesgos y una regla que deba definirse antes.</p></div><button class="reveal-btn">Ver criterio analítico</button><div class="reveal"><p>La base <b>no está “mala”</b>: contiene estados del proceso comercial (cancelaciones) y ausencia de identificadores. La decisión profesional es <b>documentar</b> cómo tratar cada caso según el indicador que se quiera construir.</p></div></div><div class="exercise-right"><div class="colab">
+<div class="colab-top"><div class="colab-logo"><span class="ring"></span><b>CO</b></div><span class="drive">▲</span><strong>P1_online_retail.ipynb</strong><span class="star">☆</span><span class="saved">Guardado en Drive</span><button class="share">Compartir</button><span class="avatar">V</span></div>
+<div class="colab-menu"><span>Archivo</span><span>Editar</span><span>Ver</span><span>Insertar</span><span>Entorno de ejecución</span><span>Herramientas</span><span>Ayuda</span></div>
+<div class="colab-toolbar"><span class="cmd">⌕ Comandos</span><span>＋ Código</span><span>＋ Texto</span><span>▶ Ejecutar todas</span><span class="connect">Conectar ▾</span></div>
+<div class="colab-work"><div class="rail"><span>☷</span><span>▧</span><span>&lt;&gt;</span><span>◉</span><span>⌕</span><span>▢</span></div><div class="nb-area">
+<div class="cell"><div class="bracket">[ ]</div><button aria-label="Ejecutar" class="run">▶</button><pre contenteditable="true"># Auditoría mínima de calidad
+faltantes = retail.isna().sum()
+cancelaciones = retail['InvoiceNo'].astype(str).str.startswith('C').sum()
+q_no_positiva = (retail['Quantity'] &lt;= 0).sum()
+precio_no_positivo = (retail['UnitPrice'] &lt;= 0).sum()
+
+print(faltantes)
+print('cancelaciones:', cancelaciones)
+print('Quantity &lt;= 0:', q_no_positiva)
+print('UnitPrice &lt;= 0:', precio_no_positivo)</pre><button class="copy">Copiar</button></div>
+<div class="cell-output"><div class="out-label">Salida</div><pre>Description      1454
+CustomerID     135080
+cancelaciones: 9288
+Quantity &lt;= 0: 10624
+UnitPrice &lt;= 0: 2517</pre></div>
+<div class="colab-note">La calidad no se evalúa solo con “hay/no hay nulos”: también se revisan códigos y reglas del negocio.</div>
+</div></div>
+</div></div></div></main>
+<footer><span>EST-001A · Estadística Descriptiva · UTFSM Viña del Mar</span><span>Víctor Vallejo Palacios</span><span>12</span></footer>
+</section><section class="slide" data-title="Checkpoint 1">
+<div class="stripe"><i></i><b></b><em></em></div>
+<header class="head"><div><div class="kicker">EST-001A · ESTADÍSTICA DESCRIPTIVA</div><h2>Checkpoint 1</h2><p>La automatización acelera la revisión; no reemplaza el criterio</p></div><div class="num">13</div></header>
+<main class="body"><div class="checkpoint"><div class="check-left"><div class="check-icon">✓</div><h3>Problema 1 resuelto</h3><p>Python permitió revisar 541.909 registros en segundos, pero la decisión sobre qué significa un identificador, una cancelación o un faltante siguió siendo estadística y contextual.</p></div><div class="check-right"><div><b>Conceptos repasados</b><span>unidad · población · fuente · variables · escalas</span></div><div><b>Herramientas</b><span>shape · head · info · dtypes · isna</span></div><div><b>Criterio profesional</b><span>no resumir antes de verificar la base</span></div></div></div></main>
+<footer><span>EST-001A · Estadística Descriptiva · UTFSM Viña del Mar</span><span>Víctor Vallejo Palacios</span><span>13</span></footer>
+</section><section class="slide" data-title="Problema 2 · Distribución">
+<div class="stripe"><i></i><b></b><em></em></div>
+<header class="head"><div><div class="kicker">EST-001A · ESTADÍSTICA DESCRIPTIVA</div><h2>Problema 2 · Distribución de precios</h2><p>Construir una tabla de frecuencias para una variable cuantitativa continua</p></div><div class="num">14</div></header>
+<main class="body">
+<div class="two-col"><div class="panel strong"><div class="eyebrow">PROBLEMA REAL · CATÁLOGO DE PRODUCTOS</div><h3>¿Cómo se distribuyen los precios en un catálogo amplio?</h3><p>Un equipo comercial debe preparar un informe ejecutivo sobre un catálogo de diamantes. La gerencia no necesita leer 53.940 precios: necesita una distribución por tramos, una visualización clara y una conclusión útil para decidir bandas de precio.</p><div class="decision"><b>Necesidad analítica:</b> transformar precios crudos en intervalos, frecuencias, acumulados y gráficos interpretables.</div></div><div class="stack"><div class="mini-step blue"><b>1</b><span>Variable</span><small>Precio de cada diamante en dólares.</small></div><div class="mini-step teal"><b>2</b><span>Agrupación</span><small>Rango, Sturges, amplitud e intervalos.</small></div><div class="mini-step amber"><b>3</b><span>Representación</span><small>Tabla, histograma y polígono.</small></div><div class="mini-step red"><b>4</b><span>Decisión</span><small>¿La mayoría está en tramos bajos o altos?</small></div></div></div></main>
+<footer><span>EST-001A · Estadística Descriptiva · UTFSM Viña del Mar</span><span>Víctor Vallejo Palacios</span><span>14</span></footer>
+</section><section class="slide" data-title="P2 · Preparar variable">
+<div class="stripe"><i></i><b></b><em></em></div>
+<header class="head"><div><div class="kicker">EST-001A · ESTADÍSTICA DESCRIPTIVA</div><h2>P2 · Preparar la variable</h2><p>La pregunta estadística define qué columna se analiza</p></div><div class="num">15</div></header>
+<main class="body">
+<div class="exercise-layout"><div class="exercise-left"><div class="section-label">NECESIDAD</div><h3>Antes de agrupar, debemos validar la variable</h3><p>No construimos intervalos porque sí. Lo hacemos porque 53.940 precios distintos no se pueden comunicar con una lista ni con una tabla de valores individuales.</p><div class="qcard"><div class="qnum">1</div><div><h4>¿Cuál es la unidad de análisis?</h4><p>Una observación corresponde a un diamante registrado en el catálogo.</p></div></div><div class="qcard teal"><div class="qnum">2</div><div><h4>¿Qué variable se analiza?</h4><p><code>price</code>: precio del diamante, cuantitativa continua, escala de razón.</p></div></div><div class="qcard amber"><div class="qnum">3</div><div><h4>¿Por qué no tabular precio por precio?</h4><p>Porque hay miles de valores posibles; se pierde lectura ejecutiva.</p></div></div></div><div class="exercise-right"><div class="colab fill">
+<div class="colab-top"><div class="colab-logo"><span class="ring"></span><b>CO</b></div><span class="drive">▲</span><strong>P2_diamantes.ipynb</strong><span class="star">☆</span><span class="saved">Guardado en Drive</span><button class="share">Compartir</button><span class="avatar">V</span></div>
+<div class="colab-menu"><span>Archivo</span><span>Editar</span><span>Ver</span><span>Insertar</span><span>Entorno de ejecución</span><span>Herramientas</span><span>Ayuda</span></div>
+<div class="colab-toolbar"><span class="cmd">⌕ Comandos</span><span>＋ Código</span><span>＋ Texto</span><span>▶ Ejecutar todas</span><span class="connect">Conectar ▾</span></div>
+<div class="colab-work"><div class="rail"><span>☷</span><span>▧</span><span>&lt;&gt;</span><span>◉</span><span>⌕</span><span>▢</span></div><div class="nb-area">
+<div class="cell"><div class="bracket">[ ]</div><button aria-label="Ejecutar" class="run">▶</button><pre contenteditable="true">import pandas as pd
+import numpy as np
+import matplotlib.pyplot as plt
+
+url = 'https://raw.githubusercontent.com/tidyverse/ggplot2/main/data-raw/diamonds.csv'
+diamonds = pd.read_csv(url)
+
+print(diamonds.shape)
+diamonds[['carat','cut','color','clarity','price']].head()</pre><button class="copy">Copiar</button></div><div class="cell-output preopen"><div class="out-label">Salida esperada</div><pre>(53940, 10)
+
+Columnas visibles: carat, cut, color, clarity, price
+La columna price es numérica y no presenta datos faltantes.</pre></div><div class="colab-note">La base es suficientemente grande para justificar automatización, pero la lógica sigue siendo la misma del Certamen.</div>
+</div></div>
+</div></div></div></main>
+<footer><span>EST-001A · Estadística Descriptiva · UTFSM Viña del Mar</span><span>Víctor Vallejo Palacios</span><span>15</span></footer>
+</section><section class="slide" data-title="P2 · Pregunta 1">
+<div class="stripe"><i></i><b></b><em></em></div>
+<header class="head"><div><div class="kicker">EST-001A · ESTADÍSTICA DESCRIPTIVA</div><h2>P2 · Pregunta 1</h2><p>Rango, Sturges y amplitud: decidir la estructura de la tabla</p></div><div class="num">16</div></header>
+<main class="body">
+<div class="question-banner"><b>PREGUNTA 1</b><span>Determine número de intervalos, rango y amplitud</span></div><div class="exercise-layout"><div class="exercise-left"><div class="formula-row"><div><b>53.940</b><span>n</span></div><div><b>18.497</b><span>R = max − min</span></div><div><b>17</b><span>k = techo(Sturges)</span></div><div><b>1.089</b><span>A = techo(R/k)</span></div></div><div class="exam-box"><p><b>a)</b> Explique por qué se debe agrupar la variable <code>price</code> en intervalos.</p><p><b>b)</b> Calcule k con la Regla de Sturges.</p><p><b>c)</b> Calcule rango y amplitud, verificando que los intervalos cubran todos los precios.</p></div><button class="reveal-btn">Ver pauta de comprobación</button><div class="reveal"><p>Como el precio es cuantitativo y tiene muchos valores posibles, conviene agrupar. Con n=53.940, Sturges da 16,713..., por lo que k=17. El rango es 18.823−326=18.497 y la amplitud se redondea hacia arriba: A=1.089.</p></div></div><div class="exercise-right"><div class="colab fill">
+<div class="colab-top"><div class="colab-logo"><span class="ring"></span><b>CO</b></div><span class="drive">▲</span><strong>P2_diamantes.ipynb</strong><span class="star">☆</span><span class="saved">Guardado en Drive</span><button class="share">Compartir</button><span class="avatar">V</span></div>
+<div class="colab-menu"><span>Archivo</span><span>Editar</span><span>Ver</span><span>Insertar</span><span>Entorno de ejecución</span><span>Herramientas</span><span>Ayuda</span></div>
+<div class="colab-toolbar"><span class="cmd">⌕ Comandos</span><span>＋ Código</span><span>＋ Texto</span><span>▶ Ejecutar todas</span><span class="connect">Conectar ▾</span></div>
+<div class="colab-work"><div class="rail"><span>☷</span><span>▧</span><span>&lt;&gt;</span><span>◉</span><span>⌕</span><span>▢</span></div><div class="nb-area">
+<div class="cell"><div class="bracket">[ ]</div><button aria-label="Ejecutar" class="run">▶</button><pre contenteditable="true">p = diamonds['price'].dropna()
+n = len(p)
+xmin = int(p.min())
+xmax = int(p.max())
+R = xmax - xmin
+k = int(np.ceil(1 + 3.322*np.log10(n)))
+A = int(np.ceil(R/k))
+
+# Bordes: el último debe superar el máximo observado
+edges = np.arange(xmin, xmin + A*(k+1), A)
+
+print('n =', n)
+print('min =', xmin, 'max =', xmax)
+print('R =', R, 'k =', k, 'A =', A)
+print('último borde =', edges[-1])</pre><button class="copy">Copiar</button></div><div class="cell-output preopen"><div class="out-label">Salida esperada</div><pre>n = 53940
+min = 326  max = 18823
+R = 18497  k = 17  A = 1089</pre></div><div class="colab-note">El código no reemplaza el procedimiento: permite verificarlo sobre una base grande.</div>
+</div></div>
+</div></div></div></main>
+<footer><span>EST-001A · Estadística Descriptiva · UTFSM Viña del Mar</span><span>Víctor Vallejo Palacios</span><span>16</span></footer>
+</section><section class="slide" data-title="P2 · Construcción viva">
+<div class="stripe"><i></i><b></b><em></em></div>
+<header class="head"><div><div class="kicker">EST-001A · ESTADÍSTICA DESCRIPTIVA</div><h2>P2 · Construcción viva de la tabla</h2><p>La tabla no aparece completa: se construye con decisiones y verificaciones sucesivas</p></div><div class="num">17</div></header>
+<main class="body">
+<div class="question-banner"><b>PREGUNTA 2</b><span>Construya la tabla completa de frecuencias para <code>price</code> y úsela para estimar media, mediana y moda agrupada</span></div>
+<div class="live-table-layout v16-live">
+<div class="live-board">
+<div class="eyebrow">CONSTRUCCIÓN SECUENCIAL</div>
+<h3>De precios crudos a una tabla analítica</h3>
+<p>La tabla se completa por columnas: primero los intervalos; después Python cuenta <b>f<sub>i</sub></b>; luego derivamos marcas, proporciones, acumulados y productos.</p>
+<div class="live-controls">
+<button class="live-step active" data-step="0">1 · Intervalos</button>
+<button class="live-step" data-step="1">2 · f<sub>i</sub> con Python</button>
+<button class="live-step" data-step="2">3 · Marca x<sub>i</sub></button>
+<button class="live-step" data-step="3">4 · fr<sub>i</sub>=f<sub>i</sub>/n</button>
+<button class="live-step" data-step="4">5 · f<sub>i</sub>%</button>
+<button class="live-step" data-step="5">6 · F<sub>i</sub></button>
+<button class="live-step" data-step="6">7 · Fr<sub>i</sub></button>
+<button class="live-step" data-step="7">8 · F<sub>i</sub>%</button>
+<button class="live-step" data-step="8">9 · x<sub>i</sub>·f<sub>i</sub></button>
+<button class="live-step" data-step="9">10 · Medidas</button>
+</div>
+<div class="analyst-rule"><b>Regla profesional:</b> ninguna columna acumulada existe antes de tener <b>f<sub>i</sub></b>; y ninguna media agrupada existe antes de tener <b>x<sub>i</sub>f<sub>i</sub></b>.</div>
+<div class="live-explain" id="liveExplain"><b>Paso 1.</b> Partimos desde el mínimo 326 y sumamos la amplitud 1.089: <span class="mexpr">[326,1415), [1415,2504), …</span>, hasta cubrir el máximo 18.823.</div>
+<div class="mini-colab-query"><div class="bar">Consulta mínima a Python para completar f<sub>i</sub></div><pre># Paso 1: intervalos reales definidos por los bordes
+edges = np.arange(xmin, xmin + A*(k+1), A)
+
+# Paso 2: Python cuenta cuántos datos caen en cada intervalo
+clase = pd.cut(p, bins=edges, right=False, include_lowest=True)
+fi = clase.value_counts(sort=False)
+
+fi.head()</pre></div>
+<div class="live-summary" id="liveSummary"><b>Tabla completa:</b> <span class="mexpr">∑f<sub>i</sub></span> = 53.940; <span class="mexpr">∑x<sub>i</sub>f<sub>i</sub></span> = 213.551.079; <span class="mexpr"><span class="xbar">x</span> ≈ 3.959,049 USD</span>. <span class="mexpr">Me ≈</span> 2.423,934 USD; clase modal [326,1415); <span class="mexpr">Mo ≈</span> 1.010,006 USD.</div>
+</div>
+<div class="live-table-wrap">
+<div class="live-table-title"><h3>Tabla de frecuencias agrupadas · precio de diamantes</h3><span>intervalos → conteo → columnas derivadas → medidas</span></div>
+<table class="live-freq-table reveal-0" id="liveFreqTable">
+<thead><tr>
+<th style="width:16%">Intervalo</th><th class="s1" style="width:9%">f<sub>i</sub></th><th class="s2" style="width:9%">x<sub>i</sub></th><th class="s3" style="width:9%">fr<sub>i</sub></th><th class="s4" style="width:8%">f<sub>i</sub>%</th><th class="s5" style="width:9%">F<sub>i</sub></th><th class="s6" style="width:9%">Fr<sub>i</sub></th><th class="s7" style="width:8%">F<sub>i</sub>%</th><th class="s8" style="width:13%">x<sub>i</sub>·f<sub>i</sub></th>
+</tr></thead><tbody><tr class="modal">
+<td class="interval">[326, 1415)</td>
+<td class="s1">19.573</td>
+<td class="s2">870,500</td>
+<td class="s3">0,363</td>
+<td class="s4">36,287</td>
+<td class="s5">19.573</td>
+<td class="s6">0,363</td>
+<td class="s7">36,287</td>
+<td class="s8">17.038.296,500</td>
+</tr>
+<tr>
+<td class="interval">[1415, 2504)</td>
+<td class="s1">7.984</td>
+<td class="s2">1.959,500</td>
+<td class="s3">0,148</td>
+<td class="s4">14,802</td>
+<td class="s5">27.557</td>
+<td class="s6">0,511</td>
+<td class="s7">51,088</td>
+<td class="s8">15.644.648,000</td>
+</tr>
+<tr>
+<td class="interval">[2504, 3593)</td>
+<td class="s1">5.278</td>
+<td class="s2">3.048,500</td>
+<td class="s3">0,098</td>
+<td class="s4">9,785</td>
+<td class="s5">32.835</td>
+<td class="s6">0,609</td>
+<td class="s7">60,873</td>
+<td class="s8">16.089.983,000</td>
+</tr>
+<tr>
+<td class="interval">[3593, 4682)</td>
+<td class="s1">5.034</td>
+<td class="s2">4.137,500</td>
+<td class="s3">0,093</td>
+<td class="s4">9,333</td>
+<td class="s5">37.869</td>
+<td class="s6">0,702</td>
+<td class="s7">70,206</td>
+<td class="s8">20.828.175,000</td>
+</tr>
+<tr>
+<td class="interval">[4682, 5771)</td>
+<td class="s1">3.915</td>
+<td class="s2">5.226,500</td>
+<td class="s3">0,073</td>
+<td class="s4">7,258</td>
+<td class="s5">41.784</td>
+<td class="s6">0,775</td>
+<td class="s7">77,464</td>
+<td class="s8">20.461.747,500</td>
+</tr>
+<tr>
+<td class="interval">[5771, 6860)</td>
+<td class="s1">2.636</td>
+<td class="s2">6.315,500</td>
+<td class="s3">0,049</td>
+<td class="s4">4,887</td>
+<td class="s5">44.420</td>
+<td class="s6">0,824</td>
+<td class="s7">82,351</td>
+<td class="s8">16.647.658,000</td>
+</tr>
+<tr>
+<td class="interval">[6860, 7949)</td>
+<td class="s1">1.838</td>
+<td class="s2">7.404,500</td>
+<td class="s3">0,034</td>
+<td class="s4">3,407</td>
+<td class="s5">46.258</td>
+<td class="s6">0,858</td>
+<td class="s7">85,758</td>
+<td class="s8">13.609.471,000</td>
+</tr>
+<tr>
+<td class="interval">[7949, 9038)</td>
+<td class="s1">1.431</td>
+<td class="s2">8.493,500</td>
+<td class="s3">0,027</td>
+<td class="s4">2,653</td>
+<td class="s5">47.689</td>
+<td class="s6">0,884</td>
+<td class="s7">88,411</td>
+<td class="s8">12.154.198,500</td>
+</tr>
+<tr>
+<td class="interval">[9038, 10127)</td>
+<td class="s1">1.171</td>
+<td class="s2">9.582,500</td>
+<td class="s3">0,022</td>
+<td class="s4">2,171</td>
+<td class="s5">48.860</td>
+<td class="s6">0,906</td>
+<td class="s7">90,582</td>
+<td class="s8">11.221.107,500</td>
+</tr>
+<tr>
+<td class="interval">[10127, 11216)</td>
+<td class="s1">1.018</td>
+<td class="s2">10.671,500</td>
+<td class="s3">0,019</td>
+<td class="s4">1,887</td>
+<td class="s5">49.878</td>
+<td class="s6">0,925</td>
+<td class="s7">92,469</td>
+<td class="s8">10.863.587,000</td>
+</tr>
+<tr>
+<td class="interval">[11216, 12305)</td>
+<td class="s1">805</td>
+<td class="s2">11.760,500</td>
+<td class="s3">0,015</td>
+<td class="s4">1,492</td>
+<td class="s5">50.683</td>
+<td class="s6">0,940</td>
+<td class="s7">93,962</td>
+<td class="s8">9.467.202,500</td>
+</tr>
+<tr>
+<td class="interval">[12305, 13394)</td>
+<td class="s1">745</td>
+<td class="s2">12.849,500</td>
+<td class="s3">0,014</td>
+<td class="s4">1,381</td>
+<td class="s5">51.428</td>
+<td class="s6">0,953</td>
+<td class="s7">95,343</td>
+<td class="s8">9.572.877,500</td>
+</tr>
+<tr>
+<td class="interval">[13394, 14483)</td>
+<td class="s1">619</td>
+<td class="s2">13.938,500</td>
+<td class="s3">0,011</td>
+<td class="s4">1,148</td>
+<td class="s5">52.047</td>
+<td class="s6">0,965</td>
+<td class="s7">96,491</td>
+<td class="s8">8.627.931,500</td>
+</tr>
+<tr>
+<td class="interval">[14483, 15572)</td>
+<td class="s1">521</td>
+<td class="s2">15.027,500</td>
+<td class="s3">0,010</td>
+<td class="s4">0,966</td>
+<td class="s5">52.568</td>
+<td class="s6">0,975</td>
+<td class="s7">97,456</td>
+<td class="s8">7.829.327,500</td>
+</tr>
+<tr>
+<td class="interval">[15572, 16661)</td>
+<td class="s1">510</td>
+<td class="s2">16.116,500</td>
+<td class="s3">0,009</td>
+<td class="s4">0,945</td>
+<td class="s5">53.078</td>
+<td class="s6">0,984</td>
+<td class="s7">98,402</td>
+<td class="s8">8.219.415,000</td>
+</tr>
+<tr>
+<td class="interval">[16661, 17750)</td>
+<td class="s1">454</td>
+<td class="s2">17.205,500</td>
+<td class="s3">0,008</td>
+<td class="s4">0,842</td>
+<td class="s5">53.532</td>
+<td class="s6">0,992</td>
+<td class="s7">99,244</td>
+<td class="s8">7.811.297,000</td>
+</tr>
+<tr>
+<td class="interval">[17750, 18839)</td>
+<td class="s1">408</td>
+<td class="s2">18.294,500</td>
+<td class="s3">0,008</td>
+<td class="s4">0,756</td>
+<td class="s5">53.940</td>
+<td class="s6">1,000</td>
+<td class="s7">100,000</td>
+<td class="s8">7.464.156,000</td>
+</tr></tbody></table>
+<div class="table-foot-formula"><div><b>Media agrupada</b><br/><span class="eq-inline"><span class="mexpr formula-line"><span class="xbar">x</span> ≈ <span class="mexpr frac"><span class="top">∑x<sub>i</sub>f<sub>i</sub></span><span class="bottom">n</span></span></span></span></div><div><b>Mediana agrupada</b><br/><span class="eq-inline"><span class="mexpr formula-line">Me ≈ L + <span class="mexpr frac"><span class="top">n/2 − F<sub>ant</sub></span><span class="bottom">f<sub>m</sub></span></span> · A</span></span></div><div><b>Moda agrupada</b><br/><span class="eq-inline"><span class="mexpr formula-line">Mo ≈ L + <span class="mexpr frac"><span class="top">d<sub>1</sub></span><span class="bottom">d<sub>1</sub>+d<sub>2</sub></span></span> · A</span></span></div></div>
+</div>
+</div>
+</main>
+<footer><span>EST-001A · Estadística Descriptiva · UTFSM Viña del Mar</span><span>Víctor Vallejo Palacios</span><span>17</span></footer>
+</section><section class="slide" data-title="P2 · Contraste con Colab">
+<div class="stripe"><i></i><b></b><em></em></div>
+<header class="head"><div><div class="kicker">EST-001A · ESTADÍSTICA DESCRIPTIVA</div><h2>P2 · Contraste con Colab</h2><p>Después de construir la tabla, Colab sirve para comprobarla y reproducirla</p></div><div class="num">18</div></header>
+<main class="body">
+<div class="question-banner"><b>VERIFICACIÓN</b><span>La salida de Python debe coincidir con la construcción: intervalos, <span class="mexpr">f<sub>i</sub></span>, <span class="mexpr">fr<sub>i</sub></span>, porcentajes, acumulados y <span class="mexpr">x<sub>i</sub>f<sub>i</sub></span></span></div>
+<div class="colab-contrast">
+<div class="contrast-left">
+<div class="panel strong" style="padding:20px 22px"><div class="eyebrow">MEDIO DE CONTRASTE</div><h3>Python no reemplaza el razonamiento: lo audita</h3><p>Primero definimos variable, rango, número de intervalos y amplitud. Ahora pedimos a Python que cuente 53.940 observaciones sin errores mecánicos.</p></div>
+<div class="checks">
+<div class="checkrow"><b>1</b><span><strong><span class="mexpr">∑f<sub>i</sub></span> = 53.940</strong> La frecuencia absoluta debe cerrar en el total.</span></div>
+<div class="checkrow"><b>2</b><span><strong>Última <span class="mexpr">F<sub>i</sub>%</span> = 100%</strong> El acumulado porcentual debe cubrir toda la base.</span></div>
+<div class="checkrow"><b>3</b><span><strong><span class="mexpr">∑x<sub>i</sub>f<sub>i</sub>/n ≈ 3.959,049</span></strong> La media agrupada usa marcas de clase como representantes.</span></div>
+</div>
+<div class="answer-box"><b>Respuesta tipo Certamen:</b> la clase modal es [326,1415). La mediana agrupada queda en la segunda clase y la distribución concentra más de la mitad de los precios bajo 2.504 USD.</div>
+</div>
+<div class="colab tallfill">
+<div class="colab-top"><div class="colab-logo"><span class="ring"></span><b>CO</b></div><span class="drive">▲</span><strong>P2_diamantes.ipynb</strong><span class="star">☆</span><span class="saved">Guardado en Drive</span><button class="share">Compartir</button><span class="avatar">V</span></div>
+<div class="colab-menu"><span>Archivo</span><span>Editar</span><span>Ver</span><span>Insertar</span><span>Entorno de ejecución</span><span>Herramientas</span><span>Ayuda</span></div>
+<div class="colab-toolbar"><span class="cmd">⌕ Comandos</span><span>＋ Código</span><span>＋ Texto</span><span>▶ Ejecutar todas</span><span class="connect">Conectar ▾</span></div>
+<div class="colab-work"><div class="rail"><span>☷</span><span>▧</span><span>&lt;&gt;</span><span>◉</span><span>⌕</span><span>▢</span></div><div class="nb-area">
+<div class="cell"><div class="bracket">[ ]</div><button aria-label="Ejecutar" class="run">▶</button><pre contenteditable="true"># Reconstrucción completa para evitar depender de celdas ocultas
+edges = np.arange(xmin, xmin + A*(k+1), A)
+clase = pd.cut(p, bins=edges, right=False, include_lowest=True)
+fi = clase.value_counts(sort=False)
+
+tabla = pd.DataFrame({
+    'intervalo': fi.index.astype(str),
+    'LI': [int(intervalo.left) for intervalo in fi.index],
+    'LS': [int(intervalo.right) for intervalo in fi.index],
+    'fi': fi.to_numpy(dtype=int)
+})
+tabla['xi'] = (tabla['LI'] + tabla['LS']) / 2
+
+tabla['fri'] = tabla['fi'] / n
+tabla['fi_%'] = 100 * tabla['fri']
+tabla['Fi'] = tabla['fi'].cumsum()
+tabla['Fri'] = tabla['Fi'] / n
+tabla['Fi_%'] = 100 * tabla['Fri']
+tabla['xifi'] = tabla['xi'] * tabla['fi']
+
+media_g = tabla['xifi'].sum() / n
+display(tabla[['intervalo','LI','LS','xi','fi','fri','fi_%','Fi','Fri','Fi_%','xifi']].round(3))
+print('Σfi =', tabla['fi'].sum())
+print(f"Σxifi = {tabla['xifi'].sum():.3f}")
+print(f"media agrupada = {media_g:.3f}")</pre><button class="copy">Copiar</button></div>
+<div class="cell-output preopen"><div class="out-label">Salida esperada</div><pre>          intervalo    LI     LS       xi     fi    fri    fi_%     Fi    Fri    Fi_%          xifi
+0       [326, 1415)   326   1415   870.500  19573  0.363  36.287  19573  0.363   36.287  17038296.500
+1      [1415, 2504)  1415   2504  1959.500   7984  0.148  14.802  27557  0.511   51.088  15644648.000
+2      [2504, 3593)  2504   3593  3048.500   5278  0.098   9.785  32835  0.609   60.873  16089983.000
+...
+16   [17750, 18839) 17750  18839 18294.500    408  0.008   0.756  53940  1.000  100.000   7464156.000
+
+Σfi = 53940
+Σxifi = 213551079.000
+media agrupada = 3959.049</pre></div>
+<div class="colab-note">Contraste esperado: si estos cierres coinciden, la tabla está técnicamente bien construida.</div>
+</div></div>
+</div>
+</div></main>
+<footer><span>EST-001A · Estadística Descriptiva · UTFSM Viña del Mar</span><span>Víctor Vallejo Palacios</span><span>18</span></footer>
+</section><section class="slide" data-title="P2 · Mediana agrupada">
+<div class="stripe"><i></i><b></b><em></em></div>
+<header class="head"><div><div class="kicker">EST-001A · ESTADÍSTICA DESCRIPTIVA</div><h2>P2 · Mediana desde la tabla</h2><p>La frecuencia acumulada permite ubicar el centro de la distribución</p></div><div class="num">19</div></header>
+<main class="body">
+<div class="question-banner"><b>MEDIANA AGRUPADA</b><span>La frecuencia acumulada permite ubicar la posición central de una base voluminosa</span></div>
+<div class="measure-layout v16-measure">
+<div class="measure-left">
+<div class="eyebrow">PROCEDIMIENTO DESDE TABLA</div>
+<h3>¿En qué intervalo queda el 50% de los precios?</h3>
+<p>La mediana agrupada no se obtiene mirando la columna de precios original. Primero se busca la posición <b>n/2</b>; luego se localiza la primera frecuencia acumulada que alcanza esa posición.</p>
+<div class="formula-big"><span class="eq eq-large"><span>Me = L + </span><span class="frac"><span>n/2 − F<sub>ant</sub></span><span>f<sub>m</sub></span></span><span> · A</span></span><p><b>L</b>: límite inferior de la clase mediana · <b>F<sub>ant</sub></b>: acumulada anterior · <b>f<sub>m</sub></b>: frecuencia de la clase mediana.</p></div>
+<div class="micro-steps v16-flow"><div class="micro"><b>1</b><div><strong>n/2 = 26.970</strong><span>Ubicación del centro de 53.940 observaciones.</span></div></div><div class="micro"><b>2</b><div><strong><span class="mexpr">F<sub>1</sub>=19.573 &lt; 26.970 ≤ F<sub>2</sub>=27.557</span></strong><span>La posición cae en la segunda clase.</span></div></div><div class="micro"><b>3</b><div><strong>Clase mediana [1415,2504)</strong><span>L=1415; F<sub>ant</sub>=19.573; f<sub>m</sub>=7.984; A=1.089.</span></div></div><div class="micro"><b>4</b><div><strong><span class="mexpr">Me ≈</span> 2.423,934 USD</strong><span>La mitad del catálogo queda bajo ese precio aproximado.</span></div></div></div>
+</div>
+<div class="calc-board v16-calc">
+<h3>Desarrollo desde la tabla de frecuencias</h3>
+<table class="formula-table"><thead><tr><th>Paso</th><th>Elemento</th><th>Valor usado</th><th>Lectura estadística</th></tr></thead><tbody>
+<tr><td>1</td><td>n</td><td>53.940</td><td>Total de observaciones.</td></tr>
+<tr><td>2</td><td>n/2</td><td>26.970</td><td>Posición que divide la distribución en dos mitades.</td></tr>
+<tr><td>3</td><td>Frecuencia acumulada</td><td><span class="mexpr">19.573 &lt; 26.970 ≤ 27.557</span></td><td>Identifica la clase mediana.</td></tr>
+<tr class="hi"><td>4</td><td>Clase mediana</td><td>[1415, 2504)</td><td>Primera clase con <span class="mexpr">F<sub>i</sub> ≥ 26.970</span>.</td></tr>
+<tr><td>5</td><td>Sustitución</td><td><span class="mexpr">1415 + ((26970−19573)/7984)·1089</span></td><td>Interpolación dentro de la clase.</td></tr>
+<tr><td>6</td><td>Resultado</td><td><span class="mexpr">Me ≈</span> 2.423,934 USD</td><td>Valor típico robusto frente a precios altos.</td></tr>
+</tbody></table>
+<div class="result-strip"><div><b>26.970</b><span>posición central</span></div><div><b>[1415,2504)</b><span>clase mediana</span></div><div><b>2.423,934</b><span>mediana agrupada</span></div></div>
+</div>
+</div>
+</main>
+<footer><span>EST-001A · Estadística Descriptiva · UTFSM Viña del Mar</span><span>Víctor Vallejo Palacios</span><span>19</span></footer></section><section class="slide" data-title="P2 · Moda agrupada">
+<div class="stripe"><i></i><b></b><em></em></div>
+<header class="head"><div><div class="kicker">EST-001A · ESTADÍSTICA DESCRIPTIVA</div><h2>P2 · Moda desde la tabla</h2><p>La clase con mayor frecuencia revela el tramo dominante</p></div><div class="num">20</div></header>
+<main class="body">
+<div class="question-banner"><b>MODA AGRUPADA</b><span>La clase con mayor frecuencia revela el tramo dominante de la distribución</span></div>
+<div class="measure-layout v16-measure">
+<div class="measure-left">
+<div class="eyebrow">PROCEDIMIENTO DESDE TABLA</div>
+<h3>¿Cuál es el tramo de precio más frecuente?</h3>
+<p>En una tabla agrupada, primero se informa la <b>clase modal</b>. Si necesitamos un valor puntual aproximado, usamos las frecuencias de la clase modal y de sus clases vecinas.</p>
+<div class="formula-big"><span class="eq eq-large"><span>Mo = L + </span><span class="frac"><span>d<sub>1</sub></span><span>d<sub>1</sub> + d<sub>2</sub></span></span><span> · A</span></span><p><b>d<sub>1</sub></b> = f<sub>modal</sub> − f<sub>anterior</sub>; <b>d<sub>2</sub></b> = f<sub>modal</sub> − f<sub>siguiente</sub>.</p></div>
+<div class="micro-steps v16-flow"><div class="micro"><b>1</b><div><strong>Mayor <span class="mexpr">f<sub>i</sub> = 19.573</span></strong><span>La primera clase concentra más observaciones.</span></div></div><div class="micro"><b>2</b><div><strong>Clase modal [326,1415)</strong><span>Reúne 36,287% de los registros.</span></div></div><div class="micro"><b>3</b><div><strong><span class="mexpr">d<sub>1</sub>=19.573; d<sub>2</sub>=11.589</span></strong><span>Se compara con la clase anterior y siguiente.</span></div></div><div class="micro"><b>4</b><div><strong><span class="mexpr">Mo ≈</span> 1.010,006 USD</strong><span>Aproximación puntual dentro de la clase modal.</span></div></div></div>
+</div>
+<div class="calc-board v16-calc">
+<h3>Desarrollo desde la tabla</h3>
+<table class="formula-table"><thead><tr><th>Paso</th><th>Elemento</th><th>Valor</th><th>Uso estadístico</th></tr></thead><tbody>
+<tr class="hi"><td>1</td><td>Clase modal</td><td>[326, 1415)</td><td>Es la clase con mayor f<sub>i</sub>.</td></tr>
+<tr><td>2</td><td>L</td><td>326</td><td>Límite inferior de la clase modal.</td></tr>
+<tr><td>3</td><td>f<sub>modal</sub></td><td>19.573</td><td>Frecuencia de la clase modal.</td></tr>
+<tr><td>4</td><td>f<sub>anterior</sub>, f<sub>siguiente</sub></td><td>0 y 7.984</td><td>Permiten calcular d<sub>1</sub> y d<sub>2</sub>.</td></tr>
+<tr><td>5</td><td>Sustitución</td><td><span class="mexpr">326 + (19573/(19573+11589))·1089</span></td><td>Moda agrupada aproximada.</td></tr>
+<tr><td>6</td><td>Resultado</td><td><span class="mexpr">Mo ≈</span> 1.010,006 USD</td><td>El tramo bajo domina la distribución.</td></tr>
+</tbody></table>
+<div class="answer-box"><b>Lectura:</b> si solo se informa la media, se oculta que la mayor concentración de precios ocurre al inicio de la distribución. La moda agrupada aporta una lectura de concentración.</div>
+</div>
+</div>
+</main>
+<footer><span>EST-001A · Estadística Descriptiva · UTFSM Viña del Mar</span><span>Víctor Vallejo Palacios</span><span>20</span></footer></section><section class="slide" data-title="P2 · Polígono de frecuencias">
+<div class="stripe"><i></i><b></b><em></em></div>
+<header class="head"><div><div class="kicker">EST-001A · ESTADÍSTICA DESCRIPTIVA</div><h2>P2 · Histograma y polígono</h2><p>El polígono une las marcas de clase con sus frecuencias</p></div><div class="num">21</div></header>
+<main class="body">
+<div class="question-banner"><b>GRÁFICOS DESDE LA TABLA</b><span>El histograma usa intervalos; el polígono une las marcas de clase con sus frecuencias</span></div>
+<div class="poly-layout v16-poly">
+<div class="poly-card">
+<h3>Construcción secuencial</h3>
+<div class="chart-build-steps">
+<div><b>1</b><strong>Intervalos</strong><span>Cada intervalo produce una barra pegada.</span></div>
+<div><b>2</b><strong>Alturas f<sub>i</sub></strong><span>La frecuencia absoluta define la altura de cada barra.</span></div>
+<div><b>3</b><strong>Marcas x<sub>i</sub></strong><span>Se ubica el punto medio horizontal de cada barra.</span></div>
+<div><b>4</b><strong>Pares (x<sub>i</sub>, f<sub>i</sub>)</strong><span>Los puntos se unen para formar el polígono.</span></div>
+<div><b>5</b><strong>Interpretación</strong><span>Forma, concentración y cola de la distribución.</span></div>
+</div>
+<table class="concept-table compact"><thead><tr><th>Intervalo</th><th>x<sub>i</sub></th><th>f<sub>i</sub></th><th>Punto</th></tr></thead><tbody>
+<tr><td>[326,1415)</td><td>870,500</td><td>19.573</td><td>(870,500; 19.573)</td></tr>
+<tr><td>[1415,2504)</td><td>1.959,500</td><td>7.984</td><td>(1.959,500; 7.984)</td></tr>
+<tr><td>[2504,3593)</td><td>3.048,500</td><td>5.278</td><td>(3.048,500; 5.278)</td></tr>
+</tbody></table>
+<div class="analyst-rule"><b>Clave:</b> el polígono no une límites de intervalos; une <b>marcas de clase</b>. Por eso se apoya exactamente en la columna x<sub>i</sub>.</div>
+</div>
+<div class="poly-card chart-focus">
+<h3>Histograma + polígono de frecuencias</h3>
+<svg aria-label="Histograma y polígono" class="hist-svg" viewbox="0 0 640 390">
+<line class="axis" x1="20" x2="620" y1="366" y2="366"></line>
+<line class="axis" x1="20" x2="20" y1="20" y2="366"></line>
+<rect class="hbar" height="346.0" rx="1" width="34.3" x="20.0" y="20.0"></rect><rect class="hbar" height="141.1" rx="1" width="34.3" x="55.3" y="224.9"></rect><rect class="hbar" height="93.3" rx="1" width="34.3" x="90.6" y="272.7"></rect><rect class="hbar" height="89.0" rx="1" width="34.3" x="125.9" y="277.0"></rect><rect class="hbar" height="69.2" rx="1" width="34.3" x="161.2" y="296.8"></rect><rect class="hbar" height="46.6" rx="1" width="34.3" x="196.5" y="319.4"></rect><rect class="hbar" height="32.5" rx="1" width="34.3" x="231.8" y="333.5"></rect><rect class="hbar" height="25.3" rx="1" width="34.3" x="267.1" y="340.7"></rect><rect class="hbar" height="20.7" rx="1" width="34.3" x="302.4" y="345.3"></rect><rect class="hbar" height="18.0" rx="1" width="34.3" x="337.6" y="348.0"></rect><rect class="hbar" height="14.2" rx="1" width="34.3" x="372.9" y="351.8"></rect><rect class="hbar" height="13.2" rx="1" width="34.3" x="408.2" y="352.8"></rect><rect class="hbar" height="10.9" rx="1" width="34.3" x="443.5" y="355.1"></rect><rect class="hbar" height="9.2" rx="1" width="34.3" x="478.8" y="356.8"></rect><rect class="hbar" height="9.0" rx="1" width="34.3" x="514.1" y="357.0"></rect><rect class="hbar" height="8.0" rx="1" width="34.3" x="549.4" y="358.0"></rect><rect class="hbar" height="7.2" rx="1" width="34.3" x="584.7" y="358.8"></rect>
+<polyline class="hpoly" points="37.6,20.0 72.9,224.9 108.2,272.7 143.5,277.0 178.8,296.8 214.1,319.4 249.4,333.5 284.7,340.7 320.0,345.3 355.3,348.0 390.6,351.8 425.9,352.8 461.2,355.1 496.5,356.8 531.8,357.0 567.1,358.0 602.4,358.8"></polyline>
+<circle class="hpoint" cx="37.6" cy="20.0" r="5"></circle><circle class="hpoint" cx="72.9" cy="224.9" r="5"></circle><circle class="hpoint" cx="108.2" cy="272.7" r="5"></circle><circle class="hpoint" cx="143.5" cy="277.0" r="5"></circle><circle class="hpoint" cx="178.8" cy="296.8" r="5"></circle><circle class="hpoint" cx="214.1" cy="319.4" r="5"></circle><circle class="hpoint" cx="249.4" cy="333.5" r="5"></circle><circle class="hpoint" cx="284.7" cy="340.7" r="5"></circle><circle class="hpoint" cx="320.0" cy="345.3" r="5"></circle><circle class="hpoint" cx="355.3" cy="348.0" r="5"></circle><circle class="hpoint" cx="390.6" cy="351.8" r="5"></circle><circle class="hpoint" cx="425.9" cy="352.8" r="5"></circle><circle class="hpoint" cx="461.2" cy="355.1" r="5"></circle><circle class="hpoint" cx="496.5" cy="356.8" r="5"></circle><circle class="hpoint" cx="531.8" cy="357.0" r="5"></circle><circle class="hpoint" cx="567.1" cy="358.0" r="5"></circle><circle class="hpoint" cx="602.4" cy="358.8" r="5"></circle>
+<text class="axis-txt" x="24" y="38">frecuencia fᵢ</text>
+<text class="axis-txt" x="240.0" y="387">precio agrupado por intervalos</text>
+</svg>
+<div class="chart-legend v16"><span><i></i>histograma: barras pegadas</span><span><b></b>polígono: puntos (x<sub>i</sub>, f<sub>i</sub>)</span></div>
+<div class="answer-box"><b>Interpretación:</b> la distribución se concentra en precios bajos y presenta cola derecha. La primera clase concentra 36,287% y el 51,088% acumulado se alcanza antes de 2.504 USD.</div>
+</div>
+</div>
+</main>
+<footer><span>EST-001A · Estadística Descriptiva · UTFSM Viña del Mar</span><span>Víctor Vallejo Palacios</span><span>21</span></footer></section><section class="slide" data-title="P2 · Conclusiones">
+<div class="stripe"><i></i><b></b><em></em></div>
+<header class="head"><div><div class="kicker">EST-001A · ESTADÍSTICA DESCRIPTIVA</div><h2>P2 · Interpretación y decisión</h2><p>La estadística descriptiva termina cuando el resultado se comunica con criterio</p></div><div class="num">22</div></header>
+<main class="body">
+<div class="question-banner"><b>RESPUESTA TIPO CERTAMEN</b><span>Conclusión con evidencia numérica, lectura del gráfico y recomendación</span></div>
+<div class="two-col v16-conclusion">
+<div class="panel strong"><div class="eyebrow">CONCLUSIÓN ESTADÍSTICA</div><h3>La distribución no es simétrica: domina el tramo bajo y existe cola hacia precios altos</h3><p>La tabla muestra que la primera clase reúne <b>36,287%</b> de los precios y que el acumulado supera el 50% en la segunda clase. El histograma confirma una concentración inicial y el polígono evidencia el descenso de frecuencias a medida que aumenta el precio.</p><div class="decision"><b>Lectura ejecutiva:</b> el precio medio agrupado es aproximadamente <b>3.959,049 USD</b>, pero la mediana agrupada es <b>2.423,934 USD</b>. Como la media queda arrastrada por valores altos, la mediana describe mejor el precio típico.</div></div>
+<div class="panel"><div class="eyebrow">ESTRUCTURA DE UNA RESPUESTA SÓLIDA</div><div class="answer-sequence"><div><b>1</b><strong>Resultado</strong><span>Indicar tabla, gráfico y medidas.</span></div><div><b>2</b><strong>Evidencia</strong><span>Citar porcentajes, acumulados y medidas.</span></div><div><b>3</b><strong>Interpretación</strong><span>Decir qué revela la distribución.</span></div><div><b>4</b><strong>Decisión</strong><span>Recomendar la medida más pertinente.</span></div></div><div class="callout small"><b>Modelo breve:</b> “El catálogo se concentra en precios bajos; por tanto, para informar un precio típico conviene usar la mediana y acompañarla con histograma o tabla de frecuencias para no ocultar la asimetría.”</div></div>
+</div>
+</main>
+<footer><span>EST-001A · Estadística Descriptiva · UTFSM Viña del Mar</span><span>Víctor Vallejo Palacios</span><span>22</span></footer></section><section class="slide" data-title="P2 · Pregunta 3">
+<div class="stripe"><i></i><b></b><em></em></div>
+<header class="head"><div><div class="kicker">EST-001A · ESTADÍSTICA DESCRIPTIVA</div><h2>P2 · Pregunta 3</h2><p>Histograma y polígono: construir la forma visual de la distribución</p></div><div class="num">23</div></header>
+<main class="body">
+<div class="question-banner"><b>PREGUNTA 3</b><span>Construya histograma, polígono e interprete un KPI comercial</span></div><div class="chart-layout"><div class="exercise-left"><div class="exam-box"><p><b>a)</b> Construya un histograma de frecuencias absolutas usando los intervalos de la tabla.</p><p><b>b)</b> Superponga el polígono de frecuencias usando las marcas de clase.</p><p><b>c)</b> KPI del ejercicio: al menos 50% del catálogo debe tener precio <span class="mexpr">≤ USD 2.500</span>. ¿Se cumple?</p></div><div class="kpi-result"><span>Resultado esperado</span><b>51,060%</b><span>de los diamantes tiene precio <span class="mexpr">≤ USD 2.500</span>. La meta se cumple por margen estrecho.</span></div><button class="reveal-btn">Ver lectura ejecutiva</button><div class="reveal"><p>La distribución está fuertemente concentrada en precios bajos y presenta cola hacia precios altos. El KPI se cumple, pero el margen es pequeño; conviene reportar también mediana y acumulados.</p></div></div><div class="chart-card"><h3>Construcción visual</h3><div class="chart-legend"><span><i></i>Histograma: barras pegadas por intervalo</span><span><b></b>Polígono: puntos (<span class="mexpr">x<sub>i</sub></span>, <span class="mexpr">f<sub>i</sub></span>)</span></div><div class="axis-chart"><div class="bars"><i style="height:100%"></i><i style="height:41%"></i><i style="height:27%"></i><i style="height:26%"></i><i style="height:20%"></i><i style="height:13%"></i><i style="height:9%"></i><i style="height:7%"></i><i style="height:6%"></i><i style="height:5%"></i><i style="height:4%"></i><i style="height:4%"></i><i style="height:3%"></i><i style="height:3%"></i><i style="height:3%"></i><i style="height:2%"></i><i style="height:2%"></i></div><svg preserveaspectratio="none" viewbox="0 0 100 100"><polyline fill="none" points="0,0 6,59 12,73 18,74 24,80 30,87 36,91 42,93 48,94 54,95 60,96 66,96 72,97 78,97 84,97 90,98 96,98" stroke="#B54A4A" stroke-width="1.8" vector-effect="non-scaling-stroke"></polyline></svg></div><div class="axis-label">Precio agrupado por intervalos de amplitud 1.089 USD</div><div class="colab-note" style="margin-top:8px">El polígono no une límites: une marcas de clase con sus frecuencias.</div></div></div></main>
+<footer><span>EST-001A · Estadística Descriptiva · UTFSM Viña del Mar</span><span>Víctor Vallejo Palacios</span><span>23</span></footer>
+</section><section class="slide" data-title="Checkpoint 2">
+<div class="stripe"><i></i><b></b><em></em></div>
+<header class="head"><div><div class="kicker">EST-001A · ESTADÍSTICA DESCRIPTIVA</div><h2>Checkpoint 2</h2><p>Reducir volumen sin perder significado</p></div><div class="num">24</div></header>
+<main class="body"><div class="checkpoint teal"><div class="check-left"><div class="check-icon">✓</div><h3>Problema 2 resuelto</h3><p>Una variable con más de 327 mil valores válidos quedó resumida en 20 intervalos, una tabla, una visualización y un KPI interpretable.</p></div><div class="check-right"><div><b>Conceptos repasados</b><span>Sturges · rango · amplitud · frecuencias · histograma</span></div><div><b>Herramientas</b><span>dropna · min/max · cut · value_counts · cumsum</span></div><div><b>Criterio profesional</b><span>definir denominador y meta antes de concluir</span></div></div></div></main>
+<footer><span>EST-001A · Estadística Descriptiva · UTFSM Viña del Mar</span><span>Víctor Vallejo Palacios</span><span>24</span></footer>
+</section><section class="slide" data-title="Problema 3 · Precio típico">
+<div class="stripe"><i></i><b></b><em></em></div>
+<header class="head"><div><div class="kicker">EST-001A · ESTADÍSTICA DESCRIPTIVA</div><h2>Problema 3 · Precio típico</h2><p>Elegir e interpretar la medida de tendencia central adecuada</p></div><div class="num">25</div></header>
+<main class="body"><div class="case-hero diamonds"><div class="case-copy"><div class="case-tag">PROBLEMA 3 · VALOR REPRESENTATIVO</div><h3>¿Qué precio representa mejor un catálogo heterogéneo?</h3><p>Un equipo de compras utiliza una base de referencia de diamantes para preparar bandas de precio. La dirección pide “un precio típico”, pero el catálogo contiene valores desde cientos hasta decenas de miles de dólares.</p><div class="brief"><b>Riesgo:</b> si la distribución es asimétrica, reportar solo la media puede producir una lectura engañosa del precio habitual.</div></div><div class="case-metrics"><div class="metric blue"><b>53.940</b><span>diamantes</span></div><div class="metric teal"><b>10</b><span>variables</span></div><div class="metric amber"><b>$326–18.823</b><span>rango de precio</span></div><div class="sourcebox">ggplot2 / diamonds · dataset de referencia</div></div></div></main>
+<footer><span>EST-001A · Estadística Descriptiva · UTFSM Viña del Mar</span><span>Víctor Vallejo Palacios</span><span>25</span></footer>
+</section><section class="slide" data-title="P3 · Preparar el análisis">
+<div class="stripe"><i></i><b></b><em></em></div>
+<header class="head"><div><div class="kicker">EST-001A · ESTADÍSTICA DESCRIPTIVA</div><h2>P3 · Preparar el análisis</h2><p>Primero observamos el rango; después elegimos la medida</p></div><div class="num">26</div></header>
+<main class="body"><div class="exercise-layout"><div class="exercise-left"><div class="section-label">NECESIDAD</div><h3>Decidir qué significa “precio típico”</h3><p>Con 53.940 precios, podemos comparar el valor exacto calculado sobre los datos crudos con la aproximación obtenida al agruparlos, tal como se hace en una tabla de frecuencias.</p><div class="qcard blue"><div class="qnum">1</div><div><h4>Datos crudos</h4><p>Calcule media, mediana y moda; compare sus valores.</p></div></div><div class="qcard teal"><div class="qnum">2</div><div><h4>Datos agrupados</h4><p>Construya intervalos y estime media, mediana y moda agrupadas.</p></div></div><div class="qcard amber"><div class="qnum">3</div><div><h4>Recomendación</h4><p>Elija la medida más representativa y justifique.</p></div></div></div><div class="exercise-right"><div class="colab tall">
+<div class="colab-top"><div class="colab-logo"><span class="ring"></span><b>CO</b></div><span class="drive">▲</span><strong>P3_diamantes.ipynb</strong><span class="star">☆</span><span class="saved">Guardado en Drive</span><button class="share">Compartir</button><span class="avatar">V</span></div>
+<div class="colab-menu"><span>Archivo</span><span>Editar</span><span>Ver</span><span>Insertar</span><span>Entorno de ejecución</span><span>Herramientas</span><span>Ayuda</span></div>
+<div class="colab-toolbar"><span class="cmd">⌕ Comandos</span><span>＋ Código</span><span>＋ Texto</span><span>▶ Ejecutar todas</span><span class="connect">Conectar ▾</span></div>
+<div class="colab-work"><div class="rail"><span>☷</span><span>▧</span><span>&lt;&gt;</span><span>◉</span><span>⌕</span><span>▢</span></div><div class="nb-area">
+<div class="cell"><div class="bracket">[ ]</div><button aria-label="Ejecutar" class="run">▶</button><pre contenteditable="true">url = 'https://raw.githubusercontent.com/tidyverse/ggplot2/main/data-raw/diamonds.csv'
+diamonds = pd.read_csv(url)
+
+print(diamonds.shape)
+print(diamonds[['carat','cut','color','clarity','price']].head())
+print(diamonds['price'].describe())</pre><button class="copy">Copiar</button></div>
+<div class="cell-output"><div class="out-label">Salida</div><pre>(53940, 10)
+price: mínimo 326 · máximo 18823</pre></div>
+<div class="colab-note">La diferencia entre media y mediana ya anticipa la forma de la distribución.</div>
+</div></div>
+</div></div></div></main>
+<footer><span>EST-001A · Estadística Descriptiva · UTFSM Viña del Mar</span><span>Víctor Vallejo Palacios</span><span>26</span></footer>
+</section><section class="slide" data-title="P3 · Pregunta 1">
+<div class="stripe"><i></i><b></b><em></em></div>
+<header class="head"><div><div class="kicker">EST-001A · ESTADÍSTICA DESCRIPTIVA</div><h2>P3 · Pregunta 1</h2><p>Las medidas centrales no son intercambiables</p></div><div class="num">27</div></header>
+<main class="body"><div class="question-banner"><b>PREGUNTA 1</b><span>Media · mediana · moda · efecto de la distribución</span></div><div class="exercise-layout"><div class="exercise-left"><div class="central-grid"><div><span>Media</span><b>$3.932,80</b></div><div><span>Mediana</span><b>$2.401</b></div><div><span>Moda</span><b>$605</b></div></div><div class="exam-box"><p><b>a)</b> Calcule las tres medidas.</p><p><b>b)</b> ¿Qué sugiere que la media sea mucho mayor que la mediana?</p><p><b>c)</b> ¿Cuál describiría mejor el “precio típico” si el objetivo es representar una compra habitual?</p></div><button class="reveal-btn">Comprobar interpretación</button><div class="reveal"><p>La separación media–mediana es compatible con una <b>cola hacia precios altos</b>. La mediana es más resistente a los valores elevados; la elección final depende del objetivo del informe.</p></div></div><div class="exercise-right"><div class="colab">
+<div class="colab-top"><div class="colab-logo"><span class="ring"></span><b>CO</b></div><span class="drive">▲</span><strong>P3_diamantes.ipynb</strong><span class="star">☆</span><span class="saved">Guardado en Drive</span><button class="share">Compartir</button><span class="avatar">V</span></div>
+<div class="colab-menu"><span>Archivo</span><span>Editar</span><span>Ver</span><span>Insertar</span><span>Entorno de ejecución</span><span>Herramientas</span><span>Ayuda</span></div>
+<div class="colab-toolbar"><span class="cmd">⌕ Comandos</span><span>＋ Código</span><span>＋ Texto</span><span>▶ Ejecutar todas</span><span class="connect">Conectar ▾</span></div>
+<div class="colab-work"><div class="rail"><span>☷</span><span>▧</span><span>&lt;&gt;</span><span>◉</span><span>⌕</span><span>▢</span></div><div class="nb-area">
+<div class="cell"><div class="bracket">[ ]</div><button aria-label="Ejecutar" class="run">▶</button><pre contenteditable="true">p = diamonds['price']
+
+print('media   =', round(p.mean(),3))
+print('mediana =', p.median())
+print('moda    =', p.mode().iloc[0])
+print('rango   =', p.max()-p.min())</pre><button class="copy">Copiar</button></div>
+<div class="cell-output"><div class="out-label">Salida</div><pre>media   = 3932.800
+mediana = 2401.0
+moda    = 605
+rango   = 18497</pre></div>
+</div></div>
+</div></div></div></main>
+<footer><span>EST-001A · Estadística Descriptiva · UTFSM Viña del Mar</span><span>Víctor Vallejo Palacios</span><span>27</span></footer>
+</section><section class="slide" data-title="P3 · Pregunta 2">
+<div class="stripe"><i></i><b></b><em></em></div>
+<header class="head"><div><div class="kicker">EST-001A · ESTADÍSTICA DESCRIPTIVA</div><h2>P3 · Pregunta 2</h2><p>Usar la tabla de frecuencias para estimar medidas agrupadas</p></div><div class="num">28</div></header>
+<main class="body">
+<div class="question-banner"><b>PREGUNTA 2</b><span>Usar la tabla de frecuencias para estimar media, mediana y moda agrupada</span></div>
+<div class="exercise-layout v16-exercise-table"><div class="exercise-left">
+<div class="section-label">DESARROLLO DESDE TABLA</div><h3>La tabla permite calcular, no solo ordenar</h3>
+<div class="calc-mini-grid">
+<div><b>1</b><strong>Media agrupada</strong><span>Sumar <span class="eq-inline"><span class="mexpr">x<sub>i</sub>f<sub>i</sub></span></span> y dividir por <span class="eq-inline"><span class="mexpr">n</span></span>.</span></div>
+<div><b>2</b><strong>Mediana agrupada</strong><span>Buscar <span class="eq-inline"><span class="mexpr">n/2</span></span> usando <span class="eq-inline"><span class="mexpr">F<sub>i</sub></span></span> y luego interpolar.</span></div>
+<div><b>3</b><strong>Moda agrupada</strong><span>Identificar la clase con mayor <span class="eq-inline"><span class="mexpr">f<sub>i</sub></span></span> y, si se requiere, aproximar puntualmente.</span></div>
+</div>
+<table class="formula-table mini-formula-table"><thead><tr><th>Medida</th><th>Elemento clave</th><th>Resultado</th></tr></thead><tbody>
+<tr><td>Media</td><td><span class="eq-inline"><span class="mexpr frac"><span class="top">∑x<sub>i</sub>f<sub>i</sub></span><span class="bottom">n</span></span></span></td><td>3.959,049</td></tr>
+<tr class="hi"><td>Mediana</td><td><span class="eq-inline"><span class="mexpr">F<sub>1</sub>=19.573 &lt; 26.970 ≤ F<sub>2</sub>=27.557</span></span></td><td>2.423,934</td></tr>
+<tr><td>Moda</td><td><span class="eq-inline"><span class="mexpr">máx f<sub>i</sub>=19.573</span></span></td><td>clase [326,1415)</td></tr>
+</tbody></table>
+<div class="answer-box"><b>Lectura:</b> la media agrupada queda por encima de la mediana agrupada, lo que confirma una distribución asimétrica hacia precios altos. La clase modal muestra dónde está la mayor concentración.</div>
+</div><div class="exercise-right"><div class="colab">
+<div class="colab-top"><div class="colab-logo"><span class="ring"></span><b>CO</b></div><span class="drive">▲</span><strong>P3_diamantes.ipynb</strong><span class="star">☆</span><span class="saved">Guardado en Drive</span><button class="share">Compartir</button><span class="avatar">V</span></div>
+<div class="colab-menu"><span>Archivo</span><span>Editar</span><span>Ver</span><span>Insertar</span><span>Entorno de ejecución</span><span>Herramientas</span><span>Ayuda</span></div>
+<div class="colab-toolbar"><span class="cmd">⌕ Comandos</span><span>＋ Código</span><span>＋ Texto</span><span>▶ Ejecutar todas</span><span class="connect">Conectar ▾</span></div>
+<div class="colab-work"><div class="rail"><span>☷</span><span>▧</span><span>&lt;&gt;</span><span>◉</span><span>⌕</span><span>▢</span></div><div class="nb-area">
+<div class="cell"><div class="bracket">[ ]</div><button aria-label="Ejecutar" class="run">▶</button><pre contenteditable="true"># Medidas usando la tabla agrupada
+media_g = (tabla['xi']*tabla['fi']).sum()/n
+
+# Mediana agrupada
+N2 = n/2
+idx_mediana = tabla.index[tabla['Fi'] &gt;= N2][0]
+fila_mediana = tabla.loc[idx_mediana]
+F_anterior = tabla.loc[idx_mediana-1, 'Fi'] if idx_mediana &gt; 0 else 0
+mediana_g = fila_mediana['LI'] + ((N2-F_anterior)/fila_mediana['fi'])*A
+
+# Moda agrupada
+idx_modal = tabla['fi'].idxmax()
+fila_modal = tabla.loc[idx_modal]
+f_ant = tabla.loc[idx_modal-1, 'fi'] if idx_modal &gt; 0 else 0
+f_sig = tabla.loc[idx_modal+1, 'fi'] if idx_modal &lt; len(tabla)-1 else 0
+d1 = fila_modal['fi'] - f_ant
+d2 = fila_modal['fi'] - f_sig
+moda_g = fila_modal['LI'] + (d1/(d1+d2))*A
+
+print('media agrupada  =', round(media_g,3))
+print('mediana agrupada=', round(mediana_g,3))
+print('moda agrupada   =', round(moda_g,3))
+print('clase modal:')
+display(fila_modal[['LI','LS','fi','xi']])</pre><button class="copy">Copiar</button></div>
+<div class="cell-output preopen"><div class="out-label">Salida esperada</div><pre>media agrupada = 3959.049
+mediana agrupada = 2423.934
+clase modal:
+LI       326
+LS      1415
+fi     19573</pre></div>
+<div class="colab-note">Esta es la versión computacional del procedimiento manual de datos agrupados.</div>
+</div></div>
+</div></div></div>
+</main>
+<footer><span>EST-001A · Estadística Descriptiva · UTFSM Viña del Mar</span><span>Víctor Vallejo Palacios</span><span>28</span></footer>
+</section><section class="slide" data-title="P3 · Pregunta 3">
+<div class="stripe"><i></i><b></b><em></em></div>
+<header class="head"><div><div class="kicker">EST-001A · ESTADÍSTICA DESCRIPTIVA</div><h2>P3 · Pregunta 3</h2><p>Una medida estadística vale por la decisión que permite justificar</p></div><div class="num">29</div></header>
+<main class="body"><div class="question-banner"><b>PREGUNTA 3</b><span>Interpretación · recomendación</span></div><div class="exercise-layout"><div class="exercise-left"><div class="exam-box"><p><b>a)</b> Compare medidas exactas y agrupadas.</p><p><b>b)</b> Explique por qué no coinciden exactamente.</p><p><b>c)</b> Redacte una recomendación ejecutiva indicando qué medida usaría para “precio típico” y qué otra información acompañaría.</p></div><button class="reveal-btn">Modelo de razonamiento</button><div class="reveal"><p>La agrupación conserva bien el orden de magnitud de media y mediana, pero cada observación se sustituye por una marca de clase. Para comunicar un precio habitual, la <b>mediana</b> es defendible; conviene acompañarla con el rango o un gráfico para evidenciar la asimetría.</p></div><div class="decision-line"><b>Resultado → interpretación → limitación → decisión</b></div></div><div class="exercise-right"><div class="colab">
+<div class="colab-top"><div class="colab-logo"><span class="ring"></span><b>CO</b></div><span class="drive">▲</span><strong>P3_diamantes.ipynb</strong><span class="star">☆</span><span class="saved">Guardado en Drive</span><button class="share">Compartir</button><span class="avatar">V</span></div>
+<div class="colab-menu"><span>Archivo</span><span>Editar</span><span>Ver</span><span>Insertar</span><span>Entorno de ejecución</span><span>Herramientas</span><span>Ayuda</span></div>
+<div class="colab-toolbar"><span class="cmd">⌕ Comandos</span><span>＋ Código</span><span>＋ Texto</span><span>▶ Ejecutar todas</span><span class="connect">Conectar ▾</span></div>
+<div class="colab-work"><div class="rail"><span>☷</span><span>▧</span><span>&lt;&gt;</span><span>◉</span><span>⌕</span><span>▢</span></div><div class="nb-area">
+<div class="cell"><div class="bracket">[ ]</div><button aria-label="Ejecutar" class="run">▶</button><pre contenteditable="true">comparacion = pd.DataFrame({
+    'sin_agrupar':[p.mean(), p.median(), p.mode().iloc[0]],
+    'agrupada':[media_g, mediana_g, moda_g]
+}, index=['media','mediana','moda'])
+comparacion['diferencia'] = comparacion['agrupada']-comparacion['sin_agrupar']
+comparacion.round(3)</pre><button class="copy">Copiar</button></div>
+<div class="cell-output"><div class="out-label">Salida</div><pre>sin_agrupar  agrupada  diferencia
+media          3932.800   3959.049       26.250
+mediana        2401.000   2423.934       22.930</pre></div>
+</div></div>
+</div></div></div></main>
+<footer><span>EST-001A · Estadística Descriptiva · UTFSM Viña del Mar</span><span>Víctor Vallejo Palacios</span><span>29</span></footer>
+</section><section class="slide" data-title="Checkpoint 3">
+<div class="stripe"><i></i><b></b><em></em></div>
+<header class="head"><div><div class="kicker">EST-001A · ESTADÍSTICA DESCRIPTIVA</div><h2>Checkpoint 3</h2><p>Calcular es necesario; justificar es lo que convierte el resultado en análisis</p></div><div class="num">30</div></header>
+<main class="body"><div class="checkpoint amber"><div class="check-left"><div class="check-icon">✓</div><h3>Problema 3 resuelto</h3><p>Python permitió calcular medidas exactas sobre 53.940 precios y, al mismo tiempo, reproducir el procedimiento manual de agrupación que será evaluado en el Certamen.</p></div><div class="check-right"><div><b>Conceptos repasados</b><span>media · mediana · moda · agrupación · marca de clase</span></div><div><b>Herramientas</b><span>mean · median · mode · cut · cumsum</span></div><div><b>Criterio profesional</b><span>elegir la medida por robustez y propósito</span></div></div></div></main>
+<footer><span>EST-001A · Estadística Descriptiva · UTFSM Viña del Mar</span><span>Víctor Vallejo Palacios</span><span>30</span></footer>
+</section><section class="slide" data-title="La potencia está en la combinación">
+<div class="stripe"><i></i><b></b><em></em></div>
+<header class="head"><div><div class="kicker">EST-001A · ESTADÍSTICA DESCRIPTIVA</div><h2>La potencia está en la combinación</h2><p>Python automatiza el procesamiento; la estadística dirige el análisis</p></div><div class="num">31</div></header>
+<main class="body"><div class="synthesis"><div class="synth-flow"><div><b>541.909</b><span>retail</span><small>¿la base es confiable?</small></div><i>→</i><div><b>53.940</b><span>precios</span><small>¿cómo se construye una tabla?</small></div><i>→</i><div><b>53.940</b><span>diamantes</span><small>¿qué valor representa el centro?</small></div></div><div class="synth-bottom"><div class="panel"><div class="eyebrow">LO QUE HIZO PYTHON</div><p>Inspeccionó cientos de miles de registros, contó, agrupó, acumuló, resumió y graficó sin trabajo manual repetitivo.</p></div><div class="panel"><div class="eyebrow">LO QUE HIZO EL ANALISTA</div><p>Definió la unidad, interpretó escalas, decidió qué datos eran válidos, eligió la medida adecuada y transformó resultados en recomendaciones.</p></div></div></div></main>
+<footer><span>EST-001A · Estadística Descriptiva · UTFSM Viña del Mar</span><span>Víctor Vallejo Palacios</span><span>31</span></footer>
+</section><section class="slide" data-title="Cierre">
+<div class="stripe"><i></i><b></b><em></em></div>
+<header class="head"><div><div class="kicker">EST-001A · ESTADÍSTICA DESCRIPTIVA</div><h2>Cierre</h2><p>Checklist de dominio y conexión con el Certamen</p></div><div class="num">32</div></header>
+<main class="body"><div class="checklist-layout"><div class="checklist"><h3>Antes del Certamen 1, debo poder…</h3><label><input type="checkbox"/> identificar población, muestra y unidad de análisis;</label><label><input type="checkbox"/> distinguir fuente primaria/secundaria y método de obtención;</label><label><input type="checkbox"/> clasificar variables por tipo y escala;</label><label><input type="checkbox"/> construir frecuencias absolutas, relativas y acumuladas;</label><label><input type="checkbox"/> aplicar Sturges, rango y amplitud;</label><label><input type="checkbox"/> elegir histograma, polígono o barras según variable;</label><label><input type="checkbox"/> calcular e interpretar media, mediana y moda;</label><label><input type="checkbox"/> redactar una conclusión con evidencia y contexto.</label></div><div class="final-card"><div class="final-kicker">IDEA CENTRAL</div><h3>El volumen cambia la herramienta,<br/>no cambia la lógica estadística.</h3><p>El viernes los cálculos serán pequeños y manuales. Hoy usamos Python para comprobar que los mismos conceptos siguen funcionando cuando la base tiene decenas o cientos de miles de registros.</p><div class="final-badge">Preparación Certamen 1 · EST-001A</div></div></div></main>
+<footer><span>EST-001A · Estadística Descriptiva · UTFSM Viña del Mar</span><span>Víctor Vallejo Palacios</span><span>32</span></footer>
+</section><div class="menu"></div><div class="dock"><button id="menuBtn" title="Índice">☰</button><button id="prev" title="Anterior">◀</button><button id="next" title="Siguiente">▶</button><button id="fullBtn" title="Pantalla completa">⛶</button></div><div class="progress"></div></div></div><script>
+const slides=[...document.querySelectorAll('.slide')];let idx=0;let dir=1;
+function scaleStage(){const st=document.querySelector('.stage');const s=Math.min(innerWidth/1600,innerHeight/900);st.style.transform=`scale(${s})`;st.style.left=`${(innerWidth-1600*s)/2}px`;st.style.top=`${(innerHeight-900*s)/2}px`;}
+addEventListener('resize',scaleStage);scaleStage();
+function show(n,d=1){if(n<0||n>=slides.length||n===idx)return;const old=slides[idx];old.classList.remove('active');old.classList.add(d>0?'exit-left':'exit-right');setTimeout(()=>old.classList.remove('exit-left','exit-right'),430);idx=n;slides[idx].classList.add('active');document.querySelector('.progress').style.width=((idx+1)/slides.length*100)+'%';document.querySelector('.menu').classList.remove('show');}
+function next(){if(idx<slides.length-1)show(idx+1,1)} function prev(){if(idx>0)show(idx-1,-1)}
+document.getElementById('next').onclick=next;document.getElementById('prev').onclick=prev;document.getElementById('menuBtn').onclick=()=>document.querySelector('.menu').classList.toggle('show');document.getElementById('fullBtn').onclick=()=>{if(!document.fullscreenElement)document.documentElement.requestFullscreen();else document.exitFullscreen()};
+addEventListener('keydown',e=>{if(e.target.matches('[contenteditable=true],textarea,input'))return;if(['ArrowRight','PageDown',' '].includes(e.key)){e.preventDefault();next()}if(['ArrowLeft','PageUp'].includes(e.key)){e.preventDefault();prev()}if(e.key==='Home')show(0,-1);if(e.key==='End')show(slides.length-1,1)});
+const menu=document.querySelector('.menu');slides.forEach((s,i)=>{const b=document.createElement('button');b.innerHTML=`<small>${String(i+1).padStart(2,'0')}</small>${s.dataset.title||'Slide'}`;b.onclick=()=>show(i,i>idx?1:-1);menu.appendChild(b)});
+document.querySelectorAll('.run').forEach(btn=>btn.onclick=()=>btn.closest('.colab').querySelector('.cell-output').classList.toggle('show'));
+document.querySelectorAll('.copy').forEach(btn=>btn.onclick=async()=>{const t=btn.closest('.cell').querySelector('pre').innerText;try{await navigator.clipboard.writeText(t);btn.textContent='Copiado';setTimeout(()=>btn.textContent='Copiar',1000)}catch(e){}});
+document.querySelectorAll('.reveal-btn').forEach(btn=>btn.onclick=()=>{const r=btn.nextElementSibling;r.classList.toggle('show');btn.textContent=r.classList.contains('show')?'Ocultar respuesta':'Mostrar respuesta'});
+document.querySelector('.progress').style.width=(1/slides.length*100)+'%';
+
+function advanceBuild(btn){
+  const panel = btn.closest('.freq-panel');
+  if(!panel) return;
+  const steps=[...panel.querySelectorAll('.build-step')];
+  let last=steps.findLastIndex(s=>s.classList.contains('on'));
+  if(last < steps.length-1){ steps[last+1].classList.add('on'); }
+  else { steps.forEach((s,i)=>s.classList.toggle('on', i===0)); }
+}
+
+const liveTexts = [
+  '<b>Paso 1.</b> Partimos desde el mínimo 326 y sumamos la amplitud 1.089 hasta cubrir el máximo 18.823. Cada fila de la tabla será un intervalo real.',
+  '<b>Paso 2.</b> La frecuencia absoluta <span class="mexpr">f<sub>i</sub></span> se obtiene consultando a Python cuántos precios caen dentro de cada intervalo. Esto evita contar manualmente 53.940 registros.',
+  '<b>Paso 3.</b> La marca de clase <span class="mexpr">x<sub>i</sub></span> es el punto medio del intervalo: <span class="mexpr">x<sub>i</sub>=(LI+LS)/2</span>. Se usará como representante de la clase.',
+  '<b>Paso 4.</b> La frecuencia relativa se calcula como <span class="mexpr">fr<sub>i</sub>=f<sub>i</sub>/n</span>. Indica la proporción de observaciones en cada intervalo.',
+  '<b>Paso 5.</b> La frecuencia porcentual transforma la proporción a porcentaje: <span class="mexpr">f<sub>i</sub>%=100&middot;fr<sub>i</sub></span>.',
+  '<b>Paso 6.</b> La frecuencia acumulada absoluta <span class="mexpr">F<sub>i</sub></span> suma las frecuencias anteriores. Sirve para estudiar umbrales y posiciones.',
+  '<b>Paso 7.</b> La frecuencia acumulada relativa es <span class="mexpr">Fr<sub>i</sub>=F<sub>i</sub>/n</span>. Debe terminar exactamente en 1.',
+  '<b>Paso 8.</b> La frecuencia acumulada porcentual es <span class="mexpr">F<sub>i</sub>%=100&middot;Fr<sub>i</sub></span>. Debe cerrar en 100%.',
+  '<b>Paso 9.</b> Calculamos <span class="mexpr">x<sub>i</sub>f<sub>i</sub></span> para preparar la media agrupada. Luego se suma esa columna completa.',
+  '<b>Paso 10.</b> Con la tabla completa estimamos media, mediana y moda agrupada. La tabla deja de ser solo organización: se vuelve instrumento de cálculo y decisión.'
+];
+document.querySelectorAll('.live-step').forEach(btn=>btn.onclick=()=>{
+  const step=Number(btn.dataset.step);
+  const root=btn.closest('.live-table-layout');
+  const table=root.querySelector('.live-freq-table');
+  table.className = 'live-freq-table reveal-'+Math.min(step,9);
+  root.querySelectorAll('.live-step').forEach(b=>b.classList.toggle('active', Number(b.dataset.step)<=step));
+  const explain=root.querySelector('#liveExplain'); if(explain) explain.innerHTML=liveTexts[step];
+  const summary=root.querySelector('#liveSummary'); if(summary) summary.classList.toggle('show', step>=9);
+});
+
+</script></body></html>
