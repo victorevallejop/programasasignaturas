@@ -1,0 +1,1228 @@
+<!DOCTYPE html>
+
+<html lang="es">
+<head>
+<meta charset="utf-8"/>
+<meta content="width=device-width,initial-scale=1" name="viewport"/>
+<title>Cuantiles con Python · Estadística Descriptiva</title>
+<style>
+:root{
+  --navy:#173A5E;--navy2:#0D273F;--blue:#2D6393;--teal:#2C8791;--amber:#D18A18;--red:#B54A4A;
+  --paper:#F4F6F8;--white:#fff;--text:#22303A;--muted:#667682;--line:#D6DEE4;
+  --soft-blue:#EDF4FA;--soft-teal:#ECF7F7;--soft-amber:#FFF6E8;--soft-red:#FAEEEE;
+  --shadow:0 10px 28px rgba(23,58,94,.10);--body:Calibri,"Segoe UI",Arial,sans-serif;
+  --title:"Calibri Light",Calibri,"Segoe UI",Arial,sans-serif;--mono:"Cascadia Mono",Consolas,"Courier New",monospace;
+}
+*{box-sizing:border-box}
+html,body{width:100%;height:100%;margin:0;overflow:hidden;background:#dfe5e9;color:var(--text);font-family:var(--body)}
+button{font:inherit}.viewport{position:relative;width:100vw;height:100vh;overflow:hidden}
+.stage{position:absolute;width:1600px;height:900px;transform-origin:0 0;background:var(--paper);box-shadow:0 22px 70px rgba(12,34,55,.25)}
+.slide{position:absolute;inset:0;padding:34px 54px 36px;background:var(--paper);display:grid;grid-template-rows:95px minmax(0,1fr) 28px;gap:16px;opacity:0;transform:translateX(22px) scale(.995);pointer-events:none;transition:opacity .38s ease,transform .38s cubic-bezier(.2,.7,.2,1);overflow:hidden}
+.slide.active{opacity:1;transform:none;pointer-events:auto;z-index:3}.slide.exit-left{opacity:0;transform:translateX(-24px) scale(.995);z-index:2}.slide.exit-right{opacity:0;transform:translateX(24px) scale(.995);z-index:2}
+.stripe{position:absolute;top:0;left:0;right:0;height:8px;background:var(--navy)}.stripe i,.stripe b,.stripe em{display:block;float:left;height:8px}.stripe i{width:14px;background:var(--red)}.stripe b{width:118px;background:var(--amber)}.stripe em{width:74px;background:var(--teal)}
+.head{background:var(--navy);border-radius:10px;color:#fff;padding:14px 22px 13px 24px;display:flex;align-items:center;justify-content:space-between;border-left:6px solid var(--amber);box-shadow:0 5px 13px rgba(12,34,55,.14)}
+.kicker{font-size:13px;font-weight:700;letter-spacing:.16em;color:#cfe0ee;margin-bottom:3px}.head h2{font-family:var(--title);font-size:36px;line-height:1.05;font-weight:600;margin:0}.head p{font-family:var(--title);font-size:17px;font-style:italic;margin:5px 0 0;color:#d7e2eb}.num{font-family:var(--title);font-size:18px;color:#b8cad8}
+.body{min-height:0;overflow:hidden;display:flex;flex-direction:column;justify-content:center;width:100%}.slide footer{margin:0 -54px -36px;background:var(--navy);color:#d9e6ef;border-bottom:8px solid var(--amber);height:36px;padding:7px 18px 0;display:grid;grid-template-columns:1fr auto 32px;gap:18px;align-items:start;font-size:11px}.slide footer span:last-child{text-align:right}
+/* cover */
+.cover{padding:0;display:block;background:var(--navy2)}.cover-split{display:grid;grid-template-columns:52% 48%;height:892px}.cover-left{padding:78px 68px 56px;background:linear-gradient(135deg,#0c2237 0%,#173A5E 70%,#1c476e 100%);color:#fff;border-left:11px solid var(--red);display:flex;flex-direction:column;justify-content:center}.cover-kicker{display:inline-block;align-self:flex-start;background:#2D6393;padding:11px 18px;border-radius:7px;font-size:14px;font-weight:700;letter-spacing:.13em;margin-bottom:40px}.cover h1{font-family:var(--title);font-size:72px;line-height:.98;margin:0;font-weight:600;letter-spacing:-.02em}.cover-rule{width:182px;height:6px;background:var(--amber);margin:26px 0 23px}.cover-lead{font-family:var(--title);font-size:27px;line-height:1.25;color:#dce8f0;max-width:700px;margin:0}.cover-meta{margin-top:26px;color:#afc3d0;font-size:16px}.cover-pills{display:flex;gap:9px;flex-wrap:wrap;margin-top:42px}.cover-pills span{border:1px solid rgba(255,255,255,.34);background:rgba(45,99,147,.55);border-radius:7px;padding:9px 14px;font-size:14px}.cover-right{background:radial-gradient(circle at 70% 20%,#45637a 0,#263e52 28%,#10283f 68%);padding:72px 54px;display:flex;align-items:center}.cover-dash{width:100%;background:rgba(255,255,255,.09);border:1px solid rgba(255,255,255,.17);border-radius:16px;padding:28px;box-shadow:0 28px 70px rgba(0,0,0,.28)}.dash-title{color:#c5d6e2;font-size:14px;letter-spacing:.12em;font-weight:700}.dash-metrics{display:grid;grid-template-columns:repeat(3,1fr);gap:12px;margin:24px 0}.dash-metrics div{background:#fff;border-radius:10px;padding:18px}.dash-metrics b{display:block;color:var(--navy);font-family:var(--title);font-size:30px}.dash-metrics span{color:#677781;font-size:13px}.quartile-hero{height:250px;background:rgba(255,255,255,.96);border-radius:10px;padding:28px 26px;display:flex;flex-direction:column;justify-content:center}.quartile-line{height:18px;border-radius:9px;background:linear-gradient(90deg,var(--blue) 0 25%,var(--teal) 25% 50%,var(--amber) 50% 75%,var(--red) 75% 100%);position:relative}.quartile-points{display:grid;grid-template-columns:repeat(5,1fr);margin-top:15px;color:#395469;font-size:13px;text-align:center}.quartile-points b{color:var(--navy);font-size:19px;display:block}.dash-flow{display:flex;align-items:center;justify-content:space-between;color:#e6eef4;margin-top:20px;font-size:15px}.dash-flow span{padding:8px 12px;border:1px solid rgba(255,255,255,.24);border-radius:7px}.cover-bottom{position:absolute;left:0;right:0;bottom:0;height:8px;background:var(--amber)}
+/* generic */
+.grid2{display:grid;grid-template-columns:1fr 1fr;gap:22px;min-height:0}.grid3{display:grid;grid-template-columns:repeat(3,1fr);gap:18px}.grid4{display:grid;grid-template-columns:repeat(4,1fr);gap:14px}.panel{background:#fff;border:1px solid var(--line);border-radius:11px;padding:24px 26px;box-shadow:var(--shadow);min-width:0}.panel.strong{border-left:7px solid var(--amber)}.panel.blue{border-top:6px solid var(--blue)}.panel.teal{border-top:6px solid var(--teal)}.panel.amber{border-top:6px solid var(--amber)}.panel.red{border-top:6px solid var(--red)}
+.eyebrow,.section-label{font-size:13px;font-weight:700;letter-spacing:.15em;color:var(--amber);margin-bottom:9px}.panel h3{font-family:var(--title);font-size:31px;line-height:1.08;color:var(--navy);margin:0 0 14px}.panel h4{font-size:18px;color:var(--navy);margin:0 0 9px}.panel p{font-size:17px;line-height:1.38;margin:0;color:#435765}.panel ul{margin:8px 0 0 20px;padding:0}.panel li{font-size:16px;line-height:1.42;margin:5px 0}
+.callout{border:1px solid #e1b565;background:var(--soft-amber);border-radius:10px;padding:13px 17px;font-size:17px;margin-top:14px}.callout.red{border-color:#dba1a1;background:var(--soft-red)}.callout.teal{border-color:#acd9d9;background:var(--soft-teal)}.callout.blue{border-color:#b8cfe2;background:var(--soft-blue)}
+.bigquote{font-family:var(--title);font-size:29px;line-height:1.25;color:var(--navy);margin:8px 0 20px}.muted{color:var(--muted)}
+.map-grid{display:grid;grid-template-columns:repeat(6,1fr);gap:12px}.map-card{height:448px;background:#fff;border:1px solid var(--line);border-radius:11px;box-shadow:var(--shadow);text-align:center;overflow:hidden}.map-card>b{display:block;color:#fff;padding:12px;font-size:17px}.map-card.blue>b{background:var(--blue)}.map-card.teal>b{background:var(--teal)}.map-card.amber>b{background:var(--amber)}.map-card.red>b{background:var(--red)}.map-card h3{font-family:var(--title);font-size:22px;color:var(--navy);margin:34px 14px 20px}.map-card p{font-family:var(--title);font-size:16px;font-style:italic;line-height:1.35;color:#5e6f7b;padding:0 14px}.map-card small{display:block;margin:24px 14px 0;color:#7c8a93;font-size:12px;line-height:1.35}
+.quantile-row{display:grid;grid-template-columns:160px 1fr 1.2fr;align-items:center;gap:12px;padding:15px 0;border-bottom:1px solid var(--line)}.quantile-row:last-child{border-bottom:0}.quantile-row b{font-size:17px;color:var(--navy)}.quantile-row .eq{font-family:"Cambria Math",serif;font-size:26px;color:#173A5E;text-align:center}.pill{display:inline-flex;padding:6px 10px;border-radius:999px;background:var(--soft-blue);color:var(--blue);font-size:13px;font-weight:700}
+.segbar{display:grid;grid-template-columns:repeat(4,1fr);border-radius:9px;overflow:hidden;height:42px;margin:16px 0 10px;color:#fff;text-align:center;align-items:center;font-weight:700}.segbar span:nth-child(1){background:var(--blue)}.segbar span:nth-child(2){background:var(--teal)}.segbar span:nth-child(3){background:var(--amber)}.segbar span:nth-child(4){background:var(--red)}
+.steps{display:grid;gap:10px}.step{display:grid;grid-template-columns:42px 1fr;gap:12px;align-items:start;background:#fff;border:1px solid var(--line);border-radius:9px;padding:12px 14px}.step b{width:34px;height:34px;border-radius:50%;display:grid;place-items:center;background:var(--blue);color:#fff}.step:nth-child(2) b{background:var(--teal)}.step:nth-child(3) b{background:var(--amber)}.step:nth-child(4) b{background:var(--red)}.step strong{color:var(--navy);font-size:16px}.step span{display:block;color:#596b77;font-size:14px;margin-top:3px}
+.formula{background:#fff;border:1px solid var(--line);border-left:6px solid var(--teal);border-radius:10px;padding:17px 20px;text-align:center;font-family:"Cambria Math","Times New Roman",serif;color:var(--navy);font-size:31px;margin:12px 0}.formula small{display:block;font-family:var(--body);font-size:13px;color:var(--muted);margin-top:8px}
+.code-layout{display:grid;grid-template-columns:.86fr 1.14fr;gap:22px;min-height:0}.exercise-layout{display:grid;grid-template-columns:.9fr 1.1fr;gap:22px;min-height:0}.exercise-left{background:#fff;border:1px solid var(--line);border-radius:11px;padding:23px 25px;box-shadow:var(--shadow);min-width:0;overflow:hidden}.exercise-left h3{font-family:var(--title);font-size:30px;color:var(--navy);margin:0 0 14px}.qcard{display:grid;grid-template-columns:44px 1fr;gap:11px;border:1px solid var(--line);border-radius:9px;padding:10px 12px;margin-top:9px}.qnum{width:34px;height:34px;border-radius:50%;background:var(--blue);color:#fff;display:grid;place-items:center;font-weight:700}.qcard.teal .qnum{background:var(--teal)}.qcard.amber .qnum{background:var(--amber)}.qcard.red .qnum{background:var(--red)}.qcard h4{margin:0 0 3px;color:var(--navy)}.qcard p{margin:0;font-size:14px;line-height:1.25;color:#5e707c}
+/* mock colab */
+.colab{background:#fff;border:1px solid #cfd7dd;border-radius:10px;overflow:hidden;box-shadow:var(--shadow);height:100%;min-height:0;display:flex;flex-direction:column}.colab-top{height:48px;display:flex;align-items:center;gap:11px;padding:0 14px;border-bottom:1px solid #e1e5e8;color:#37474f;font-size:13px}.colab-logo{width:30px;height:30px;border-radius:50%;background:#f4a300;color:#fff;display:grid;place-items:center;font-size:9px;font-weight:700}.colab-top strong{font-size:15px}.saved{color:#78909c}.share{margin-left:auto;border:0;border-radius:17px;background:#1a73e8;color:#fff;padding:7px 15px}.avatar{width:28px;height:28px;border-radius:50%;background:#8e44ad;color:#fff;display:grid;place-items:center}.colab-menu{height:33px;display:flex;gap:19px;padding:8px 16px;font-size:12px;border-bottom:1px solid #e7eaec;color:#52626c}.colab-toolbar{height:38px;display:flex;gap:16px;align-items:center;padding:0 15px;background:#fafafa;border-bottom:1px solid #e7eaec;font-size:12px}.connect{margin-left:auto}.colab-work{display:grid;grid-template-columns:40px 1fr;min-height:0;flex:1}.rail{border-right:1px solid #e4e8eb;display:flex;flex-direction:column;align-items:center;gap:18px;padding-top:15px;color:#607d8b}.nb-area{padding:14px;overflow:hidden}.cell{position:relative;border-left:3px solid #1a73e8;background:#fbfbfb;padding:13px 45px 13px 40px;border-radius:4px;margin-bottom:7px}.run{position:absolute;left:8px;top:13px;border:0;background:transparent;color:#1a73e8;cursor:pointer;font-size:16px}.copy{position:absolute;right:7px;top:8px;border:1px solid #d3d8dc;border-radius:5px;background:#fff;color:#607d8b;padding:4px 7px;font-size:11px;cursor:pointer}.cell pre{margin:0;font-family:var(--mono);font-size:12.7px;line-height:1.38;white-space:pre-wrap;color:#263238;outline:none}.cell-output{display:none;border-left:3px solid var(--teal);background:#f8fbfb;border-radius:4px;padding:10px 12px;margin:0 0 7px 0}.cell-output.show,.cell-output.preopen{display:block}.cell-output .out-label{font-size:10px;font-weight:700;letter-spacing:.1em;color:var(--teal);margin-bottom:4px}.cell-output pre{font-family:var(--mono);font-size:12px;line-height:1.34;margin:0;color:#33474f;white-space:pre-wrap}.colab-note{font-size:12px;color:#657780;background:#fff7e8;border:1px solid #f1d4a1;padding:8px 10px;border-radius:6px}
+.reveal-btn,.action-btn{border:0;border-radius:7px;background:var(--blue);color:#fff;padding:9px 15px;font-weight:700;cursor:pointer;margin-top:12px}.reveal-btn.teal,.action-btn.teal{background:var(--teal)}.reveal{display:none;margin-top:10px;padding:11px 13px;background:var(--soft-teal);border:1px solid #a6d4d7;border-radius:8px;font-size:14px;line-height:1.35}.reveal.show{display:block}
+.table{width:100%;border-collapse:collapse;background:#fff;font-size:15px}.table th{background:var(--blue);color:#fff;padding:10px;border:1px solid #fff}.table td{padding:10px;border:1px solid var(--line);text-align:center}.table tbody tr:nth-child(even){background:#f8fafb}.table td:first-child{text-align:left}
+.question-banner{display:flex;align-items:center;gap:14px;border-radius:9px;background:var(--navy);color:#fff;padding:11px 15px;margin-bottom:12px}.question-banner b{background:var(--amber);padding:6px 9px;border-radius:6px;font-size:12px;letter-spacing:.08em}.question-banner span{font-size:17px}
+.metric-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin:8px 0 12px}.metric-grid div{border:1px solid var(--line);border-radius:9px;padding:12px;text-align:center;background:#fbfcfd}.metric-grid span{display:block;font-size:12px;color:var(--muted)}.metric-grid b{font-family:var(--title);font-size:27px;color:var(--navy)}
+/* interactive quantile explorer */
+.explorer{display:grid;grid-template-columns:.76fr 1.24fr;gap:22px;align-items:stretch}.explorer-controls{background:#fff;border:1px solid var(--line);border-radius:11px;padding:24px;box-shadow:var(--shadow)}.explorer-controls h3{font-family:var(--title);font-size:29px;margin:0 0 12px;color:var(--navy)}.explorer-controls label{display:block;font-weight:700;color:var(--navy);margin:15px 0 8px}.explorer-controls input[type=range]{width:100%;accent-color:var(--blue)}.explorer-presets{display:flex;gap:8px;flex-wrap:wrap;margin-top:14px}.explorer-presets button{border:1px solid var(--line);background:#fff;border-radius:7px;padding:8px 11px;color:var(--navy);font-weight:700;cursor:pointer}.explorer-presets button:hover{background:var(--soft-blue)}.explorer-value{font-family:var(--title);font-size:46px;color:var(--blue);margin:7px 0}.explorer-viz{background:#fff;border:1px solid var(--line);border-radius:11px;padding:28px;box-shadow:var(--shadow);display:flex;flex-direction:column;justify-content:center}.track-wrap{position:relative;height:140px;margin:0 18px}.track{position:absolute;left:0;right:0;top:58px;height:18px;background:#e7edf1;border-radius:9px;overflow:hidden}.track-fill{height:100%;width:25%;background:linear-gradient(90deg,var(--blue),var(--teal))}.marker{position:absolute;top:38px;left:25%;width:4px;height:58px;background:var(--red);transform:translateX(-2px)}.marker:after{content:"";position:absolute;left:50%;top:-9px;transform:translateX(-50%);border-left:8px solid transparent;border-right:8px solid transparent;border-bottom:10px solid var(--red)}.track-labels{display:grid;grid-template-columns:repeat(5,1fr);font-size:12px;color:#687883;margin-top:95px;text-align:center}.explainer{font-size:19px;line-height:1.4;color:#3d5362;background:var(--soft-blue);border-radius:8px;padding:13px 15px}.explainer b{color:var(--navy)}
+/* boxplot diagram */
+.boxplot{height:280px;background:#fff;border:1px solid var(--line);border-radius:11px;padding:22px;box-shadow:var(--shadow)}.boxplot svg{width:100%;height:100%}.axis{stroke:#8aa0af;stroke-width:2}.whisk{stroke:var(--navy);stroke-width:4}.box{fill:rgba(44,135,145,.20);stroke:var(--teal);stroke-width:4}.median{stroke:var(--red);stroke-width:5}.dot{fill:var(--amber);stroke:#fff;stroke-width:2}.svg-label{font-family:Calibri,Arial,sans-serif;font-size:17px;fill:#385165}.svg-small{font-family:Calibri,Arial,sans-serif;font-size:13px;fill:#72838d}
+.checkpoint{display:grid;grid-template-columns:.92fr 1.08fr;gap:22px}.check-left{background:var(--navy);color:#fff;border-radius:11px;padding:32px;display:flex;flex-direction:column;justify-content:center}.check-icon{width:58px;height:58px;border-radius:50%;background:var(--teal);display:grid;place-items:center;font-size:34px;margin-bottom:18px}.check-left h3{font-family:var(--title);font-size:34px;margin:0 0 12px}.check-left p{font-size:17px;line-height:1.42;color:#dce8f0}.check-right{display:grid;gap:12px}.check-right div{background:#fff;border:1px solid var(--line);border-radius:9px;padding:16px 18px;box-shadow:var(--shadow)}.check-right b{display:block;color:var(--navy);margin-bottom:5px}.check-right span{color:#657681;font-size:15px}
+.synthesis{display:grid;grid-template-rows:auto 1fr;gap:18px}.synth-flow{display:grid;grid-template-columns:1fr auto 1fr auto 1fr auto 1fr;align-items:center;gap:12px}.synth-flow div{background:#fff;border:1px solid var(--line);border-radius:10px;text-align:center;padding:20px 13px;box-shadow:var(--shadow)}.synth-flow b{font-family:var(--title);font-size:24px;color:var(--navy);display:block}.synth-flow span{font-weight:700;color:var(--teal)}.synth-flow small{display:block;color:#74838d;margin-top:7px}.synth-flow i{font-style:normal;font-size:28px;color:#8da0ac}.synth-bottom{display:grid;grid-template-columns:1fr 1fr;gap:18px}
+.checklist-layout{display:grid;grid-template-columns:1.05fr .95fr;gap:22px}.checklist{background:#fff;border:1px solid var(--line);border-radius:11px;padding:24px 28px;box-shadow:var(--shadow)}.checklist h3{font-family:var(--title);font-size:29px;color:var(--navy);margin:0 0 15px}.checklist label{display:block;border-bottom:1px solid #e6ebee;padding:9px 0;font-size:15px}.checklist input{width:18px;height:18px;margin-right:10px;accent-color:var(--teal);vertical-align:-3px}.final-card{background:var(--navy2);border-radius:11px;color:#fff;padding:30px;display:flex;flex-direction:column;justify-content:center}.final-kicker{color:#9ec0d7;font-size:13px;font-weight:700;letter-spacing:.14em}.final-card h3{font-family:var(--title);font-size:34px;line-height:1.12;margin:13px 0}.final-card p{font-size:16px;line-height:1.42;color:#cbd9e2}.final-badge{align-self:flex-start;margin-top:16px;background:var(--amber);padding:8px 12px;border-radius:7px;font-weight:700}
+/* menu and nav */
+.menu{position:absolute;right:72px;bottom:72px;width:370px;max-height:700px;overflow:auto;background:rgba(13,39,63,.97);border:1px solid rgba(255,255,255,.18);border-radius:11px;padding:9px;display:none;z-index:20;box-shadow:0 18px 60px rgba(0,0,0,.35)}.menu.show{display:block}.menu button{width:100%;border:0;background:transparent;color:#e7f0f6;text-align:left;padding:9px 10px;border-radius:7px;display:flex;gap:10px;align-items:center;cursor:pointer}.menu button:hover{background:rgba(255,255,255,.10)}.menu small{width:28px;color:#9ec0d7}.dock{position:absolute;right:20px;bottom:20px;z-index:30;display:flex;gap:6px;background:rgba(13,39,63,.93);padding:7px;border-radius:10px}.dock button{width:40px;height:38px;border:0;border-radius:7px;background:rgba(255,255,255,.10);color:#fff;cursor:pointer}.dock button:hover{background:rgba(255,255,255,.20)}.progress{position:absolute;left:0;bottom:0;height:5px;background:var(--amber);z-index:50;transition:width .3s ease}
+
+
+/* web graphics added for percentile intuition */
+.web-figure{margin-top:14px;border:1px solid var(--line);background:#fff;border-radius:11px;padding:10px;box-shadow:var(--shadow)}
+.web-figure img{display:block;width:100%;height:auto;border-radius:8px;background:#fff}
+.web-figure figcaption{font-size:12.5px;line-height:1.28;color:var(--muted);margin-top:8px}
+.web-figure.compact img{max-height:170px;object-fit:contain}
+.image-pair{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-top:14px}
+.image-pair .web-figure{margin-top:0}
+.image-pair .web-figure img{max-height:175px;object-fit:contain}
+.hint-list{margin:10px 0 0 0;padding-left:18px;color:#41515c;font-size:15px;line-height:1.35}
+.hint-list li{margin:4px 0}
+
+
+/* quantile concept graphics */
+.quantile-viz{display:grid;grid-template-columns:1.15fr .85fr;gap:18px;align-items:start;margin-top:12px}
+.partition-stack{display:grid;gap:12px}
+.partition-card{background:#fff;border:1px solid var(--line);border-radius:12px;padding:10px 12px;box-shadow:var(--shadow)}
+.partition-head{display:flex;justify-content:space-between;align-items:baseline;margin-bottom:8px;gap:12px}
+.partition-head b{font-size:15px;color:var(--navy)}
+.partition-head span{font-size:12px;color:var(--muted)}
+.partition-bar{display:grid;gap:4px;height:26px}
+.partition-bar.part4{grid-template-columns:repeat(4,1fr)}
+.partition-bar.part5{grid-template-columns:repeat(5,1fr)}
+.partition-bar.part10{grid-template-columns:repeat(10,1fr)}
+.partition-bar.part20{grid-template-columns:repeat(20,1fr)}
+.partition-bar i{display:block;border-radius:4px;border:1px solid rgba(23,58,94,.09);background:linear-gradient(180deg,#f2f7fb,#dfeaf4)}
+.partition-bar.part5 i{background:linear-gradient(180deg,#eef8f8,#d9efef)}
+.partition-bar.part10 i{background:linear-gradient(180deg,#fff7ea,#ffe7ba)}
+.partition-bar.part20 i{background:linear-gradient(180deg,#faeeee,#f8d7d7)}
+.partition-scale{display:flex;justify-content:space-between;font-size:11px;color:var(--muted);margin-top:5px}
+.partition-note{font-size:12.5px;color:#44515b;line-height:1.3;margin-top:6px}
+.mini-legend{display:flex;gap:10px;flex-wrap:wrap;font-size:12px;color:var(--muted);margin-top:4px}
+.mini-legend span::before{content:'';display:inline-block;width:10px;height:10px;border-radius:3px;margin-right:6px;vertical-align:-1px;background:var(--blue)}
+.mini-legend span:nth-child(2)::before{background:var(--teal)}
+.mini-legend span:nth-child(3)::before{background:var(--amber)}
+.mini-legend span:nth-child(4)::before{background:var(--red)}
+
+
+/* redesigned concept slides */
+.concept-layout{display:grid;grid-template-columns:1.05fr 1.35fr;gap:18px;align-items:stretch;min-height:0}
+.concept-side{display:flex;flex-direction:column;gap:12px}
+.info-card{background:#fff;border:1px solid var(--line);border-radius:14px;padding:14px 16px;box-shadow:var(--shadow)}
+.info-card h3{margin:0 0 8px;font-size:24px;color:var(--navy)}
+.info-card p{margin:0;font-size:16px;line-height:1.38;color:#44515b}
+.mini-cards{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+.mini-card{background:#fff;border:1px solid var(--line);border-radius:12px;padding:12px 14px;box-shadow:var(--shadow)}
+.mini-card .tag{font-size:12px;font-weight:800;letter-spacing:.08em;color:var(--muted);margin-bottom:4px}
+.mini-card b{display:block;font-size:25px;color:var(--navy);margin-bottom:4px}
+.mini-card p{margin:0;font-size:14.5px;line-height:1.32;color:#465762}
+.svg-panel{background:#fff;border:1px solid var(--line);border-radius:14px;padding:10px 12px;box-shadow:var(--shadow);min-height:0;display:flex;flex-direction:column}
+.svg-panel svg{width:100%;height:100%}
+.svg-caption{font-size:12.5px;line-height:1.3;color:var(--muted);margin-top:6px}
+.legend-inline{display:flex;gap:10px;flex-wrap:wrap;margin-top:8px;font-size:12px;color:var(--muted)}
+.legend-inline span{display:inline-flex;align-items:center;gap:6px}
+.legend-inline i{display:inline-block;width:11px;height:11px;border-radius:3px}
+.equiv-layout{display:grid;grid-template-columns:0.92fr 1.08fr;gap:18px;align-items:stretch}
+.equiv-list{display:grid;gap:12px}
+.equiv-card{background:#fff;border:1px solid var(--line);border-radius:12px;padding:13px 15px;box-shadow:var(--shadow)}
+.equiv-card .label{font-size:12px;font-weight:800;letter-spacing:.08em;color:var(--muted);margin-bottom:4px}
+.equiv-card .eqbig{font-size:28px;font-family:var(--title);color:var(--navy);margin:1px 0 5px}
+.equiv-card p{margin:0;font-size:14.5px;line-height:1.34;color:#44515b}
+.hierarchy-note{margin-top:10px;font-size:13px;line-height:1.33;color:#50606c}
+/* Better space for image-heavy slides */
+.slide[data-title="Del cuartil al percentil"] .exercise-layout{grid-template-columns:.92fr 1.08fr;gap:18px}
+.slide[data-title="Del cuartil al percentil"] .exercise-left{display:flex;flex-direction:column;gap:10px}
+.slide[data-title="Del cuartil al percentil"] .metric-grid{margin-bottom:4px}
+.slide[data-title="Del cuartil al percentil"] .web-figure.compact img{max-height:220px}
+.slide[data-title="Explorador de posición"] .explorer{grid-template-columns:.75fr 1.25fr;gap:18px}
+.slide[data-title="Explorador de posición"] .image-pair{grid-template-columns:1fr 1fr;gap:14px}
+.slide[data-title="Explorador de posición"] .image-pair .web-figure img{max-height:230px}
+.slide[data-title="Explorador de posición"] .track-wrap{margin-bottom:12px}
+.slide[data-title="Explorador de posición"] .explainer{font-size:16px}
+
+
+.vector-pair{display:grid;grid-template-columns:1fr 1fr;gap:14px;margin-top:14px}
+.vector-pair .svg-panel{padding:10px}
+.vector-pair .svg-panel svg{height:210px}
+.compact-svg svg{height:210px}
+
+
+/* global readability improvements */
+.head h2{font-size:40px}
+.head p{font-size:19px;line-height:1.24}
+.kicker{font-size:14px}
+.body{font-size:18px}
+.panel h3,.exercise-left h3,.info-card h3{font-size:26px}
+.panel p,.panel li,.qcard p,.callout,.reveal,.bigquote,.explainer,.info-card p,.mini-card p,.equiv-card p,.svg-caption,.hierarchy-note,.final-card p,.final-list label,.cell-output pre{font-size:16.8px;line-height:1.38}
+.qcard h4,.mini-card b{font-size:20px}
+.colab-menu span,.colab-toolbar span,.section-label,.eyebrow,.out-label,.tag,.label{font-size:13px}
+pre{font-size:15px;line-height:1.35}
+.slide footer{font-size:12px}
+.metric-grid b{font-size:26px}
+.metric-grid span{font-size:12px}
+/* new big data application slides */
+.case-grid{display:grid;grid-template-columns:1fr 1fr;gap:16px}
+.case-card{background:#fff;border:1px solid var(--line);border-radius:14px;padding:12px 14px;box-shadow:var(--shadow);display:grid;grid-template-columns:1.05fr .95fr;gap:12px;align-items:center}
+.case-card h3{margin:0 0 6px;font-size:22px;color:var(--navy)}
+.case-card p{margin:0;font-size:15.8px;line-height:1.35;color:#44515b}
+.case-card .eyebrow{margin-bottom:4px}
+.case-card svg{width:100%;height:118px}
+.use-tag{display:inline-block;margin-top:8px;background:var(--soft-blue);color:var(--navy);border-radius:999px;padding:5px 10px;font-size:12.5px;font-weight:700}
+.problem-layout{display:grid;grid-template-columns:1.03fr .97fr;gap:18px;align-items:start}
+.problem-list{display:grid;gap:12px}
+.problem-card{background:#fff;border:1px solid var(--line);border-radius:14px;padding:13px 15px;box-shadow:var(--shadow)}
+.problem-card h3{margin:0 0 6px;font-size:21px;color:var(--navy)}
+.problem-card p{margin:0;font-size:15.8px;line-height:1.34;color:#44515b}
+.problem-card ul{margin:8px 0 0 18px;padding:0}
+.problem-card li{font-size:15.4px;line-height:1.32;margin:3px 0;color:#44515b}
+.dataset-note{background:#f7fafc;border:1px solid var(--line);border-radius:14px;padding:12px;box-shadow:var(--shadow)}
+.dataset-note h3{margin:0 0 8px;font-size:22px;color:var(--navy)}
+.dataset-note p{margin:0 0 8px;font-size:15.8px;line-height:1.35;color:#44515b}
+.code-card{margin-top:10px;background:#0f1720;border-radius:14px;color:#d8e5f0;padding:12px 14px;box-shadow:var(--shadow)}
+.code-card pre{margin:0;white-space:pre-wrap;font-size:14.2px;line-height:1.35;font-family:var(--mono)}
+.insight-list{display:grid;gap:8px;margin-top:10px}
+.insight-item{background:#fff;border:1px solid var(--line);border-radius:12px;padding:10px 12px;box-shadow:var(--shadow);font-size:15.4px;line-height:1.32;color:#44515b}
+.big-spark{width:100%;height:154px}
+
+
+/* v3 selective typography: content only (+2px); headers/footers unchanged */
+.body{font-size:20px}
+.body .panel h3,.body .exercise-left h3,.body .info-card h3{font-size:28px}
+.body .panel p,.body .panel li,.body .qcard p,.body .callout,.body .reveal,.body .bigquote,.body .explainer,.body .info-card p,.body .mini-card p,.body .equiv-card p,.body .svg-caption,.body .hierarchy-note,.body .final-card p,.body .final-list label,.body .cell-output pre{font-size:18.8px;line-height:1.38}
+.body .qcard h4,.body .mini-card b{font-size:22px}
+.body .section-label,.body .eyebrow,.body .out-label,.body .tag,.body .label{font-size:15px}
+.body pre{font-size:17px;line-height:1.35}
+.body .metric-grid b{font-size:28px}
+.body .metric-grid span{font-size:14px}
+.body .case-card h3{font-size:24px}
+.body .case-card p{font-size:17.8px;line-height:1.35}
+.body .use-tag{font-size:14.5px}
+.body .problem-card h3{font-size:23px}
+.body .problem-card p{font-size:17.8px;line-height:1.34}
+.body .problem-card li{font-size:17.4px;line-height:1.32}
+.body .dataset-note h3{font-size:24px}
+.body .dataset-note p{font-size:17.8px;line-height:1.35}
+.body .code-card pre{font-size:16.2px;line-height:1.35}
+.body .insight-item{font-size:17.4px;line-height:1.32}
+.body .partition-head b{font-size:17px}
+.body .partition-head span{font-size:14px}
+.body .partition-note{font-size:14.5px}
+.body .mini-legend{font-size:14px}
+.body .equiv-card .label{font-size:14px}
+.body .equiv-card .eqbig{font-size:30px}
+.body .hierarchy-note{font-size:15px}
+
+/* Caso real NYC Taxi */
+.realcase-grid{display:grid;grid-template-columns:.9fr 1.1fr;gap:18px;align-items:stretch}
+.realcase-card{background:#fff;border:1px solid var(--line);border-radius:14px;padding:16px 18px;box-shadow:var(--shadow)}
+.realcase-card h3{font-family:var(--title);font-size:28px;color:var(--navy);margin:0 0 10px}
+.realcase-card p{font-size:18px;line-height:1.38;margin:0 0 10px;color:#43515b}
+.realcase-metrics{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin-top:12px}
+.realcase-metrics div{background:var(--soft-blue);border:1px solid #d6e4ef;border-radius:12px;padding:12px;text-align:center}
+.realcase-metrics b{display:block;font-size:28px;color:var(--navy);font-family:var(--title)}
+.realcase-metrics span{font-size:14px;color:var(--muted)}
+.problem-box{background:var(--soft-amber);border:1px solid #edcf99;border-radius:14px;padding:15px 17px;margin-top:12px}
+.problem-box h4{font-size:19px;margin:0 0 6px;color:var(--navy)}
+.problem-box p{font-size:17px;line-height:1.36;margin:0;color:#465560}
+.realcase-source{font-size:12.5px;color:var(--muted);margin-top:8px;line-height:1.3}
+.quant-result-grid{display:grid;grid-template-columns:1fr 1fr;gap:16px;align-items:stretch}
+.quant-table{background:#fff;border:1px solid var(--line);border-radius:14px;padding:14px 16px;box-shadow:var(--shadow)}
+.quant-table h3{font-size:25px;margin:0 0 10px;color:var(--navy)}
+.quant-row{display:grid;grid-template-columns:1.05fr .75fr 1.55fr;gap:8px;padding:9px 0;border-bottom:1px solid #e5ebef;align-items:center}
+.quant-row:last-child{border-bottom:none}
+.quant-row b{font-size:18px;color:var(--navy)}
+.quant-row strong{font-size:18px;color:#22303A}
+.quant-row span{font-size:15.5px;line-height:1.28;color:#566672}
+.real-solution{display:grid;grid-template-columns:.95fr 1.05fr;gap:18px;align-items:stretch}
+.seg5{display:grid;grid-template-columns:repeat(5,1fr);gap:5px;margin-top:12px}
+.seg5 div{border-radius:9px;padding:16px 7px;text-align:center;background:#def0ef;border:1px solid #c9e7e4}
+.seg5 b{display:block;font-size:18px;color:var(--navy)}
+.seg5 span{font-size:13px;color:#586a75}
+.tail-metrics{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin-top:12px}
+.tail-metrics div{background:#fff;border:1px solid var(--line);border-radius:12px;padding:12px;text-align:center;box-shadow:var(--shadow)}
+.tail-metrics b{display:block;font-size:26px;color:var(--navy);font-family:var(--title)}
+.tail-metrics span{font-size:13px;color:var(--muted)}
+.decision-card{background:#fff;border:1px solid var(--line);border-radius:14px;padding:14px 16px;box-shadow:var(--shadow);margin-top:12px}
+.decision-card h4{font-size:19px;margin:0 0 6px;color:var(--navy)}
+.decision-card p{font-size:16.5px;line-height:1.35;margin:0;color:#43515b}
+
+
+/* Ajuste puntual del mapa de la clase: solo tipografías internas +2 px */
+.slide[data-title="¿Qué haremos hoy?"] .map-card > b{
+  font-size:19px;
+}
+.slide[data-title="¿Qué haremos hoy?"] .map-card h3{
+  font-size:24px;
+}
+.slide[data-title="¿Qué haremos hoy?"] .map-card p{
+  font-size:18px;
+}
+.slide[data-title="¿Qué haremos hoy?"] .map-card small{
+  font-size:14px;
+}
+
+
+/* Métodos de cuantiles y bibliografía */
+.method-grid{display:grid;grid-template-columns:1fr 1fr;gap:14px;align-items:stretch}
+.method-card{background:#fff;border:1px solid var(--line);border-radius:14px;padding:14px 16px;box-shadow:var(--shadow)}
+.method-card h3{font-size:23px;margin:0 0 6px;color:var(--navy)}
+.method-card p{font-size:17px;line-height:1.36;margin:0;color:#44515b}
+.method-card .formula{margin-top:10px;font-size:22px}
+.method-chip{display:inline-block;border-radius:999px;padding:5px 10px;font-size:13px;font-weight:800;margin-bottom:7px;background:var(--soft-blue);color:var(--navy)}
+.method-chip.teal{background:var(--soft-teal);color:#246d74}.method-chip.amber{background:var(--soft-amber);color:#8a5a08}.method-chip.red{background:var(--soft-red);color:#8d3535}
+.hf-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:12px}
+.hf-card{background:#fff;border:1px solid var(--line);border-radius:12px;padding:12px 13px;box-shadow:var(--shadow);min-width:0}
+.hf-card h3{font-size:21px;margin:0 0 4px;color:var(--navy)}
+.hf-card .hf-formula{font-family:var(--mono);font-size:16px;line-height:1.35;color:#173A5E;background:#f6f8fa;border-radius:9px;padding:7px 8px;margin:7px 0}
+.hf-card p{font-size:15.8px;line-height:1.33;margin:0;color:#4a5a65}
+.hf-general{background:#fff;border:1px solid var(--line);border-radius:14px;padding:12px 15px;box-shadow:var(--shadow);margin-bottom:13px}
+.hf-general .main-eq{font-size:24px;font-family:var(--title);color:var(--navy);margin:4px 0}
+.hf-general p{font-size:16.5px;line-height:1.34;margin:0;color:#465762}
+.compare-layout{display:grid;grid-template-columns:.88fr 1.12fr;gap:18px;align-items:stretch}
+.compare-table{background:#fff;border:1px solid var(--line);border-radius:14px;padding:13px 15px;box-shadow:var(--shadow)}
+.compare-table h3{font-size:23px;margin:0 0 8px;color:var(--navy)}
+.compare-row{display:grid;grid-template-columns:1.2fr .8fr .8fr .8fr;gap:8px;align-items:center;padding:8px 0;border-bottom:1px solid #e7ecef;font-size:16px}
+.compare-row.tbl-head{font-weight:800;color:var(--navy);font-size:14px;background:#eef3f7;border-radius:8px;padding:8px}.compare-row:last-child{border-bottom:none}
+.compare-row b{color:var(--navy)}
+.biblio-grid{display:grid;grid-template-columns:1fr 1fr;gap:13px}
+.bib-card{background:#fff;border:1px solid var(--line);border-radius:12px;padding:12px 14px;box-shadow:var(--shadow)}
+.bib-card b{display:block;font-size:17px;color:var(--navy);margin-bottom:4px}.bib-card p{font-size:15.4px;line-height:1.32;margin:0;color:#485965}.bib-card a{color:var(--blue);text-decoration:none;font-weight:700}
+.source-note{font-size:14.5px;line-height:1.34;color:#556672;margin-top:10px}
+
+/* v12 · convención oficial de cálculo */
+.official-method-grid{display:grid;grid-template-columns:1fr 1fr;gap:16px;align-items:stretch}
+.official-card{background:#fff;border:1px solid var(--line);border-radius:15px;padding:15px 17px;box-shadow:var(--shadow)}
+.official-card h3{font-size:25px;margin:2px 0 7px;color:var(--navy)}
+.official-card p{font-size:17px;line-height:1.36;margin:0 0 8px;color:#44515b}
+.official-card .formula{font-size:22px;margin:9px 0}
+.official-card .formula small{font-size:15.5px;line-height:1.32}
+.official-banner{margin-top:14px;background:var(--navy);color:#fff;border-radius:14px;padding:12px 16px;font-size:18px;line-height:1.34;text-align:center}
+.official-banner b{color:#fff}
+.grouped-example-grid{display:grid;grid-template-columns:.92fr 1.08fr;gap:16px;align-items:stretch}
+.grouped-table{background:#fff;border:1px solid var(--line);border-radius:14px;padding:12px 14px;box-shadow:var(--shadow)}
+.grouped-table h3{font-size:23px;margin:0 0 8px;color:var(--navy)}
+.grouped-table table{width:100%;border-collapse:collapse;font-size:16px}
+.grouped-table th,.grouped-table td{padding:7px 8px;border-bottom:1px solid #e6ecef;text-align:center}
+.grouped-table th{background:#f3f6f8;color:var(--navy);font-weight:800}
+.grouped-table td:first-child{text-align:left}
+.grouped-step{background:#fff;border:1px solid var(--line);border-radius:14px;padding:12px 15px;box-shadow:var(--shadow)}
+.grouped-step h3{font-size:23px;margin:0 0 8px;color:var(--navy)}
+.grouped-step p{font-size:16.5px;line-height:1.35;margin:5px 0;color:#44515b}
+.grouped-step .formula{font-size:24px;margin:10px 0}
+.grouped-step .formula small{font-size:15.5px}
+.method-scope{font-size:15.5px;line-height:1.34;padding:9px 12px;border-radius:10px;background:var(--soft-amber);color:#6f4b0a;margin-top:9px}
+</style>
+</head>
+<body>
+<div class="viewport"><div class="stage">
+<section class="slide cover active" data-title="Portada">
+<div class="cover-split">
+<div class="cover-left">
+<div class="cover-kicker">LABORATORIO COMPUTACIONAL · CICLO 2</div>
+<h1>Cuantiles<br/>con Python</h1>
+<div class="cover-rule"></div>
+<p class="cover-lead">Cuartiles, deciles y percentiles para describir posición y comparar distribuciones con Google Colab.</p>
+<div class="cover-meta">EST-001A · Estadística Descriptiva · 21 · 09 · 2026<br/>Profesor Víctor Vallejo Palacios · UTFSM Viña del Mar</div>
+<div class="cover-pills"><span>Cuartiles</span><span>Deciles</span><span>Percentiles</span><span>Boxplot</span><span>Python + Colab</span></div>
+</div>
+<div class="cover-right">
+<div class="cover-dash">
+<div class="dash-title">POSITION ANALYTICS · DATA LAB</div>
+<div class="dash-metrics"><div><b>25%</b><span>Q₁ = P₂₅</span></div><div><b>50%</b><span>Q₂ = P₅₀</span></div><div><b>75%</b><span>Q₃ = P₇₅</span></div></div>
+<div class="quartile-hero"><div class="quartile-line"></div><div class="quartile-points"><div><b>min</b>0%</div><div><b>Q₁</b>25%</div><div><b>Q₂</b>50%</div><div><b>Q₃</b>75%</div><div><b>max</b>100%</div></div></div>
+<div class="dash-flow"><span>ordenar</span><b>→</b><span>ubicar</span><b>→</b><span>calcular</span><b>→</b><span>interpretar</span></div>
+</div>
+</div>
+</div><div class="cover-bottom"></div>
+</section>
+<section class="slide" data-title="¿Qué haremos hoy?">
+<div class="stripe"><i></i><b></b><em></em></div><header class="head"><div><div class="kicker">EST-001A · ESTADÍSTICA DESCRIPTIVA</div><h2>¿Qué haremos hoy?</h2><p>Mapa de la clase · 70 minutos</p></div><div class="num">2</div></header>
+<main class="body"><div class="map-grid">
+<div class="map-card amber"><b>0–5'</b><h3>Punto de partida</h3><p>¿Qué significa estar en el percentil 90?</p><small>Activación e interpretación</small></div>
+<div class="map-card blue"><b>5–18'</b><h3>Concepto + método oficial</h3><p>Cuantiles, equivalencias y convención de cálculo</p><small>H&amp;F Type 2 · NIST Grouped Quantile</small></div>
+<div class="map-card teal"><b>18–32'</b><h3>Google Colab</h3><p>Cargar, limpiar y preparar la variable</p><small>pandas · Series · orden</small></div>
+<div class="map-card blue"><b>32–55'</b><h3>Laboratorio</h3><p>Cuartiles, deciles y percentiles con datos reales</p><small>Netflix · comparación por tipo</small></div>
+<div class="map-card teal"><b>55–66'</b><h3>Visualización</h3><p>IQR, boxplot y posibles valores atípicos</p><small>matplotlib · interpretación</small></div>
+<div class="map-card amber"><b>66–70'</b><h3>Cierre</h3><p>Checklist + desafío para entregar</p><small>Conclusión estadística</small></div>
+</div><div class="callout">La meta no es memorizar sintaxis: <b>Python automatiza el cálculo; la interpretación sigue siendo estadística.</b></div></main>
+<footer><span>EST-001A · Estadística Descriptiva · UTFSM Viña del Mar</span><span>Víctor Vallejo Palacios</span><span>2</span></footer></section>
+<section class="slide" data-title="¿Dónde estoy dentro de la distribución?">
+<div class="stripe"><i></i><b></b><em></em></div><header class="head"><div><div class="kicker">MOTIVACIÓN</div><h2>¿Dónde estoy dentro de la distribución?</h2><p>Una misma cifra cambia de significado cuando conocemos su posición relativa</p></div><div class="num">3</div></header>
+<main class="body"><div class="grid2"><div class="panel strong"><div class="eyebrow">PREGUNTA INICIAL</div><div class="bigquote">Una persona está en el percentil 90 de una variable. ¿Qué podemos afirmar?</div><div class="qcard"><div class="qnum">A</div><div><h4>Lectura correcta</h4><p>El 90% de las observaciones queda en o por debajo de ese valor.</p></div></div><div class="qcard red"><div class="qnum">B</div><div><h4>Lectura incorrecta</h4><p>No significa “obtuvo 90 puntos” ni “es 90% mejor” en una escala absoluta.</p></div></div><button class="reveal-btn">Mostrar idea clave</button><div class="reveal"><b>Los cuantiles son medidas de posición.</b> Su sentido depende del conjunto de datos y del contexto de la variable.</div></div>
+<div class="panel teal"><div class="eyebrow">PENSAMIENTO DE ANALISTA</div><h3>De valor bruto a información comparable</h3><div class="steps"><div class="step"><b>1</b><div><strong>Ordenar</strong><span>Primero necesitamos una secuencia de menor a mayor.</span></div></div><div class="step"><b>2</b><div><strong>Ubicar</strong><span>Calculamos la posición teórica del punto de corte.</span></div></div><div class="step"><b>3</b><div><strong>Interpretar</strong><span>Traducimos el resultado a una proporción acumulada.</span></div></div><div class="step"><b>4</b><div><strong>Comparar</strong><span>Podemos contrastar grupos usando los mismos puntos de posición.</span></div></div></div></div></div></main>
+<footer><span>EST-001A · Estadística Descriptiva · UTFSM Viña del Mar</span><span>Víctor Vallejo Palacios</span><span>3</span></footer></section>
+<section class="slide" data-title="Definición de cuantiles">
+<div class="stripe"><i></i><b></b><em></em></div><header class="head"><div><div class="kicker">CONCEPTO CENTRAL</div><h2>Definición de cuantiles</h2><p>Valores de posición que separan proporciones iguales de observaciones</p></div><div class="num">4</div></header>
+<main class="body">
+<div class="concept-layout">
+<div class="concept-side">
+<div class="info-card">
+<div class="eyebrow">IDEA CENTRAL</div>
+<h3>Un cuantil es un punto de corte</h3>
+<p>Los cuantiles se calculan sobre los <b>datos ordenados</b> y permiten dividir la distribución en partes con igual proporción de observaciones. Lo importante es la <b>proporción acumulada</b>, no la longitud física del intervalo.</p>
+<div class="legend-inline">
+<span><i style="background:var(--blue)"></i>4 partes → cuartiles</span>
+<span><i style="background:var(--teal)"></i>5 partes → quintiles</span>
+<span><i style="background:var(--amber)"></i>10 partes → deciles</span>
+<span><i style="background:var(--red)"></i>100 partes → percentiles</span>
+</div>
+</div>
+<div class="mini-cards">
+<div class="mini-card"><div class="tag">CUARTILES</div><b>Q₁, Q₂, Q₃</b><p>Separan 25%, 50% y 75% de la distribución.</p></div>
+<div class="mini-card"><div class="tag">QUINTILES</div><b>V₁…V₄</b><p>Generan cinco grupos de 20% cada uno.</p></div>
+<div class="mini-card"><div class="tag">DECILES</div><b>D₁…D₉</b><p>Ofrecen un nivel intermedio de detalle, de 10% en 10%.</p></div>
+<div class="mini-card"><div class="tag">PERCENTILES</div><b>P₁…P₉₉</b><p>Entregan el mayor detalle: cortes de 1% en 1%.</p></div>
+</div>
+<div class="callout"><b>Importante:</b> dos partes con igual cantidad de datos pueden tener distinta extensión sobre el eje numérico. Eso ocurre cuando la distribución es desigual.</div>
+</div>
+<div class="svg-panel">
+<svg aria-label="Esquema visual de cuartiles, quintiles, deciles y percentiles" role="img" viewbox="0 0 820 620">
+<style>
+        .ttl{font:700 23px Calibri, Arial, sans-serif; fill:#173A5E}
+        .sub{font:600 17px Calibri, Arial, sans-serif; fill:#5c6b76}
+        .lab{font:600 23px Calibri, Arial, sans-serif; fill:#173A5E}
+        .small{font:19px Calibri, Arial, sans-serif; fill:#61717d}
+        .cut{font:700 21px Calibri, Arial, sans-serif; fill:#173A5E}
+      </style>
+<text class="ttl" x="24" y="34">Cómo se divide una misma distribución</text>
+<text class="sub" x="24" y="58">Mientras más partes usamos, más fino es el nivel de detalle.</text>
+<g transform="translate(24,96)">
+<text class="lab" x="0" y="24">Cuartiles</text>
+<text class="small" x="0" y="45">4 partes de 25%</text>
+<g transform="translate(180,0)">
+<rect fill="#dfeaf4" height="48" rx="8" stroke="#c7d7e5" width="150" x="0" y="0"></rect>
+<rect fill="#dfeaf4" height="48" rx="8" stroke="#c7d7e5" width="150" x="152" y="0"></rect>
+<rect fill="#dfeaf4" height="48" rx="8" stroke="#c7d7e5" width="150" x="304" y="0"></rect>
+<rect fill="#dfeaf4" height="48" rx="8" stroke="#c7d7e5" width="150" x="456" y="0"></rect>
+<text class="cut" x="140" y="72">Q₁ = P₂₅</text>
+<text class="cut" x="292" y="72">Q₂ = P₅₀</text>
+<text class="cut" x="444" y="72">Q₃ = P₇₅</text>
+<text class="small" x="58" y="30">25%</text><text class="small" x="210" y="30">25%</text><text class="small" x="362" y="30">25%</text><text class="small" x="514" y="30">25%</text>
+</g>
+</g>
+<g transform="translate(24,216)">
+<text class="lab" x="0" y="24">Quintiles</text>
+<text class="small" x="0" y="45">5 partes de 20%</text>
+<g transform="translate(180,0)">
+<rect fill="#def0ef" height="48" rx="8" stroke="#c7e6e3" width="118" x="0" y="0"></rect>
+<rect fill="#def0ef" height="48" rx="8" stroke="#c7e6e3" width="118" x="122" y="0"></rect>
+<rect fill="#def0ef" height="48" rx="8" stroke="#c7e6e3" width="118" x="244" y="0"></rect>
+<rect fill="#def0ef" height="48" rx="8" stroke="#c7e6e3" width="118" x="366" y="0"></rect>
+<rect fill="#def0ef" height="48" rx="8" stroke="#c7e6e3" width="118" x="488" y="0"></rect>
+<text class="cut" x="92" y="72">V₁ = P₂₀</text>
+<text class="cut" x="214" y="72">V₂ = P₄₀</text>
+<text class="cut" x="336" y="72">V₃ = P₆₀</text>
+<text class="cut" x="458" y="72">V₄ = P₈₀</text>
+<text class="small" x="42" y="30">20%</text><text class="small" x="164" y="30">20%</text><text class="small" x="286" y="30">20%</text><text class="small" x="408" y="30">20%</text><text class="small" x="530" y="30">20%</text>
+</g>
+</g>
+<g transform="translate(24,336)">
+<text class="lab" x="0" y="24">Deciles</text>
+<text class="small" x="0" y="45">10 partes de 10%</text>
+<g transform="translate(180,0)">
+<g fill="#ffeac2" stroke="#f1d8a0">
+<rect height="44" rx="6" width="58" x="0" y="0"></rect>
+<rect height="44" rx="6" width="58" x="61" y="0"></rect>
+<rect height="44" rx="6" width="58" x="122" y="0"></rect>
+<rect height="44" rx="6" width="58" x="183" y="0"></rect>
+<rect height="44" rx="6" width="58" x="244" y="0"></rect>
+<rect height="44" rx="6" width="58" x="305" y="0"></rect>
+<rect height="44" rx="6" width="58" x="366" y="0"></rect>
+<rect height="44" rx="6" width="58" x="427" y="0"></rect>
+<rect height="44" rx="6" width="58" x="488" y="0"></rect>
+<rect height="44" rx="6" width="58" x="549" y="0"></rect>
+</g>
+<text class="small" x="0" y="68">D₁=P₁₀</text><text class="small" x="126" y="68">D₃=P₃₀</text><text class="small" x="252" y="68">D₅=P₅₀</text><text class="small" x="378" y="68">D₇=P₇₀</text><text class="small" x="504" y="68">D₉=P₉₀</text>
+</g>
+</g>
+<g transform="translate(24,454)">
+<text class="lab" x="0" y="24">Percentiles</text>
+<text class="small" x="0" y="45">100 partes de 1%</text>
+<g transform="translate(180,0)">
+<rect fill="#f9e2e2" height="40" rx="8" stroke="#efc9c9" width="608" x="0" y="0"></rect>
+<g stroke="#d99a9a" stroke-width="1">
+<line x1="60.8" x2="60.8" y1="0" y2="40"></line>
+<line x1="121.6" x2="121.6" y1="0" y2="40"></line>
+<line x1="182.4" x2="182.4" y1="0" y2="40"></line>
+<line x1="243.2" x2="243.2" y1="0" y2="40"></line>
+<line x1="304" x2="304" y1="0" y2="40"></line>
+<line x1="364.8" x2="364.8" y1="0" y2="40"></line>
+<line x1="425.6" x2="425.6" y1="0" y2="40"></line>
+<line x1="486.4" x2="486.4" y1="0" y2="40"></line>
+<line x1="547.2" x2="547.2" y1="0" y2="40"></line>
+</g>
+<text class="small" x="2" y="64">P₁</text><text class="small" x="130" y="64">P₂₅</text><text class="small" x="290" y="64">P₅₀</text><text class="small" x="450" y="64">P₇₅</text><text class="small" x="575" y="64">P₉₉</text>
+</g>
+</g>
+</svg>
+<div class="svg-caption">El diagrama es vectorial y se ve nítido en cualquier resolución. Cada fila muestra la misma idea con distinto nivel de segmentación.</div>
+</div>
+</div>
+</main>
+<footer><span>EST-001A · Estadística Descriptiva · UTFSM Viña del Mar</span><span>Víctor Vallejo Palacios</span><span>4</span></footer></section>
+<section class="slide" data-title="Relaciones entre cuantiles">
+<div class="stripe"><i></i><b></b><em></em></div><header class="head"><div><div class="kicker">EQUIVALENCIAS</div><h2>Relaciones entre cuantiles</h2><p>Distintos nombres pueden representar exactamente el mismo punto de corte</p></div><div class="num">5</div></header>
+<main class="body">
+<div class="equiv-layout">
+<div class="equiv-list">
+<div class="equiv-card">
+<div class="label">MEDIANA</div>
+<div class="eqbig">Q₂ = D₅ = P₅₀</div>
+<p>Todos nombran el mismo punto de corte: deja 50% de los datos en o por debajo del valor.</p>
+</div>
+<div class="equiv-card">
+<div class="label">CUARTILES ↔ PERCENTILES</div>
+<div class="eqbig">Q₁ = P₂₅ · Q₃ = P₇₅</div>
+<p>Los cuartiles se pueden leer como percentiles particulares: 25% y 75%.</p>
+</div>
+<div class="equiv-card">
+<div class="label">DECILES ↔ PERCENTILES</div>
+<div class="eqbig">Dₖ = P₁₀ₖ</div>
+<p>Ejemplos: D₁ = P₁₀, D₄ = P₄₀ y D₉ = P₉₀.</p>
+</div>
+<div class="equiv-card">
+<div class="label">QUINTILES ↔ PERCENTILES</div>
+<div class="eqbig">Vₖ = P₂₀ₖ</div>
+<p>Ejemplos: V₁ = P₂₀, V₂ = P₄₀, V₃ = P₆₀ y V₄ = P₈₀.</p>
+</div>
+<div class="callout teal">Una interpretación correcta siempre debe incluir <b>variable + porcentaje acumulado + sentido</b>.</div>
+</div>
+<div class="svg-panel">
+<svg aria-label="Jerarquía visual entre cuartiles, quintiles, deciles y percentiles" role="img" viewbox="0 0 780 560">
+<style>
+        .T{font:700 20px Calibri, Arial, sans-serif; fill:#173A5E}
+        .S{font:600 14px Calibri, Arial, sans-serif; fill:#5d6d79}
+        .L{font:600 15px Calibri, Arial, sans-serif; fill:#173A5E}
+        .M{font:12px Calibri, Arial, sans-serif; fill:#5d6d79}
+        .W{font:600 12px Calibri, Arial, sans-serif; fill:white}
+      </style>
+<text class="T" x="24" y="34">Jerarquía de cuantiles</text>
+<text class="S" x="24" y="56">La misma escala 0%–100% puede nombrarse con distintos sistemas de cortes.</text>
+<g transform="translate(24,96)">
+<text class="L" x="0" y="25">Cuartiles</text>
+<g transform="translate(124,0)">
+<rect fill="#2D6393" height="44" rx="8" width="152" x="0" y="0"></rect>
+<rect fill="#2D6393" height="44" rx="8" width="152" x="154" y="0"></rect>
+<rect fill="#2D6393" height="44" rx="8" width="152" x="308" y="0"></rect>
+<rect fill="#2D6393" height="44" rx="8" width="152" x="462" y="0"></rect>
+<text class="W" x="56" y="27">0–25%</text><text class="W" x="204" y="27">25–50%</text><text class="W" x="360" y="27">50–75%</text><text class="W" x="514" y="27">75–100%</text>
+<line stroke="#8da8bf" stroke-dasharray="4 4" x1="152" x2="152" y1="50" y2="88"></line><line stroke="#8da8bf" stroke-dasharray="4 4" x1="306" x2="306" y1="50" y2="88"></line><line stroke="#8da8bf" stroke-dasharray="4 4" x1="460" x2="460" y1="50" y2="88"></line>
+<text class="M" x="128" y="104">Q₁</text><text class="M" x="282" y="104">Q₂</text><text class="M" x="436" y="104">Q₃</text>
+</g>
+</g>
+<g transform="translate(24,194)">
+<text class="L" x="0" y="25">Quintiles</text>
+<g transform="translate(124,0)">
+<rect fill="#2C8791" height="40" rx="8" width="120" x="0" y="0"></rect><rect fill="#2C8791" height="40" rx="8" width="120" x="123" y="0"></rect><rect fill="#2C8791" height="40" rx="8" width="120" x="246" y="0"></rect><rect fill="#2C8791" height="40" rx="8" width="120" x="369" y="0"></rect><rect fill="#2C8791" height="40" rx="8" width="120" x="492" y="0"></rect>
+<text class="W" x="38" y="24">20%</text><text class="W" x="161" y="24">20%</text><text class="W" x="284" y="24">20%</text><text class="W" x="407" y="24">20%</text><text class="W" x="530" y="24">20%</text>
+<text class="M" x="88" y="62">V₁=P₂₀</text><text class="M" x="210" y="62">V₂=P₄₀</text><text class="M" x="333" y="62">V₃=P₆₀</text><text class="M" x="456" y="62">V₄=P₈₀</text>
+</g>
+</g>
+<g transform="translate(24,290)">
+<text class="L" x="0" y="22">Deciles</text>
+<g transform="translate(124,0)">
+<g fill="#D18A18">
+<rect height="34" rx="6" width="58" x="0" y="0"></rect><rect height="34" rx="6" width="58" x="61" y="0"></rect><rect height="34" rx="6" width="58" x="122" y="0"></rect><rect height="34" rx="6" width="58" x="183" y="0"></rect><rect height="34" rx="6" width="58" x="244" y="0"></rect><rect height="34" rx="6" width="58" x="305" y="0"></rect><rect height="34" rx="6" width="58" x="366" y="0"></rect><rect height="34" rx="6" width="58" x="427" y="0"></rect><rect height="34" rx="6" width="58" x="488" y="0"></rect><rect height="34" rx="6" width="58" x="549" y="0"></rect>
+</g>
+<text class="M" x="2" y="58">D₁</text><text class="M" x="124" y="58">D₃</text><text class="M" x="246" y="58">D₅=P₅₀</text><text class="M" x="430" y="58">D₈</text><text class="M" x="550" y="58">D₉ = P₉₀</text>
+</g>
+</g>
+<g transform="translate(24,382)">
+<text class="L" x="0" y="22">Percentiles</text>
+<g transform="translate(124,0)">
+<rect fill="#B54A4A" height="32" opacity="0.18" rx="6" stroke="#B54A4A" width="610" x="0" y="0"></rect>
+<g stroke="#B54A4A" stroke-width="1.2">
+<line x1="152" x2="152" y1="-10" y2="42"></line>
+<line x1="305" x2="305" y1="-10" y2="42"></line>
+<line x1="457" x2="457" y1="-10" y2="42"></line>
+</g>
+<text class="M" x="136" y="60">P₂₅</text><text class="M" x="289" y="60">P₅₀</text><text class="M" x="441" y="60">P₇₅</text>
+<text class="M" x="2" y="60">P₁</text><text class="M" x="575" y="60">P₉₉</text>
+</g>
+</g>
+<g transform="translate(30,486)">
+<rect fill="#f5f7f9" height="48" rx="12" stroke="#d6dee4" width="710" x="0" y="0"></rect>
+<text class="L" x="18" y="20">Lectura rápida</text>
+<text class="M" x="18" y="38">A mayor número de particiones, más detalle describimos. Cuartiles resumen; percentiles afinan.</text>
+</g>
+</svg>
+<div class="svg-caption">Los gráficos son vectoriales para conservar nitidez y permitir mayor espacio visual sin perder calidad.</div>
+<div class="hierarchy-note">Observa que la escala siempre va de 0% a 100%. Lo que cambia es <b>cómo decidimos dividirla</b>: en 4, 5, 10 o 100 partes.</div>
+</div>
+</div>
+</main>
+<footer><span>EST-001A · Estadística Descriptiva · UTFSM Viña del Mar</span><span>Víctor Vallejo Palacios</span><span>5</span></footer></section>
+<section class="slide" data-title="Convención oficial del curso">
+<div class="stripe"><i></i><b></b><em></em></div><header class="head"><div><div class="kicker">CONVENCIÓN OFICIAL DEL CURSO</div><h2>Así calcularemos los cuantiles en esta asignatura</h2><p>La regla depende de cómo estén representados los datos; declaramos explícitamente el método para evitar ambigüedad</p></div><div class="num">6</div></header>
+<main class="body">
+<div class="official-method-grid">
+<div class="official-card">
+<div class="method-chip">DATOS NO AGRUPADOS · VALORES EXACTOS</div>
+<h3>Hyndman–Fan Type 2</h3>
+<p><b>Nombre computacional:</b> <code>averaged_inverted_cdf</code>. Es el método oficial del curso para listas de observaciones y también para tablas de frecuencias de valores exactos.</p>
+<div class="formula">
+<b>r = p\,n</b>
+<small>Si r no es entero: Q(p)=x<sub>(⌈r⌉)</sub><br/>Si r es entero: Q(p)=[x<sub>(r)</sub>+x<sub>(r+1)</sub>]/2</small>
+</div>
+<div class="callout blue"><b>Importante:</b> Type 2 es discontinuo. No hace interpolación lineal entre observaciones; solo promedia cuando r cae exactamente en el salto.</div>
+</div>
+<div class="official-card">
+<div class="method-chip teal">DATOS AGRUPADOS EN INTERVALOS</div>
+<h3>NIST/SEMATECH · Grouped Quantile</h3>
+<p>Usaremos <b>interpolación lineal intraclase</b>, porque ya no conocemos las observaciones individuales dentro del intervalo.</p>
+<div class="formula">
+<b>Q(p)=L<sub>c</sub>+[(pN−F<sub>c−1</sub>)/f<sub>c</sub>]h<sub>c</sub></b>
+<small>L<sub>c</sub>: límite inferior de la clase · F<sub>c−1</sub>: acumulada anterior · f<sub>c</sub>: frecuencia de la clase · h<sub>c</sub>: amplitud</small>
+</div>
+<div class="callout teal"><b>Supuesto:</b> la frecuencia se distribuye uniformemente dentro de la clase. Por eso el resultado es una estimación del cuantil original.</div>
+</div>
+</div>
+<div class="official-banner"><b>Regla de la asignatura:</b> valores exactos → <b>Hyndman–Fan Type 2</b> · intervalos → <b>interpolación lineal intraclase NIST/SEMATECH</b>.</div>
+</main>
+<footer><span>EST-001A · Estadística Descriptiva · UTFSM Viña del Mar</span><span>Víctor Vallejo Palacios</span><span>6</span></footer></section><section class="slide" data-title="Cuantiles en intervalos: método oficial">
+<div class="stripe"><i></i><b></b><em></em></div>
+<header class="head"><div><div class="kicker">MÉTODO DEL CURSO · DATOS EN INTERVALOS</div><h2>Interpolación lineal intraclase</h2><p>No es Hyndman–Fan Type 2: aquí estimamos la posición dentro de la clase que contiene al cuantil</p></div><div class="num">0</div></header>
+<main class="body">
+<div class="grouped-example-grid">
+<div class="grouped-table">
+<h3>Ejemplo · distribución agrupada</h3>
+<table>
+<thead><tr><th>Intervalo</th><th>fᵢ</th><th>Fᵢ</th></tr></thead>
+<tbody>
+<tr><td>[0,10)</td><td>5</td><td>5</td></tr>
+<tr><td>[10,20)</td><td>12</td><td>17</td></tr>
+<tr><td>[20,30)</td><td>18</td><td>35</td></tr>
+<tr><td>[30,40)</td><td>8</td><td>43</td></tr>
+<tr><td>[40,50)</td><td>4</td><td>47</td></tr>
+</tbody>
+</table>
+<div class="callout"><b>Total:</b> N=47. Para P₅₀ buscamos la posición pN=0,50·47=23,5.</div>
+<div class="method-scope"><b>Clase contenedora:</b> 20–30, porque 17 &lt; 23,5 ≤ 35.</div>
+</div>
+<div class="grouped-step">
+<div class="eyebrow">CÁLCULO SEGÚN NIST/SEMATECH</div>
+<h3>Percentil 50 = mediana agrupada</h3>
+<p>L<sub>c</sub>=20, F<sub>c−1</sub>=17, f<sub>c</sub>=18, h<sub>c</sub>=10.</p>
+<div class="formula"><b>P₅₀ = 20 + [(23,5−17)/18]·10</b><small>= 20 + 3,6111 ≈ <b>23,61</b></small></div>
+<p>El valor 23,61 no estaba necesariamente observado. Es una <b>estimación por interpolación dentro del intervalo</b>.</p>
+<div class="callout teal"><b>Generalización:</b> Qₖ usa p=k/4; Vₖ usa p=k/5; Dₖ usa p=k/10; Pₖ usa p=k/100.</div>
+<div class="callout red"><b>No mezclar:</b> Hyndman–Fan clasifica cuantiles de datos individuales. La fórmula intraclase corresponde al caso en que solo conservamos intervalos y frecuencias.</div>
+</div>
+</div>
+</main>
+<footer><span>EST-001A · Estadística Descriptiva · UTFSM Viña del Mar</span><span>Víctor Vallejo Palacios</span><span>0</span></footer>
+</section><section class="slide" data-title="Cuantiles agrupados en Google Colab">
+<div class="stripe"><i></i><b></b><em></em></div>
+<header class="head"><div><div class="kicker">PYTHON · MÉTODO OFICIAL PARA INTERVALOS</div><h2>Implementar la interpolación intraclase en Colab</h2><p>La función reproduce directamente la fórmula de cuantiles agrupados del curso</p></div><div class="num">0</div></header>
+<main class="body">
+<div class="exercise-layout">
+<div class="exercise-left">
+<div class="section-label">QUÉ HACE LA FUNCIÓN</div>
+<h3>Busca la clase y luego interpola</h3>
+<div class="qcard"><div class="qnum">1</div><div><h4>Acumular</h4><p>Calcula Fᵢ y localiza la primera clase cuya acumulada alcanza pN.</p></div></div>
+<div class="qcard teal"><div class="qnum">2</div><div><h4>Identificar parámetros</h4><p>Extrae L<sub>c</sub>, F<sub>c−1</sub>, f<sub>c</sub> y h<sub>c</sub>.</p></div></div>
+<div class="qcard amber"><div class="qnum">3</div><div><h4>Interpolar</h4><p>Aplica Q(p)=L<sub>c</sub>+[(pN−F<sub>c−1</sub>)/f<sub>c</sub>]h<sub>c</sub>.</p></div></div>
+<div class="callout blue"><b>Control:</b> con la tabla del ejemplo debe obtener P₅₀ ≈ 23,6111.</div>
+</div>
+<div class="colab">
+<div class="colab-top"><div class="colab-logo">CO</div><strong>cuantiles_agrupados.ipynb</strong><span class="saved">Verificado</span><button class="share">Compartir</button><span class="avatar">V</span></div>
+<div class="colab-menu"><span>Archivo</span><span>Editar</span><span>Ver</span><span>Insertar</span><span>Entorno de ejecución</span></div>
+<div class="colab-toolbar"><span>＋ Código</span><span>＋ Texto</span><span class="connect">Conectar ▾</span></div>
+<div class="colab-work"><div class="rail"><span>☷</span><span>▧</span><span>&lt;&gt;</span></div><div class="nb-area">
+<div class="cell"><button class="run">▶</button><pre contenteditable="true">import numpy as np
+
+def cuantil_agrupado(lim_inf, lim_sup, f, p):
+    lim_inf = np.asarray(lim_inf, dtype=float)
+    lim_sup = np.asarray(lim_sup, dtype=float)
+    f = np.asarray(f, dtype=float)
+
+    if not (0 &lt; p &lt; 1):
+        raise ValueError("p debe estar entre 0 y 1")
+    if not (len(lim_inf) == len(lim_sup) == len(f)):
+        raise ValueError("Los vectores deben tener igual longitud")
+
+    F = np.cumsum(f)
+    N = F[-1]
+    objetivo = p * N
+    c = np.searchsorted(F, objetivo, side="left")
+
+    F_prev = 0 if c == 0 else F[c - 1]
+    L = lim_inf[c]
+    h = lim_sup[c] - lim_inf[c]
+
+    return L + ((objetivo - F_prev) / f[c]) * h
+
+li = [0, 10, 20, 30, 40]
+ls = [10, 20, 30, 40, 50]
+f  = [5, 12, 18, 8, 4]
+
+for p in [0.25, 0.50, 0.75, 0.90]:
+    print(p, round(cuantil_agrupado(li, ls, f, p), 4))</pre><button class="copy">Copiar</button></div>
+<div class="cell-output"><div class="out-label">SALIDA ESPERADA</div><pre>0.25 15.625
+0.5  23.6111
+0.75 30.3125
+0.9  39.125</pre></div>
+</div></div>
+</div>
+</div>
+</main>
+<footer><span>EST-001A · Estadística Descriptiva · UTFSM Viña del Mar</span><span>Víctor Vallejo Palacios</span><span>0</span></footer>
+</section><section class="slide" data-title="Por qué hay distintas fórmulas de cuantiles">
+<div class="stripe"><i></i><b></b><em></em></div>
+<header class="head"><div><div class="kicker">CONTEXTO · ALTERNATIVAS PARA DATOS EXACTOS</div><h2>¿Por qué hay distintas fórmulas de cuantiles?</h2><p>Esta discusión corresponde a datos individuales o valores exactos; para intervalos usamos la fórmula agrupada intraclase</p></div><div class="num">0</div></header>
+<main class="body">
+<div class="hf-general"><div class="eyebrow">FORMA GENERAL · HYNDMAN &amp; FAN (1996)</div><div class="main-eq">Q(p) = (1−γ)x<sub>(j)</sub> + γx<sub>(j+1)</sub></div><p>Los datos se ordenan como x<sub>(1)</sub> ≤ … ≤ x<sub>(n)</sub>. Cada definición elige de forma distinta <b>j</b>, <b>γ</b> y, por tanto, qué posición representa mejor la probabilidad acumulada p.</p></div>
+<div class="method-grid">
+<div class="method-card"><span class="method-chip red">CURSO · TYPE 2</span><h3>Método discontinuo · promedio solo en el salto</h3><p><span><b>No usa interpolación lineal.</b> Si <b>np</b> es entero, promedia x<sub>(np)</sub> y x<sub>(np+1)</sub>; si no es entero, toma x<sub>(⌈np⌉)</sub>.</span></p><div class="formula">i=np</div></div>
+<div class="method-card"><span class="method-chip amber">TYPE 6 · WEIBULL</span><h3>Posiciones k/(n+1)</h3><p>Usa interpolación lineal con h=(n+1)p. Es una convención clásica y aparece en software como Minitab/SPSS.</p><div class="formula">h=(n+1)p</div></div>
+<div class="method-card"><span class="method-chip">TYPE 7 · DEFAULT COMÚN</span><h3>Interpolación lineal</h3><p>Usa h=1+(n−1)p. Es el valor por defecto de R y de <code>numpy.quantile(..., method="linear")</code>; pandas usa interpolación lineal por defecto.</p><div class="formula">h=1+(n−1)p</div></div>
+<div class="method-card"><span class="method-chip teal">TYPE 8 · H&amp;F</span><h3>Aproximadamente median-unbiased</h3><p>Hyndman y Fan recomiendan Type 8 como estimador aproximadamente insesgado respecto de la mediana de F(x<sub>(k)</sub>).</p><div class="formula">h=(n+⅓)p+⅓</div></div>
+</div>
+<div class="callout teal"><b>Dato de respaldo:</b> Langford (2006) documentó <b>al menos una docena de formas</b> de calcular cuartiles en cursos introductorios, según el texto o el software utilizado. Por eso la fórmula debe declararse para que el cálculo sea reproducible.</div>
+</main><footer><span>EST-001A · Estadística Descriptiva · UTFSM Viña del Mar</span><span>Víctor Vallejo Palacios</span><span>0</span></footer></section><section class="slide" data-title="Hyndman–Fan tipos 1 a 3">
+<div class="stripe"><i></i><b></b><em></em></div>
+<header class="head"><div><div class="kicker">ALTERNATIVAS · DATOS EXACTOS</div><h2>Tipos 1–3: cuantiles discontinuos</h2><p>Trabajan directamente con estadísticos de orden y cambian mediante saltos</p></div><div class="num">0</div></header>
+<main class="body">
+<div class="hf-general"><div class="main-eq">j = ⌊np + m⌋ · g = np + m − j · Q(p)=(1−γ)x<sub>(j)</sub>+γx<sub>(j+1)</sub></div><p>Para Types 1 y 2: m=0. Para Type 3: m=−½. Lo que cambia es la regla para γ.</p></div>
+<div class="hf-grid">
+<div class="hf-card"><h3>Type 1</h3><div class="hf-formula">m = 0<br/>γ = 0 si g=0; 1 si g&gt;0</div><p>Es la inversa de la distribución empírica: selecciona una observación de la muestra.</p></div>
+<div class="hf-card"><h3>Type 2 · curso</h3><div class="hf-formula">m = 0<br/>γ = 0.5 si g=0; 1 si g&gt;0</div><p>Promedia justo en una discontinuidad. Equivale exactamente a la regla usada en esta asignatura.</p></div>
+<div class="hf-card"><h3>Type 3</h3><div class="hf-formula">m = −1/2<br/>γ = 0 si g=0 y j es par; 1 en otro caso</div><p>Elige el estadístico de orden par más cercano.</p></div>
+</div>
+<div class="callout"><b>Lectura operacional:</b> Types 1–3 son <b>discontinuos</b>. En particular, <b>Type 2 no interpola linealmente</b>: selecciona la observación superior cuando g&gt;0 y solo promedia x<sub>(j)</sub> con x<sub>(j+1)</sub> cuando g=0.</div>
+</main><footer><span>EST-001A · Estadística Descriptiva · UTFSM Viña del Mar</span><span>Víctor Vallejo Palacios</span><span>0</span></footer></section><section class="slide" data-title="Hyndman–Fan tipos 4 a 9">
+<div class="stripe"><i></i><b></b><em></em></div>
+<header class="head"><div><div class="kicker">ALTERNATIVAS · DATOS EXACTOS</div><h2>Tipos 4–9: cuantiles continuos</h2><p>Types 4–9 son continuos: usan interpolación lineal entre estadísticos de orden; cambia la posición teórica h=np+m</p></div><div class="num">0</div></header>
+<main class="body">
+<div class="hf-general"><div class="main-eq">h=np+m · j=⌊h⌋ · γ=h−j · Q(p)=(1−γ)x<sub>(j)</sub>+γx<sub>(j+1)</sub></div><p>Las seis definiciones difieren en <b>m</b>, es decir, en cómo ubican cada estadístico de orden sobre la escala acumulada.</p></div>
+<div class="hf-grid">
+<div class="hf-card"><h3>Type 4</h3><div class="hf-formula">m = 0<br/>pₖ = k/n</div><p>Interpolación lineal de la función de distribución empírica.</p></div>
+<div class="hf-card"><h3>Type 5 · Hazen</h3><div class="hf-formula">m = 1/2<br/>pₖ = (k−0.5)/n</div><p>Coloca los nudos en el centro de los escalones de la distribución empírica.</p></div>
+<div class="hf-card"><h3>Type 6 · Weibull</h3><div class="hf-formula">m = p<br/>pₖ = k/(n+1)</div><p>Convención clásica; R documenta su uso en Minitab y SPSS.</p></div>
+<div class="hf-card"><h3>Type 7 · default</h3><div class="hf-formula">m = 1−p<br/>pₖ = (k−1)/(n−1)</div><p>Default de R y NumPy (<code>linear</code>); es también la convención lineal habitual de pandas.</p></div>
+<div class="hf-card"><h3>Type 8</h3><div class="hf-formula">m = (p+1)/3<br/>pₖ=(k−1/3)/(n+1/3)</div><p>Recomendado por Hyndman–Fan; aproximadamente median-unbiased.</p></div>
+<div class="hf-card"><h3>Type 9</h3><div class="hf-formula">m = p/4 + 3/8<br/>pₖ=(k−3/8)/(n+1/4)</div><p>Aproximadamente insesgado para estadísticos de orden de una distribución normal.</p></div>
+</div>
+</main><footer><span>EST-001A · Estadística Descriptiva · UTFSM Viña del Mar</span><span>Víctor Vallejo Palacios</span><span>0</span></footer></section><section class="slide" data-title="Comparar métodos en Google Colab">
+<div class="stripe"><i></i><b></b><em></em></div>
+<header class="head"><div><div class="kicker">COMPARACIÓN · CONVENCIÓN DEL CURSO = TYPE 2</div><h2>Comparar métodos en Google Colab</h2><p>NumPy implementa explícitamente los nueve métodos de Hyndman–Fan</p></div><div class="num">0</div></header>
+<main class="body">
+<div class="compare-layout">
+<div class="compare-table"><h3>Mismo conjunto, distintos Q₁</h3>
+<div class="compare-row tbl-head"><span>Método</span><span>Q₁</span><span>Q₂</span><span>Q₃</span></div>
+<div class="compare-row"><b>Type 2 · curso</b><span>31.50</span><span>37.50</span><span>38.00</span></div>
+<div class="compare-row"><b>Type 6</b><span>31.25</span><span>37.50</span><span>38.00</span></div>
+<div class="compare-row"><b>Type 7</b><span>31.75</span><span>37.50</span><span>38.00</span></div>
+<div class="compare-row"><b>Type 8</b><span>31.4167</span><span>37.50</span><span>38.00</span></div>
+<div class="callout red"><b>Observa:</b> la mediana puede coincidir aunque Q₁ cambie. La diferencia proviene de la definición, no de un fallo de cálculo.</div>
+</div>
+<div class="colab"><div class="colab-top"><div class="colab-logo">CO</div><strong>metodos_cuantiles.ipynb</strong><span class="saved">Verificado</span><button class="share">Compartir</button><span class="avatar">V</span></div><div class="colab-menu"><span>Archivo</span><span>Editar</span><span>Ver</span><span>Insertar</span><span>Entorno de ejecución</span></div><div class="colab-toolbar"><span>＋ Código</span><span>＋ Texto</span><span class="connect">Conectar ▾</span></div><div class="colab-work"><div class="rail"><span>☷</span><span>▧</span><span>&lt;&gt;</span></div><div class="nb-area"><div class="cell"><button class="run">▶</button><pre contenteditable="true">import numpy as np
+
+print("NumPy:", np.__version__)
+
+datos = np.array([29, 31, 32, 37, 38, 38, 38, 40])
+probs = [0.25, 0.50, 0.75]
+
+metodos = {
+    "Type 2 · curso": "averaged_inverted_cdf",
+    "Type 6": "weibull",
+    "Type 7": "linear",
+    "Type 8": "median_unbiased",
+}
+
+for nombre, metodo in metodos.items():
+    q = np.quantile(datos, probs, method=metodo)
+    print(nombre, np.round(q, 4))</pre><button class="copy">Copiar</button></div><div class="cell-output"><div class="out-label">SALIDA ESPERADA</div><pre>Type 2 · curso [31.5 37.5 38. ]
+Type 6         [31.25 37.5 38. ]
+Type 7         [31.75 37.5 38. ]
+Type 8         [31.4167 37.5 38. ]</pre></div></div></div></div>
+</div>
+</main><footer><span>EST-001A · Estadística Descriptiva · UTFSM Viña del Mar</span><span>Víctor Vallejo Palacios</span><span>0</span></footer></section>
+<section class="slide" data-title="Google Colab: puesta en marcha">
+<div class="stripe"><i></i><b></b><em></em></div><header class="head"><div><div class="kicker">LABORATORIO</div><h2>Google Colab: puesta en marcha</h2><p>Trabajamos como en la sesión anterior: código corto, pregunta estadística y conclusión</p></div><div class="num">7</div></header>
+<main class="body"><div class="code-layout"><div class="panel strong"><div class="eyebrow">FLUJO DE TRABAJO</div><h3>Pregunta → datos → cálculo → interpretación</h3><div class="steps"><div class="step"><b>1</b><div><strong>Crear notebook</strong><span>Un cuaderno por actividad.</span></div></div><div class="step"><b>2</b><div><strong>Cargar archivo</strong><span>Usar el panel de archivos o una URL pública.</span></div></div><div class="step"><b>3</b><div><strong>Ejecutar en orden</strong><span>Cada celda depende de lo que ya definimos.</span></div></div><div class="step"><b>4</b><div><strong>Escribir conclusión</strong><span>El resultado numérico no reemplaza la interpretación.</span></div></div></div><div class="callout">Las celdas de esta presentación se pueden <b>copiar</b> y pegar directamente en Colab.</div></div>
+<div class="colab"><div class="colab-top"><div class="colab-logo">CO</div><strong>Lab04_cuantiles.ipynb</strong><span class="saved">Guardado en Drive</span><button class="share">Compartir</button><span class="avatar">V</span></div><div class="colab-menu"><span>Archivo</span><span>Editar</span><span>Ver</span><span>Insertar</span><span>Entorno de ejecución</span><span>Herramientas</span></div><div class="colab-toolbar"><span>＋ Código</span><span>＋ Texto</span><span>▶ Ejecutar todas</span><span class="connect">Conectar ▾</span></div><div class="colab-work"><div class="rail"><span>☷</span><span>▧</span><span>&lt;&gt;</span><span>⌕</span></div><div class="nb-area"><div class="cell"><button class="run">▶</button><pre contenteditable="true">import sys
+import numpy as np
+import pandas as pd
+import matplotlib.pyplot as plt
+from IPython.display import display
+
+print("Python:", sys.version.split()[0])
+print("NumPy:", np.__version__)
+print("pandas:", pd.__version__)
+print("Entorno listo")</pre><button class="copy">Copiar</button></div><div class="cell-output"><div class="out-label">SALIDA</div><pre>Entorno listo</pre></div><div class="colab-note">Haz clic en ▶ para mostrar u ocultar la salida esperada.</div></div></div></div></div></main>
+<footer><span>EST-001A · Estadística Descriptiva · UTFSM Viña del Mar</span><span>Víctor Vallejo Palacios</span><span>7</span></footer></section>
+<section class="slide" data-title="Cargar la base Netflix">
+<div class="stripe"><i></i><b></b><em></em></div><header class="head"><div><div class="kicker">DATOS REALES</div><h2>Cargar la base Netflix</h2><p>La unidad de análisis es un título del catálogo</p></div><div class="num">8</div></header>
+<main class="body"><div class="exercise-layout"><div class="exercise-left"><div class="section-label">ANTES DE CALCULAR</div><h3>Reconocer estructura y variable</h3><p>Trabajaremos principalmente con <b>release_year</b>, el año de estreno de cada título. Es una variable cuantitativa discreta y permite estudiar posición acumulada.</p><div class="qcard"><div class="qnum">1</div><div><h4>Unidad de análisis</h4><p>Un título del catálogo Netflix.</p></div></div><div class="qcard teal"><div class="qnum">2</div><div><h4>Variable principal</h4><p>release_year: año de estreno.</p></div></div><div class="qcard amber"><div class="qnum">3</div><div><h4>Pregunta</h4><p>¿Qué años marcan el 25%, 50%, 75% y 90% acumulado?</p></div></div></div>
+<div class="colab"><div class="colab-top"><div class="colab-logo">CO</div><strong>Lab04_cuantiles.ipynb</strong><span class="saved">Datos</span><button class="share">Compartir</button><span class="avatar">V</span></div><div class="colab-menu"><span>Archivo</span><span>Editar</span><span>Ver</span><span>Insertar</span><span>Entorno de ejecución</span></div><div class="colab-toolbar"><span>＋ Código</span><span>＋ Texto</span><span class="connect">Conectar ▾</span></div><div class="colab-work"><div class="rail"><span>☷</span><span>▧</span><span>&lt;&gt;</span></div><div class="nb-area"><div class="cell"><button class="run">▶</button><pre contenteditable="true"># Carga directa: no es necesario subir manualmente el CSV
+url_netflix = (
+    "https://raw.githubusercontent.com/sashaelle/media-tracker/"
+    "695eca54629ba885b11aa56e1bb9578e76a5ea5f/code/netflix_titles.csv"
+)
+
+netflix = pd.read_csv(url_netflix)
+
+print("Dimensión:", netflix.shape)
+display(netflix.head())</pre><button class="copy">Copiar</button></div><div class="cell-output"><div class="out-label">SALIDA ESPERADA</div><pre>La base pública habitual contiene 8.807 filas y 12 columnas.
+Observa: type · title · release_year · duration · rating · ...</pre></div><div class="colab-note">Si el archivo tiene otro nombre, cambia únicamente el texto entre comillas.</div></div></div></div></div></main>
+<footer><span>EST-001A · Estadística Descriptiva · UTFSM Viña del Mar</span><span>Víctor Vallejo Palacios</span><span>8</span></footer></section>
+<section class="slide" data-title="Preparar la variable">
+<div class="stripe"><i></i><b></b><em></em></div><header class="head"><div><div class="kicker">LIMPIEZA MÍNIMA</div><h2>Preparar la variable</h2><p>Un cuantil requiere datos numéricos válidos y ordenables</p></div><div class="num">9</div></header>
+<main class="body"><div class="exercise-layout"><div class="exercise-left"><div class="section-label">DECISIÓN ESTADÍSTICA</div><h3>Conservar solo observaciones válidas</h3><p>No necesitamos “limpiar toda la base”. Solo la variable que responde nuestra pregunta.</p><div class="qcard"><div class="qnum">1</div><div><h4>Seleccionar</h4><p>Tomamos la columna release_year.</p></div></div><div class="qcard teal"><div class="qnum">2</div><div><h4>Eliminar faltantes</h4><p>dropna() evita posiciones sin valor.</p></div></div><div class="qcard amber"><div class="qnum">3</div><div><h4>Ordenar</h4><p>sort_values() deja visible la lógica del método.</p></div></div><div class="callout teal"><b>Chequeo:</b> mínimo, máximo y cantidad de datos deben ser coherentes con el contexto.</div></div>
+<div class="colab"><div class="colab-top"><div class="colab-logo">CO</div><strong>Lab04_cuantiles.ipynb</strong><span class="saved">Preparación</span><button class="share">Compartir</button><span class="avatar">V</span></div><div class="colab-menu"><span>Archivo</span><span>Editar</span><span>Ver</span><span>Insertar</span><span>Entorno de ejecución</span></div><div class="colab-toolbar"><span>＋ Código</span><span>＋ Texto</span><span class="connect">Conectar ▾</span></div><div class="colab-work"><div class="rail"><span>☷</span><span>▧</span><span>&lt;&gt;</span></div><div class="nb-area"><div class="cell"><button class="run">▶</button><pre contenteditable="true">x = netflix["release_year"].dropna().sort_values()
+
+print("n =", len(x))
+print("mínimo =", x.min())
+print("máximo =", x.max())
+display(x.head(10))</pre><button class="copy">Copiar</button></div><div class="cell-output"><div class="out-label">QUÉ DEBES OBSERVAR</div><pre>1) n coincide con el número de años válidos
+2) el mínimo es un año antiguo, no una categoría
+3) el máximo no supera el año de corte del dataset</pre></div></div></div></div></div></main>
+<footer><span>EST-001A · Estadística Descriptiva · UTFSM Viña del Mar</span><span>Víctor Vallejo Palacios</span><span>9</span></footer></section>
+<section class="slide" data-title="Ejemplo guiado: cuartiles a mano">
+<div class="stripe"><i></i><b></b><em></em></div><header class="head"><div><div class="kicker">EJEMPLO GUIADO</div><h2>Cuartiles a mano antes de automatizar</h2><p>Horas de estudio semanal: 3, 5, 2, 7, 6, 4, 9</p></div><div class="num">10</div></header>
+<main class="body"><div class="grid2"><div class="panel strong"><div class="eyebrow">PASO 1 · ORDENAR</div><h3>2 · 3 · 4 · 5 · 6 · 7 · 9</h3><p>n = 7. Aplicamos i = (k/4)·n.</p><div class="formula">Q₁: i = (1/4)·7 = 1,75 → posición 2 → 3 h</div><div class="formula">Q₂: i = (2/4)·7 = 3,5 → posición 4 → 5 h</div><div class="formula">Q₃: i = (3/4)·7 = 5,25 → posición 6 → 7 h</div></div><div class="panel teal"><div class="eyebrow">INTERPRETACIÓN</div><h3>Los cortes describen proporciones acumuladas</h3><ul><li><b>Q₁ = 3 h:</b> 25% estudia hasta aproximadamente 3 horas.</li><li><b>Q₂ = 5 h:</b> la mitad se ubica hasta 5 horas.</li><li><b>Q₃ = 7 h:</b> 75% se ubica hasta 7 horas.</li></ul><div class="callout teal"><b>IQR = Q₃ − Q₁ = 4 h.</b> El 50% central se extiende sobre un intervalo de 4 horas.</div><button class="reveal-btn teal">¿Por qué no usamos la media?</button><div class="reveal">Porque la pregunta es de <b>posición relativa</b>. Los cuantiles responden “¿hasta dónde llega una proporción de los datos?”, no “¿cuál es el centro aritmético?”.</div></div></div></main>
+<footer><span>EST-001A · Estadística Descriptiva · UTFSM Viña del Mar</span><span>Víctor Vallejo Palacios</span><span>10</span></footer></section>
+<section class="slide" data-title="Python con el criterio del curso">
+<div class="stripe"><i></i><b></b><em></em></div><header class="head"><div><div class="kicker">AUTOMATIZACIÓN CONTROLADA</div><h2>Python con el criterio del curso</h2><p>La función implementa exactamente Hyndman–Fan Type 2, nuestra convención para valores individuales o frecuencias exactas</p></div><div class="num">11</div></header>
+<main class="body"><div class="exercise-layout"><div class="exercise-left"><div class="section-label">FUNCIÓN REUTILIZABLE</div><h3>cuantil_curso(datos, k, m)</h3><p>La función reproduce exactamente las dos reglas de selección vistas en la clase.</p><div class="callout blue"><b>Si i no es entero:</b> tomamos la posición ⌈i⌉.</div><div class="callout teal"><b>Si i es entero:</b> promediamos las posiciones i e i+1.</div><div class="callout red"><b>Atención:</b> Python indexa desde 0; las posiciones del curso parten desde 1. Por eso ajustamos los índices.</div></div>
+<div class="colab"><div class="colab-top"><div class="colab-logo">CO</div><strong>Lab04_cuantiles.ipynb</strong><span class="saved">Función</span><button class="share">Compartir</button><span class="avatar">V</span></div><div class="colab-menu"><span>Archivo</span><span>Editar</span><span>Ver</span><span>Insertar</span><span>Entorno de ejecución</span></div><div class="colab-toolbar"><span>＋ Código</span><span>＋ Texto</span><span class="connect">Conectar ▾</span></div><div class="colab-work"><div class="rail"><span>☷</span><span>▧</span><span>&lt;&gt;</span></div><div class="nb-area"><div class="cell"><button class="run">▶</button><pre contenteditable="true">def cuantil_curso(datos, k, m):
+    """Hyndman–Fan Type 2 para p = k/m, con 1 &lt;= k &lt; m."""
+    s = pd.Series(datos).dropna().sort_values().reset_index(drop=True)
+
+    if len(s) == 0:
+        raise ValueError("No hay datos válidos para calcular el cuantil.")
+    if not (1 &lt;= k &lt; m):
+        raise ValueError("Debe cumplirse 1 &lt;= k &lt; m.")
+
+    n = len(s)
+    i = (k / m) * n
+
+    # Type 2 es discontinuo: NO interpola linealmente.
+    if float(i).is_integer():
+        pos = int(i)
+        return (s.iloc[pos - 1] + s.iloc[pos]) / 2
+
+    pos = int(np.ceil(i))
+    return s.iloc[pos - 1]
+
+horas = [3, 5, 2, 7, 6, 4, 9]
+q_manual = [cuantil_curso(horas, k, 4) for k in (1, 2, 3)]
+print("Curso:", q_manual)
+
+# Verificación contra NumPy: H&amp;F Type 2
+q_hf2 = np.quantile(
+    horas, [0.25, 0.50, 0.75], method="averaged_inverted_cdf"
+)
+print("NumPy Type 2:", q_hf2)
+assert np.allclose(q_manual, q_hf2)
+print("Verificación correcta")</pre><button class="copy">Copiar</button></div><div class="cell-output"><div class="out-label">SALIDA</div><pre>3
+5
+7</pre></div></div></div></div></div></main>
+<footer><span>EST-001A · Estadística Descriptiva · UTFSM Viña del Mar</span><span>Víctor Vallejo Palacios</span><span>11</span></footer></section>
+<section class="slide" data-title="Cuartiles del catálogo Netflix">
+<div class="stripe"><i></i><b></b><em></em></div><header class="head"><div><div class="kicker">LABORATORIO · PREGUNTA 1</div><h2>Cuartiles del catálogo Netflix</h2><p>¿Qué años separan el 25%, 50% y 75% acumulado de los títulos?</p></div><div class="num">12</div></header>
+<main class="body"><div class="question-banner"><b>PREGUNTA 1</b><span>Calcular Q₁, Q₂ y Q₃ sobre release_year usando el criterio del curso</span></div><div class="exercise-layout"><div class="exercise-left"><h3>Primero calcula; después interpreta</h3><div class="qcard"><div class="qnum">a</div><div><h4>Q₁</h4><p>¿Qué porcentaje de títulos queda hasta ese año?</p></div></div><div class="qcard teal"><div class="qnum">b</div><div><h4>Q₂</h4><p>¿Por qué coincide con una medida vista en la clase anterior?</p></div></div><div class="qcard amber"><div class="qnum">c</div><div><h4>Q₃</h4><p>¿Qué fracción del catálogo es posterior a ese punto?</p></div></div><button class="reveal-btn">Modelo de redacción</button><div class="reveal">“Q₁ = ___ indica que aproximadamente el 25% de los títulos analizados tiene año de estreno menor o igual a ___.” Sustituye el valor calculado.</div></div>
+<div class="colab"><div class="colab-top"><div class="colab-logo">CO</div><strong>Lab04_cuantiles.ipynb</strong><span class="saved">Pregunta 1</span><button class="share">Compartir</button><span class="avatar">V</span></div><div class="colab-menu"><span>Archivo</span><span>Editar</span><span>Ver</span><span>Insertar</span><span>Entorno de ejecución</span></div><div class="colab-toolbar"><span>＋ Código</span><span>＋ Texto</span><span class="connect">Conectar ▾</span></div><div class="colab-work"><div class="rail"><span>☷</span><span>▧</span><span>&lt;&gt;</span></div><div class="nb-area"><div class="cell"><button class="run">▶</button><pre contenteditable="true">q1 = cuantil_curso(x, 1, 4)
+q2 = cuantil_curso(x, 2, 4)
+q3 = cuantil_curso(x, 3, 4)
+
+print("Q1 =", q1)
+print("Q2 =", q2)
+print("Q3 =", q3)</pre><button class="copy">Copiar</button></div><div class="cell-output"><div class="out-label">SALIDA</div><pre>Ejecuta la celda en Colab y registra tus tres puntos de corte.</pre></div><div class="colab-note">No copies solo los números: escribe una frase de interpretación para cada cuartil.</div></div></div></div></div></main>
+<footer><span>EST-001A · Estadística Descriptiva · UTFSM Viña del Mar</span><span>Víctor Vallejo Palacios</span><span>12</span></footer></section>
+<section class="slide" data-title="Deciles y percentiles">
+<div class="stripe"><i></i><b></b><em></em></div><header class="head"><div><div class="kicker">LABORATORIO · PREGUNTA 2</div><h2>Del cuartil al percentil</h2><p>La función es la misma; solo cambian k y m</p></div><div class="num">13</div></header>
+<main class="body"><div class="exercise-layout"><div class="exercise-left"><div class="metric-grid"><div><span>PERCENTIL 10</span><b>P₁₀</b></div><div><span>MEDIANA</span><b>P₅₀</b></div><div><span>PERCENTIL 90</span><b>P₉₀</b></div></div><div class="qcard"><div class="qnum">1</div><div><h4>P₁₀</h4><p>Identifica el año que deja 10% de los títulos acumulados por debajo.</p></div></div><div class="qcard teal"><div class="qnum">2</div><div><h4>P₅₀</h4><p>Comprueba que coincide con Q₂ y D₅.</p></div></div><div class="qcard amber"><div class="qnum">3</div><div><h4>P₉₀</h4><p>Interpreta qué significa estar por encima de ese año.</p></div></div><div class="callout">Comprueba también <b>D₁ = P₁₀</b> y <b>D₉ = P₉₀</b>.</div>
+<div class="svg-panel compact-svg">
+<svg aria-label="Línea de percentiles 10, 50 y 90" role="img" viewbox="0 0 520 240">
+<style>
+      .a{font:700 18px Calibri, Arial, sans-serif; fill:#173A5E}
+      .b{font:600 13px Calibri, Arial, sans-serif; fill:#5d6d79}
+      .c{font:700 14px Calibri, Arial, sans-serif; fill:#173A5E}
+    </style>
+<text class="a" x="18" y="24">Tres percentiles clave</text>
+<text class="b" x="18" y="44">Útiles para describir posición baja, central y alta.</text>
+<line stroke="#98aab8" stroke-width="4" x1="36" x2="484" y1="120" y2="120"></line>
+<circle cx="81" cy="120" fill="#D18A18" r="9"></circle><circle cx="260" cy="120" fill="#2D6393" r="9"></circle><circle cx="439" cy="120" fill="#B54A4A" r="9"></circle>
+<line stroke="#D18A18" stroke-width="3" x1="81" x2="81" y1="68" y2="111"></line><line stroke="#2D6393" stroke-width="3" x1="260" x2="260" y1="52" y2="111"></line><line stroke="#B54A4A" stroke-width="3" x1="439" x2="439" y1="68" y2="111"></line>
+<text class="c" x="56" y="62">P₁₀</text><text class="c" x="236" y="46">P₅₀</text><text class="c" x="414" y="62">P₉₀</text>
+<text class="b" x="44" y="155">10% acum.</text><text class="b" x="219" y="155">50% acum.</text><text class="b" x="399" y="155">90% acum.</text>
+<rect fill="#f5f7f9" height="38" rx="10" stroke="#d6dee4" width="484" x="18" y="177"></rect>
+<text class="b" x="32" y="200">P₁₀ describe una zona baja, P₅₀ el centro y P₉₀ una zona alta de la distribución.</text>
+</svg>
+<div class="svg-caption">Este esquema vectorial ayuda a interpretar percentiles como niveles de acumulación sobre una misma escala.</div>
+</div>
+</div>
+<div class="colab"><div class="colab-top"><div class="colab-logo">CO</div><strong>Lab04_cuantiles.ipynb</strong><span class="saved">Pregunta 2</span><button class="share">Compartir</button><span class="avatar">V</span></div><div class="colab-menu"><span>Archivo</span><span>Editar</span><span>Ver</span><span>Insertar</span><span>Entorno de ejecución</span></div><div class="colab-toolbar"><span>＋ Código</span><span>＋ Texto</span><span class="connect">Conectar ▾</span></div><div class="colab-work"><div class="rail"><span>☷</span><span>▧</span><span>&lt;&gt;</span></div><div class="nb-area"><div class="cell"><button class="run">▶</button><pre contenteditable="true">p10 = cuantil_curso(x, 10, 100)
+p50 = cuantil_curso(x, 50, 100)
+p90 = cuantil_curso(x, 90, 100)
+
+d1 = cuantil_curso(x, 1, 10)
+d5 = cuantil_curso(x, 5, 10)
+d9 = cuantil_curso(x, 9, 10)
+
+print("P10, P50, P90 =", p10, p50, p90)
+print("D1, D5, D9   =", d1, d5, d9)
+
+assert (p10, p50, p90) == (d1, d5, d9)
+print("Equivalencias verificadas")</pre><button class="copy">Copiar</button></div><div class="cell-output"><div class="out-label">COMPROBACIÓN</div><pre>Verifica en tu salida:
+D1 = P10
+D5 = P50 = Q2
+D9 = P90</pre></div></div></div></div></div></main>
+<footer><span>EST-001A · Estadística Descriptiva · UTFSM Viña del Mar</span><span>Víctor Vallejo Palacios</span><span>13</span></footer></section>
+<section class="slide" data-title="Comparar Movies y TV Shows">
+<div class="stripe"><i></i><b></b><em></em></div><header class="head"><div><div class="kicker">LABORATORIO · PREGUNTA 3</div><h2>Comparar Movies y TV Shows</h2><p>Un mismo cuantil puede revelar diferencias entre grupos</p></div><div class="num">14</div></header>
+<main class="body"><div class="exercise-layout"><div class="exercise-left"><div class="section-label">PREGUNTA ESTADÍSTICA</div><h3>¿Los años de estreno ocupan posiciones similares según el tipo de contenido?</h3><p>Calcularemos Q₁, Q₂ y Q₃ por grupo. La comparación debe considerar <b>posición</b>, no solo un promedio.</p><div class="qcard"><div class="qnum">a</div><div><h4>Movies</h4><p>Obtén Q₁, Q₂ y Q₃ para release_year.</p></div></div><div class="qcard teal"><div class="qnum">b</div><div><h4>TV Shows</h4><p>Repite el mismo análisis.</p></div></div><div class="qcard amber"><div class="qnum">c</div><div><h4>Conclusión</h4><p>¿Qué grupo parece concentrarse en estrenos más recientes?</p></div></div></div>
+<div class="colab"><div class="colab-top"><div class="colab-logo">CO</div><strong>Lab04_cuantiles.ipynb</strong><span class="saved">Comparación</span><button class="share">Compartir</button><span class="avatar">V</span></div><div class="colab-menu"><span>Archivo</span><span>Editar</span><span>Ver</span><span>Insertar</span><span>Entorno de ejecución</span></div><div class="colab-toolbar"><span>＋ Código</span><span>＋ Texto</span><span class="connect">Conectar ▾</span></div><div class="colab-work"><div class="rail"><span>☷</span><span>▧</span><span>&lt;&gt;</span></div><div class="nb-area"><div class="cell"><button class="run">▶</button><pre contenteditable="true">for tipo in ["Movie", "TV Show"]:
+    g = netflix.loc[netflix["type"] == tipo, "release_year"].dropna()
+    q = [cuantil_curso(g, k, 4) for k in (1, 2, 3)]
+    print(tipo, "→ Q1, Q2, Q3 =", q)</pre><button class="copy">Copiar</button></div><div class="cell-output"><div class="out-label">TAREA</div><pre>Compara los tres cortes, no solamente Q2.
+Describe cuál distribución está desplazada hacia años más recientes.</pre></div></div></div></div></div></main>
+<footer><span>EST-001A · Estadística Descriptiva · UTFSM Viña del Mar</span><span>Víctor Vallejo Palacios</span><span>14</span></footer></section>
+<section class="slide" data-title="Explorador de posición">
+<div class="stripe"><i></i><b></b><em></em></div><header class="head"><div><div class="kicker">INTERACTIVO</div><h2>Explorador de posición</h2><p>Mueve el percentil y observa qué proporción queda a cada lado del corte</p></div><div class="num">15</div></header>
+<main class="body"><div class="explorer"><div class="explorer-controls"><div class="section-label">SELECCIONA UN PERCENTIL</div><h3>Posición acumulada</h3><label for="pRange">Percentil p</label><input id="pRange" max="99" min="1" type="range" value="25"/><div class="explorer-value" id="pValue">P25</div><div class="explorer-presets"><button data-p="10">P10</button><button data-p="25">Q1=P25</button><button data-p="50">Q2=P50</button><button data-p="75">Q3=P75</button><button data-p="90">P90</button></div><div class="callout blue">El control muestra la <b>posición</b>, no el valor numérico del cuantil en una base específica.</div><ul class="hint-list"><li>P25 deja aproximadamente 25% de los datos a la izquierda.</li><li>P50 coincide con la mediana.</li><li>P75 deja 75% de los datos en o por debajo del corte.</li></ul></div><div class="explorer-viz"><div class="track-wrap"><div class="track"><div class="track-fill" id="trackFill"></div></div><div class="marker" id="marker"></div><div class="track-labels"><span>0%</span><span>25%</span><span>50%</span><span>75%</span><span>100%</span></div></div><div class="explainer" id="pExplain"><b>P25:</b> aproximadamente 25% de las observaciones queda en o por debajo del corte y 75% queda en o por encima.</div>
+<div class="vector-pair">
+<div class="svg-panel">
+<svg aria-label="Distribución con percentiles" role="img" viewbox="0 0 520 240">
+<style>
+        .t{font:700 17px Calibri, Arial, sans-serif; fill:#173A5E}
+        .s{font:600 12px Calibri, Arial, sans-serif; fill:#5d6d79}
+        .k{font:700 12px Calibri, Arial, sans-serif; fill:#173A5E}
+      </style>
+<text class="t" x="12" y="20">Percentiles sobre una distribución</text>
+<path d="M40,178 C90,178 112,160 138,120 C160,88 182,55 260,55 C338,55 360,88 382,120 C408,160 430,178 480,178" fill="none" stroke="#2D6393" stroke-width="4"></path>
+<line stroke="#a3b2bf" stroke-width="3" x1="40" x2="480" y1="178" y2="178"></line>
+<rect fill="#ffe7ba" height="18" width="110" x="96" y="178"></rect>
+<rect fill="#dfeaf4" height="18" width="110" x="206" y="178"></rect>
+<rect fill="#def0ef" height="18" width="110" x="316" y="178"></rect>
+<line stroke="#D18A18" stroke-dasharray="5 4" stroke-width="3" x1="151" x2="151" y1="90" y2="178"></line>
+<line stroke="#2D6393" stroke-dasharray="5 4" stroke-width="3" x1="261" x2="261" y1="62" y2="178"></line>
+<line stroke="#2C8791" stroke-dasharray="5 4" stroke-width="3" x1="371" x2="371" y1="90" y2="178"></line>
+<text class="k" x="132" y="84">P₂₅</text><text class="k" x="242" y="56">P₅₀</text><text class="k" x="352" y="84">P₇₅</text>
+<text class="s" x="115" y="214">25%</text><text class="s" x="225" y="214">25%</text><text class="s" x="335" y="214">25%</text><text class="s" x="436" y="214">25%</text>
+</svg>
+<div class="svg-caption">La curva cambia de forma, pero la lectura sigue siendo acumulada: cada percentil marca la proporción de datos que queda a la izquierda.</div>
+</div>
+<div class="svg-panel">
+<svg aria-label="Cuantiles como particiones de la escala" role="img" viewbox="0 0 520 240">
+<style>
+        .t{font:700 17px Calibri, Arial, sans-serif; fill:#173A5E}
+        .s{font:600 12px Calibri, Arial, sans-serif; fill:#5d6d79}
+        .k{font:700 12px Calibri, Arial, sans-serif; fill:#173A5E}
+        .w{font:700 11px Calibri, Arial, sans-serif; fill:#fff}
+      </style>
+<text class="t" x="14" y="20">Mismo eje, distintos niveles de detalle</text>
+<text class="s" x="14" y="42">Cuartiles, quintiles y deciles son distintas resoluciones de una misma idea.</text>
+<text class="k" x="14" y="78">Cuartiles</text>
+<g transform="translate(110,58)">
+<rect fill="#2D6393" height="28" rx="6" width="90" x="0" y="0"></rect><rect fill="#2D6393" height="28" rx="6" width="90" x="94" y="0"></rect><rect fill="#2D6393" height="28" rx="6" width="90" x="188" y="0"></rect><rect fill="#2D6393" height="28" rx="6" width="90" x="282" y="0"></rect>
+<text class="w" x="34" y="18">25%</text><text class="w" x="128" y="18">25%</text><text class="w" x="222" y="18">25%</text><text class="w" x="316" y="18">25%</text>
+</g>
+<text class="k" x="14" y="128">Quintiles</text>
+<g transform="translate(110,108)">
+<rect fill="#2C8791" height="28" rx="6" width="72" x="0" y="0"></rect><rect fill="#2C8791" height="28" rx="6" width="72" x="76" y="0"></rect><rect fill="#2C8791" height="28" rx="6" width="72" x="152" y="0"></rect><rect fill="#2C8791" height="28" rx="6" width="72" x="228" y="0"></rect><rect fill="#2C8791" height="28" rx="6" width="72" x="304" y="0"></rect>
+<text class="w" x="24" y="18">20%</text><text class="w" x="100" y="18">20%</text><text class="w" x="176" y="18">20%</text><text class="w" x="252" y="18">20%</text><text class="w" x="328" y="18">20%</text>
+</g>
+<text class="k" x="14" y="178">Deciles</text>
+<g transform="translate(110,158)">
+<rect fill="#D18A18" height="24" rx="5" width="35" x="0" y="0"></rect><rect fill="#D18A18" height="24" rx="5" width="35" x="39" y="0"></rect><rect fill="#D18A18" height="24" rx="5" width="35" x="78" y="0"></rect><rect fill="#D18A18" height="24" rx="5" width="35" x="117" y="0"></rect><rect fill="#D18A18" height="24" rx="5" width="35" x="156" y="0"></rect><rect fill="#D18A18" height="24" rx="5" width="35" x="195" y="0"></rect><rect fill="#D18A18" height="24" rx="5" width="35" x="234" y="0"></rect><rect fill="#D18A18" height="24" rx="5" width="35" x="273" y="0"></rect><rect fill="#D18A18" height="24" rx="5" width="35" x="312" y="0"></rect><rect fill="#D18A18" height="24" rx="5" width="35" x="351" y="0"></rect>
+</g>
+</svg>
+<div class="svg-caption">Este segundo esquema muestra que aumentar el número de particiones mejora la precisión descriptiva del análisis.</div>
+</div>
+</div>
+</div></div></main>
+<footer><span>EST-001A · Estadística Descriptiva · UTFSM Viña del Mar</span><span>Víctor Vallejo Palacios</span><span>15</span></footer></section>
+<section class="slide" data-title="IQR y diagrama de caja">
+<div class="stripe"><i></i><b></b><em></em></div><header class="head"><div><div class="kicker">VISUALIZACIÓN</div><h2>IQR y diagrama de caja</h2><p>Los cuartiles construyen una representación compacta de la distribución</p></div><div class="num">16</div></header>
+<main class="body"><div class="grid2"><div class="panel strong"><div class="eyebrow">RESUMEN DE CINCO NÚMEROS</div><h3>mínimo · Q₁ · mediana · Q₃ · máximo</h3><div class="formula">IQR = Q₃ − Q₁</div><p>La caja representa el <b>50% central</b> de los datos. Una regla habitual para detectar posibles valores atípicos usa:</p><div class="callout blue">Límite inferior = Q₁ − 1,5·IQR</div><div class="callout red">Límite superior = Q₃ + 1,5·IQR</div></div>
+<div class="boxplot"><svg aria-label="Esquema de boxplot" role="img" viewbox="0 0 650 250"><line class="axis" x1="70" x2="580" y1="140" y2="140"></line><line class="whisk" x1="140" x2="240" y1="140" y2="140"></line><line class="whisk" x1="450" x2="540" y1="140" y2="140"></line><line class="whisk" x1="140" x2="140" y1="115" y2="165"></line><line class="whisk" x1="540" x2="540" y1="115" y2="165"></line><rect class="box" height="90" rx="4" width="210" x="240" y="95"></rect><line class="median" x1="345" x2="345" y1="95" y2="185"></line><circle class="dot" cx="590" cy="140" r="8"></circle><text class="svg-label" x="130" y="205">mín</text><text class="svg-label" x="228" y="205">Q₁</text><text class="svg-label" x="322" y="205">Q₂</text><text class="svg-label" x="438" y="205">Q₃</text><text class="svg-label" x="522" y="205">máx</text><text class="svg-small" x="568" y="112">posible atípico</text><text class="svg-label" x="292" y="70">50% central = IQR</text></svg></div></div></main>
+<footer><span>EST-001A · Estadística Descriptiva · UTFSM Viña del Mar</span><span>Víctor Vallejo Palacios</span><span>16</span></footer></section>
+<section class="slide" data-title="Boxplot en Python">
+<div class="stripe"><i></i><b></b><em></em></div><header class="head"><div><div class="kicker">PYTHON + VISUALIZACIÓN</div><h2>Boxplot en Python</h2><p>La gráfica resume posición, dispersión central y posibles valores extremos</p></div><div class="num">17</div></header>
+<main class="body"><div class="exercise-layout"><div class="exercise-left"><div class="section-label">LECTURA ANTES DE GRAFICAR</div><h3>¿Qué debemos mirar?</h3><div class="qcard"><div class="qnum">1</div><div><h4>Ubicación de la mediana</h4><p>¿Está centrada dentro de la caja o desplazada?</p></div></div><div class="qcard teal"><div class="qnum">2</div><div><h4>Tamaño del IQR</h4><p>¿El 50% central está muy concentrado o disperso?</p></div></div><div class="qcard amber"><div class="qnum">3</div><div><h4>Bigotes y puntos aislados</h4><p>¿Aparecen observaciones alejadas del rango central?</p></div></div><div class="callout red">Un punto marcado como “outlier” no es automáticamente un error: requiere contexto.</div></div>
+<div class="colab"><div class="colab-top"><div class="colab-logo">CO</div><strong>Lab04_cuantiles.ipynb</strong><span class="saved">Boxplot</span><button class="share">Compartir</button><span class="avatar">V</span></div><div class="colab-menu"><span>Archivo</span><span>Editar</span><span>Ver</span><span>Insertar</span><span>Entorno de ejecución</span></div><div class="colab-toolbar"><span>＋ Código</span><span>＋ Texto</span><span class="connect">Conectar ▾</span></div><div class="colab-work"><div class="rail"><span>☷</span><span>▧</span><span>&lt;&gt;</span></div><div class="nb-area"><div class="cell"><button class="run">▶</button><pre contenteditable="true">plt.figure(figsize=(8, 3.2))
+plt.boxplot(x, vert=False)
+plt.xlabel("Año de estreno")
+plt.title("Netflix · release_year")
+plt.tight_layout()
+plt.show()
+
+q1 = cuantil_curso(x, 1, 4)
+q3 = cuantil_curso(x, 3, 4)
+iqr = q3 - q1
+print("IQR =", iqr)</pre><button class="copy">Copiar</button></div><div class="cell-output"><div class="out-label">TAREA</div><pre>Describe la mediana, el ancho de la caja y los valores alejados.
+No escribas “hay outliers” sin indicar qué representan.</pre></div></div></div></div></div></main>
+<footer><span>EST-001A · Estadística Descriptiva · UTFSM Viña del Mar</span><span>Víctor Vallejo Palacios</span><span>17</span></footer></section>
+<section class="slide" data-title="Aplicaciones reales de cuantiles">
+<div class="stripe"><i></i><b></b><em></em></div>
+<header class="head"><div><div class="kicker">APLICACIÓN · BIG DATA</div><h2>¿Dónde se usan realmente los cuantiles?</h2><p>Permiten resumir grandes volúmenes de datos, segmentar usuarios y monitorear comportamientos extremos</p></div><div class="num">0</div></header>
+<main class="body">
+<div class="case-grid">
+<div class="case-card">
+<div>
+<div class="eyebrow">STREAMING</div>
+<h3>Minutos vistos por usuario</h3>
+<p>Con millones de reproducciones, los <b>quintiles</b> permiten segmentar usuarios en cinco niveles de consumo: muy bajo, bajo, medio, alto y muy alto.</p>
+<div class="use-tag">Uso real: marketing y personalización</div>
+</div>
+<svg aria-label="Quintiles de minutos vistos" role="img" viewbox="0 0 260 120">
+<rect fill="#def0ef" height="26" rx="6" width="40" x="16" y="76"></rect><rect fill="#def0ef" height="40" rx="6" width="40" x="60" y="62"></rect><rect fill="#def0ef" height="56" rx="6" width="40" x="104" y="46"></rect><rect fill="#def0ef" height="68" rx="6" width="40" x="148" y="34"></rect><rect fill="#def0ef" height="84" rx="6" width="40" x="192" y="18"></rect>
+<text fill="#173A5E" font-size="13" x="20" y="114">V₁</text><text fill="#173A5E" font-size="13" x="64" y="114">V₂</text><text fill="#173A5E" font-size="13" x="108" y="114">V₃</text><text fill="#173A5E" font-size="13" x="152" y="114">V₄</text><text fill="#173A5E" font-size="13" x="196" y="114">V₅</text>
+</svg>
+</div>
+<div class="case-card">
+<div>
+<div class="eyebrow">E-COMMERCE</div>
+<h3>Tiempos de entrega</h3>
+<p>En logística, comparar <b>P₅₀</b> y <b>P₉₀</b> muestra qué tan bueno es el servicio típico y qué ocurre con los envíos más lentos.</p>
+<div class="use-tag">Uso real: nivel de servicio y SLA</div>
+</div>
+<svg aria-label="Percentiles en tiempos de entrega" role="img" viewbox="0 0 260 120">
+<line stroke="#b8c7d4" stroke-width="3" x1="20" x2="238" y1="92" y2="92"></line>
+<path d="M20,90 C48,88 76,82 104,72 C132,60 160,46 188,28 C204,18 220,12 238,10" fill="none" stroke="#2D6393" stroke-width="4"></path>
+<line stroke="#D18A18" stroke-dasharray="5 4" stroke-width="3" x1="102" x2="102" y1="92" y2="46"></line>
+<line stroke="#B54A4A" stroke-dasharray="5 4" stroke-width="3" x1="192" x2="192" y1="92" y2="24"></line>
+<text fill="#173A5E" font-size="14" x="88" y="40">P₅₀</text><text fill="#173A5E" font-size="14" x="178" y="18">P₉₀</text>
+</svg>
+</div>
+<div class="case-card">
+<div>
+<div class="eyebrow">OBSERVABILIDAD</div>
+<h3>Latencia de APIs</h3>
+<p>En plataformas digitales se monitorean percentiles altos como <b>P₉₅</b> o <b>P₉₉</b>, porque el promedio puede ocultar demoras severas en la cola.</p>
+<div class="use-tag">Uso real: monitoreo de infraestructura</div>
+</div>
+<svg aria-label="Curva de latencia con cola pesada" role="img" viewbox="0 0 260 120">
+<path d="M16,92 C68,24 124,22 170,64 C194,86 218,92 240,94" fill="none" stroke="#2C8791" stroke-width="4"></path>
+<line stroke="#b8c7d4" stroke-width="3" x1="16" x2="242" y1="94" y2="94"></line>
+<line stroke="#D18A18" stroke-dasharray="5 4" stroke-width="3" x1="176" x2="176" y1="94" y2="62"></line>
+<line stroke="#B54A4A" stroke-dasharray="5 4" stroke-width="3" x1="216" x2="216" y1="94" y2="90"></line>
+<text fill="#173A5E" font-size="14" x="164" y="56">P₉₅</text><text fill="#173A5E" font-size="14" x="204" y="84">P₉₉</text>
+</svg>
+</div>
+<div class="case-card">
+<div>
+<div class="eyebrow">MOVILIDAD URBANA</div>
+<h3>Duración de viajes</h3>
+<p>Con bases masivas de viajes, el <b>IQR</b> y el boxplot ayudan a comparar rutas, horas punta y zonas de la ciudad sin depender solo de la media.</p>
+<div class="use-tag">Uso real: planificación y operación</div>
+</div>
+<svg aria-label="Boxplot simple de duración de viajes" role="img" viewbox="0 0 260 120">
+<line stroke="#b8c7d4" stroke-width="3" x1="20" x2="236" y1="64" y2="64"></line>
+<line stroke="#173A5E" stroke-width="3" x1="56" x2="92" y1="64" y2="64"></line>
+<line stroke="#173A5E" stroke-width="3" x1="168" x2="212" y1="64" y2="64"></line>
+<rect fill="#dfeaf4" height="44" rx="6" stroke="#2D6393" width="76" x="92" y="42"></rect>
+<line stroke="#2D6393" stroke-width="3" x1="128" x2="128" y1="42" y2="86"></line>
+<circle cx="228" cy="64" fill="#B54A4A" r="6"></circle>
+<text fill="#173A5E" font-size="13" x="48" y="106">mín</text><text fill="#173A5E" font-size="13" x="88" y="106">Q₁</text><text fill="#173A5E" font-size="13" x="120" y="106">Q₂</text><text fill="#173A5E" font-size="13" x="160" y="106">Q₃</text><text fill="#173A5E" font-size="13" x="202" y="106">máx</text>
+</svg>
+</div>
+</div>
+</main>
+<footer><span>EST-001A · Estadística Descriptiva · UTFSM Viña del Mar</span><span>Víctor Vallejo Palacios</span><span>0</span></footer>
+</section>
+<section class="slide" data-title="Caso real: NYC Yellow Taxi">
+<div class="stripe"><i></i><b></b><em></em></div>
+<header class="head"><div><div class="kicker">CASO REAL · BIG DATA</div><h2>NYC Yellow Taxi · enero 2023</h2><p>Más de 3 millones de viajes para estudiar tiempos de servicio mediante cuantiles</p></div><div class="num">0</div></header>
+<main class="body">
+<div class="realcase-grid">
+<div class="realcase-card">
+<div class="eyebrow">BASE REAL</div>
+<h3>¿Qué contienen los datos?</h3>
+<p>La NYC Taxi &amp; Limousine Commission registra cada viaje de taxi amarillo: hora de inicio y término, distancia, zona, tarifa, propina, tipo de pago y otras variables.</p>
+<div class="realcase-metrics">
+<div><b>3.066.766</b><span>viajes</span></div>
+<div><b>19</b><span>variables</span></div>
+<div><b>47 MB</b><span>Parquet aprox.</span></div>
+</div>
+<div class="problem-box">
+<h4>Problema operacional</h4>
+<p>Una empresa quiere entender la <b>duración de los viajes</b> sin dejar que unos pocos registros extremos distorsionen la lectura. ¿Qué tiempos separan viajes cortos, típicos, largos y excepcionalmente largos?</p>
+</div>
+<div class="realcase-source">Fuente: NYC TLC Yellow Taxi Trip Records, enero de 2023. La variable duración se obtiene como dropoff − pickup, en minutos.</div>
+</div>
+<div class="svg-panel">
+<svg aria-label="Distribución conceptual de duración de viajes con cuantiles" role="img" viewbox="0 0 760 560">
+<style>.a{font:700 22px Calibri,Arial;fill:#173A5E}.b{font:600 15px Calibri,Arial;fill:#5e6d78}.c{font:700 15px Calibri,Arial;fill:#173A5E}.d{font:13px Calibri,Arial;fill:#5e6d78}</style>
+<text class="a" x="28" y="34">Duración de viajes · distribución asimétrica</text>
+<text class="b" x="28" y="58">La mayoría de los viajes dura pocos minutos, pero existe una cola larga.</text>
+<path d="M46,420 C88,416 110,400 140,350 C170,300 192,224 252,160 C300,110 356,105 416,146 C480,190 508,266 546,330 C582,388 626,414 700,420" fill="none" stroke="#2D6393" stroke-width="5"></path>
+<line stroke="#aab7c2" stroke-width="3" x1="46" x2="704" y1="420" y2="420"></line>
+<g stroke-dasharray="6 5" stroke-width="3">
+<line stroke="#2C8791" x1="212" x2="212" y1="242" y2="420"></line>
+<line stroke="#2D6393" x1="308" x2="308" y1="138" y2="420"></line>
+<line stroke="#2C8791" x1="414" x2="414" y1="144" y2="420"></line>
+<line stroke="#D18A18" x1="568" x2="568" y1="360" y2="420"></line>
+<line stroke="#B54A4A" x1="650" x2="650" y1="408" y2="420"></line>
+</g>
+<text class="c" x="188" y="228">Q₁</text><text class="c" x="286" y="124">Q₂</text><text class="c" x="392" y="130">Q₃</text><text class="c" x="546" y="346">P₉₀</text><text class="c" x="628" y="394">P₉₉</text>
+<text class="d" x="188" y="448">25%</text><text class="d" x="286" y="448">50%</text><text class="d" x="392" y="448">75%</text><text class="d" x="544" y="448">90%</text><text class="d" x="626" y="448">99%</text>
+<rect fill="#f5f7f9" height="52" rx="12" stroke="#d6dee4" width="680" x="28" y="480"></rect>
+<text class="c" x="44" y="502">Pregunta clave</text>
+<text class="b" x="44" y="522">¿Qué umbrales describen el 25%, 50%, 75%, 90% y 99% de los viajes?</text>
+</svg>
+</div>
+</div>
+</main>
+<footer><span>EST-001A · Estadística Descriptiva · UTFSM Viña del Mar</span><span>Víctor Vallejo Palacios</span><span>0</span></footer>
+</section>
+<section class="slide" data-title="Caso real: solución con cuartiles">
+<div class="stripe"><i></i><b></b><em></em></div>
+<header class="head"><div><div class="kicker">CASO REAL · SOLUCIÓN 1</div><h2>Cuartiles de la duración de viaje</h2><p>Los cortes centrales describen casi 3,1 millones de viajes sin depender de la media</p></div><div class="num">0</div></header>
+<main class="body">
+<div class="quant-result-grid">
+<div class="quant-table">
+<h3>Resultados reales</h3>
+<div class="quant-row"><b>Q₁ = P₂₅</b><strong>7,12 min</strong><span>25% de los viajes dura como máximo ~7,1 min.</span></div>
+<div class="quant-row"><b>Q₂ = P₅₀</b><strong>11,52 min</strong><span>La mitad de los viajes dura ≤ ~11,5 min.</span></div>
+<div class="quant-row"><b>Q₃ = P₇₅</b><strong>18,30 min</strong><span>75% de los viajes dura ≤ ~18,3 min.</span></div>
+<div class="quant-row"><b>IQR</b><strong>11,18 min</strong><span>El 50% central se extiende aproximadamente 11,2 min.</span></div>
+<div class="callout blue"><b>Lectura:</b> la duración típica está mejor descrita por mediana y cuartiles que por el máximo, porque la base contiene valores extremos.</div>
+<div class="callout teal quantile-method-note"><b>Método usado aquí:</b> como disponemos de los viajes individuales, aplicamos <b>Hyndman–Fan Type 2</b> (<code>averaged_inverted_cdf</code>), exactamente la convención oficial del curso.</div></div>
+<div class="colab">
+<div class="colab-top"><div class="colab-logo">CO</div><strong>caso_nyc_taxi.ipynb</strong><span class="saved">Caso real</span><button class="share">Compartir</button><span class="avatar">V</span></div>
+<div class="colab-menu"><span>Archivo</span><span>Editar</span><span>Ver</span><span>Insertar</span><span>Entorno de ejecución</span></div>
+<div class="colab-toolbar"><span>＋ Código</span><span>＋ Texto</span><span class="connect">Conectar ▾</span></div>
+<div class="colab-work"><div class="rail"><span>☷</span><span>▧</span><span>&lt;&gt;</span></div><div class="nb-area">
+<div class="cell"><button class="run">▶</button><pre contenteditable="true">import urllib.request
+import pandas as pd
+import numpy as np
+
+url = (
+    "https://d37ci6vzurychx.cloudfront.net/trip-data/"
+    "yellow_tripdata_2023-01.parquet"
+)
+archivo = "yellow_tripdata_2023-01.parquet"
+urllib.request.urlretrieve(url, archivo)
+
+columnas = ["tpep_pickup_datetime", "tpep_dropoff_datetime"]
+df = pd.read_parquet(archivo, columns=columnas, engine="pyarrow")
+
+df["duration"] = (
+    df["tpep_dropoff_datetime"] - df["tpep_pickup_datetime"]
+).dt.total_seconds() / 60
+
+dur = df["duration"].dropna().to_numpy()
+q1, q2, q3 = np.quantile(
+    dur, [0.25, 0.50, 0.75],
+    method="averaged_inverted_cdf"
+)
+
+print("Q1, Q2, Q3 =", q1, q2, q3)
+print("IQR =", q3 - q1)</pre><button class="copy">Copiar</button></div>
+<div class="cell-output"><div class="out-label">RESULTADOS APROXIMADOS</div><pre>Q1 ≈ 7.12 min
+Q2 ≈ 11.52 min
+Q3 ≈ 18.30 min
+IQR ≈ 11.18 min</pre></div>
+</div></div>
+</div>
+</div>
+</main>
+<footer><span>EST-001A · Estadística Descriptiva · UTFSM Viña del Mar</span><span>Víctor Vallejo Palacios</span><span>0</span></footer>
+</section>
+<section class="slide" data-title="Caso real: quintiles y percentiles">
+<div class="stripe"><i></i><b></b><em></em></div>
+<header class="head"><div><div class="kicker">CASO REAL · SOLUCIÓN 2</div><h2>Segmentar y detectar la cola con cuantiles</h2><p>Quintiles para segmentar; percentiles altos para controlar tiempos excepcionalmente largos</p></div><div class="num">0</div></header>
+<main class="body">
+<div class="real-solution">
+<div>
+<div class="realcase-card">
+<div class="eyebrow">QUINTILES · SEGMENTACIÓN OPERACIONAL</div>
+<h3>Cinco grupos de igual tamaño</h3>
+<div class="seg5">
+<div><b>≤ 6,28</b><span>V₁ · 20%</span></div>
+<div><b>6,28–9,65</b><span>20–40%</span></div>
+<div><b>9,65–13,73</b><span>40–60%</span></div>
+<div><b>13,73–20,53</b><span>60–80%</span></div>
+<div><b>&gt; 20,53</b><span>top 20%</span></div>
+</div>
+<div class="decision-card"><h4>Uso real</h4><p>La operación puede comparar zonas, horarios o conductores usando los mismos cinco segmentos, en lugar de depender de un único promedio.</p></div>
+</div>
+<div class="realcase-card" style="margin-top:12px">
+<div class="eyebrow">CONTROL DE COLA</div>
+<h3>¿Qué ocurre con los viajes más largos?</h3>
+<div class="tail-metrics">
+<div><b>27,94 min</b><span>P₉₀</span></div>
+<div><b>36,47 min</b><span>P₉₅</span></div>
+<div><b>57,25 min</b><span>P₉₉</span></div>
+</div>
+<div class="decision-card"><h4>Interpretación</h4><p>El 99% de los viajes dura ≤ 57,25 min. Por sobre ese umbral queda solo el 1% superior, ideal para revisar casos extremos, congestión severa o problemas de calidad de datos.</p></div>
+</div>
+</div>
+<div class="colab">
+<div class="colab-top"><div class="colab-logo">CO</div><strong>caso_nyc_taxi.ipynb</strong><span class="saved">Cuantiles</span><button class="share">Compartir</button><span class="avatar">V</span></div>
+<div class="colab-menu"><span>Archivo</span><span>Editar</span><span>Ver</span><span>Insertar</span><span>Entorno de ejecución</span></div>
+<div class="colab-toolbar"><span>＋ Código</span><span>＋ Texto</span><span class="connect">Conectar ▾</span></div>
+<div class="colab-work"><div class="rail"><span>☷</span><span>▧</span><span>&lt;&gt;</span></div><div class="nb-area">
+<div class="cell"><button class="run">▶</button><pre contenteditable="true">dur = df["duration"].dropna().to_numpy()
+
+# Convención oficial del curso: Hyndman–Fan Type 2
+quintiles = np.quantile(
+    dur, [0.20, 0.40, 0.60, 0.80],
+    method="averaged_inverted_cdf"
+)
+cola = np.quantile(
+    dur, [0.90, 0.95, 0.99],
+    method="averaged_inverted_cdf"
+)
+
+print("Quintiles:", np.round(quintiles, 4))
+print("P90, P95, P99:", np.round(cola, 4))
+
+limpios = df[df["duration"].between(1, 60, inclusive="both")]
+print("Fracción 1–60 min =", len(limpios) / len(df))</pre><button class="copy">Copiar</button></div>
+<div class="cell-output"><div class="out-label">SALIDA REAL</div><pre>Quintiles:
+P20 =  6.2833
+P40 =  9.6500
+P60 = 13.7333
+P80 = 20.5333
+
+Cola:
+P90 = 27.9417
+P95 = 36.4667
+P99 = 57.2500
+
+Fracción 1–60 min ≈ 0.9812</pre></div>
+</div></div>
+</div>
+</div>
+</main>
+<footer><span>EST-001A · Estadística Descriptiva · UTFSM Viña del Mar</span><span>Víctor Vallejo Palacios</span><span>0</span></footer>
+</section>
+<section class="slide" data-title="Desafío guiado">
+<div class="stripe"><i></i><b></b><em></em></div><header class="head"><div><div class="kicker">PRÁCTICA GUIADA</div><h2>Desafío: construir una conclusión con evidencia</h2><p>No basta con ejecutar código: el producto final es una interpretación estadística</p></div><div class="num">18</div></header>
+<main class="body"><div class="grid2"><div class="panel strong"><div class="eyebrow">EN EQUIPOS · 8 MIN</div><h3>Elige Movie o TV Show</h3><ol style="font-size:17px;line-height:1.5;margin:0 0 0 22px"><li>Calcula Q₁, Q₂ y Q₃.</li><li>Calcula P₁₀ y P₉₀.</li><li>Obtén IQR.</li><li>Genera el boxplot.</li><li>Redacta una conclusión de 3–4 líneas.</li></ol><div class="callout">Tu conclusión debe contener <b>al menos dos valores calculados</b> y una comparación explícita.</div></div><div class="panel teal"><div class="eyebrow">PLANTILLA DE CONCLUSIÓN</div><h3>De salida de Python a lenguaje estadístico</h3><p>“Para los títulos del tipo <b>_____</b>, el 50% central de los años de estreno se ubica entre <b>Q₁ = ____</b> y <b>Q₃ = ____</b>. El percentil 90 es <b>____</b>, por lo que solo cerca del 10% de los títulos supera ese año. El boxplot muestra <b>_____</b>, lo que sugiere <b>_____</b>.”</p><button class="reveal-btn teal">Criterio de evaluación</button><div class="reveal">Se evalúa: cálculo correcto, equivalencias, interpretación acumulada, lectura del boxplot y una conclusión coherente con los datos.</div></div></div></main>
+<footer><span>EST-001A · Estadística Descriptiva · UTFSM Viña del Mar</span><span>Víctor Vallejo Palacios</span><span>18</span></footer></section>
+<section class="slide" data-title="Errores frecuentes">
+<div class="stripe"><i></i><b></b><em></em></div><header class="head"><div><div class="kicker">CHECKPOINT</div><h2>Errores frecuentes que debemos evitar</h2><p>La mayoría no son errores de Python: son errores de procedimiento o interpretación</p></div><div class="num">19</div></header>
+<main class="body"><div class="grid4"><div class="panel red"><div class="eyebrow">ERROR 1</div><h4>No ordenar</h4><p>Los cuantiles dependen de la posición en los datos ordenados.</p></div><div class="panel amber"><div class="eyebrow">ERROR 2</div><h4>Mezclar criterios</h4><p>Usar métodos diferentes sin declararlo produce resultados inconsistentes.</p></div><div class="panel blue"><div class="eyebrow">ERROR 3</div><h4>Confundir P₉₀</h4><p>P₉₀ no significa “90% del valor máximo”. Es un corte acumulado.</p></div><div class="panel teal"><div class="eyebrow">ERROR 4</div><h4>Interpretar sin contexto</h4><p>Un cuantil necesita variable, población/base y proporción.</p></div></div><div class="callout red"><b>Mini-checklist:</b> ¿ordené? · ¿usé el criterio del curso? · ¿expliqué qué porcentaje queda bajo el corte? · ¿comparé grupos con la misma regla?</div></main>
+<footer><span>EST-001A · Estadística Descriptiva · UTFSM Viña del Mar</span><span>Víctor Vallejo Palacios</span><span>19</span></footer></section>
+<section class="slide" data-title="Bibliografía sobre cuantiles">
+<div class="stripe"><i></i><b></b><em></em></div>
+<header class="head"><div><div class="kicker">BIBLIOGRAFÍA</div><h2>Fuentes para justificar las distintas definiciones</h2><p>La diversidad de fórmulas está documentada en literatura estadística y en software científico</p></div><div class="num">0</div></header>
+<main class="body"><div class="biblio-grid">
+<div class="bib-card"><b>Hyndman, R. J. &amp; Fan, Y. (1996)</b><p><i>Sample Quantiles in Statistical Packages</i>. The American Statistician, 50(4), 361–365. Es la referencia central de la taxonomía de 9 métodos.</p><a href="https://doi.org/10.1080/00031305.1996.10473566" target="_blank">DOI 10.1080/00031305.1996.10473566</a></div><div class="bib-card"><b>NIST/SEMATECH · Grouped Percentile / Grouped Quantile</b><p>Documenta el cálculo de cuantiles para datos disponibles únicamente como tabla de frecuencias por intervalos y la interpolación lineal intraclase. Señala explícitamente el supuesto de distribución uniforme dentro de la clase.</p><a href="https://www.itl.nist.gov/div898/software/dataplot/refman2/auxillar/groupper.htm" target="_blank">NIST Dataplot Reference</a></div>
+<div class="bib-card"><b>R Core Team · quantile()</b><p>Documenta Types 1–9, el default Type 7, la recomendación de Type 8 de Hyndman–Fan y referencias adicionales.</p><a href="https://stat.ethz.ch/R-manual/R-devel/library/stats/html/quantile.html" target="_blank">R Documentation</a></div>
+<div class="bib-card"><b>Langford, E. (2006)</b><p><i>Quartiles in Elementary Statistics</i>. Journal of Statistics Education, 14(3). Discute por qué aparecen diferentes reglas de cuartiles en cursos y textos introductorios.</p><a href="https://doi.org/10.1080/10691898.2006.11910589" target="_blank">DOI 10.1080/10691898.2006.11910589</a></div>
+
+<div class="bib-card"><b>NumPy · quantile()</b><p>Implementa los 9 métodos de Hyndman–Fan mediante el argumento <code>method</code>, además de variantes discontinuas de compatibilidad.</p><a href="https://numpy.org/doc/stable/reference/generated/numpy.quantile.html" target="_blank">NumPy documentation</a></div>
+<div class="bib-card"><b>pandas · Series.quantile()</b><p>Expone las opciones de interpolación <code>linear</code>, <code>lower</code>, <code>higher</code>, <code>nearest</code> y <code>midpoint</code>; por defecto usa <code>linear</code>.</p><a href="https://pandas.pydata.org/docs/reference/api/pandas.Series.quantile.html" target="_blank">pandas documentation</a></div>
+</div><div class="source-note"><b>Regla docente:</b> en cada ejercicio se indicará si los datos son exactos o están agrupados en intervalos. Eso determina el método antes de iniciar cualquier cálculo.</div></main>
+<footer><span>EST-001A · Estadística Descriptiva · UTFSM Viña del Mar</span><span>Víctor Vallejo Palacios</span><span>0</span></footer></section><section class="slide" data-title="Síntesis">
+<div class="stripe"><i></i><b></b><em></em></div><header class="head"><div><div class="kicker">SÍNTESIS</div><h2>La potencia está en la secuencia completa</h2><p>Del dato bruto a una conclusión de posición</p></div><div class="num">20</div></header>
+<main class="body"><div class="synthesis"><div class="synth-flow"><div><b>1</b><span>ordenar</span><small>datos válidos</small></div><i>→</i><div><b>2</b><span>ubicar</span><small>i=(k/m)n</small></div><i>→</i><div><b>3</b><span>calcular</span><small>criterio del curso</small></div><i>→</i><div><b>4</b><span>interpretar</span><small>proporción acumulada</small></div></div><div class="synth-bottom"><div class="panel"><div class="eyebrow">LO QUE HIZO PYTHON</div><p>Ordenó miles de registros, aplicó una función reproducible, comparó grupos y generó una visualización en segundos.</p></div><div class="panel"><div class="eyebrow">LO QUE HIZO EL ANALISTA</div><p>Definió el criterio, eligió la variable, verificó equivalencias y transformó números en una conclusión contextualizada.</p></div></div></div><div class="callout teal"><b>Convención oficial del curso:</b> datos exactos → Hyndman–Fan Type 2; datos agrupados en intervalos → interpolación lineal intraclase NIST/SEMATECH.</div></main>
+<footer><span>EST-001A · Estadística Descriptiva · UTFSM Viña del Mar</span><span>Víctor Vallejo Palacios</span><span>20</span></footer></section>
+<section class="slide" data-title="Cierre">
+<div class="stripe"><i></i><b></b><em></em></div><header class="head"><div><div class="kicker">CIERRE</div><h2>Checklist de dominio</h2><p>Antes de salir, debo poder explicar —no solo ejecutar—</p></div><div class="num">21</div></header>
+<main class="body"><div class="checklist-layout"><div class="checklist"><h3>Hoy debo poder…</h3><label><input type="checkbox"/> explicar qué es un cuantil como medida de posición;</label><label><input type="checkbox"/> reconocer Q₂ = D₅ = P₅₀;</label><label><input type="checkbox"/> aplicar el criterio del curso para datos no agrupados;</label><label><input type="checkbox"/> calcular Q₁, Q₂, Q₃, Dₖ y Pₖ con Python;</label><label><input type="checkbox"/> comparar cuantiles entre grupos;</label><label><input type="checkbox"/> calcular e interpretar IQR;</label><label><input type="checkbox"/> leer un boxplot sin confundir outlier con error;</label><label><input type="checkbox"/> redactar una conclusión usando evidencia numérica.</label></div><div class="final-card"><div class="final-kicker">IDEA CENTRAL</div><h3>Un cuantil no resume “cuánto” vale un dato.<br/>Resume <em>dónde</em> se ubica.</h3><p>En la próxima sesión podremos usar estas posiciones como base para profundizar en dispersión y forma de la distribución.</p><div class="final-badge">Cuantiles · Python · Google Colab</div></div></div></main>
+<footer><span>EST-001A · Estadística Descriptiva · UTFSM Viña del Mar</span><span>Víctor Vallejo Palacios</span><span>21</span></footer></section>
+<div class="menu"></div><div class="dock"><button id="menuBtn" title="Índice">☰</button><button id="prev" title="Anterior">◀</button><button id="next" title="Siguiente">▶</button><button id="fullBtn" title="Pantalla completa">⛶</button></div><div class="progress"></div>
+</div></div>
+<script>
+const slides=[...document.querySelectorAll('.slide')];let idx=0;
+slides.forEach((s,i)=>{const num=s.querySelector('.num');if(num)num.textContent=i+1;const foot=s.querySelector('footer span:last-child');if(foot)foot.textContent=i+1;});
+
+function scaleStage(){const st=document.querySelector('.stage');const s=Math.min(innerWidth/1600,innerHeight/900);st.style.transform=`scale(${s})`;st.style.left=`${(innerWidth-1600*s)/2}px`;st.style.top=`${(innerHeight-900*s)/2}px`;}
+addEventListener('resize',scaleStage);scaleStage();
+function show(n,d=1){if(n<0||n>=slides.length||n===idx)return;const old=slides[idx];old.classList.remove('active');old.classList.add(d>0?'exit-left':'exit-right');setTimeout(()=>old.classList.remove('exit-left','exit-right'),400);idx=n;slides[idx].classList.add('active');document.querySelector('.progress').style.width=((idx+1)/slides.length*100)+'%';document.querySelector('.menu').classList.remove('show');history.replaceState(null,'','#slide-'+(idx+1));}
+function next(){if(idx<slides.length-1)show(idx+1,1)} function prev(){if(idx>0)show(idx-1,-1)}
+document.getElementById('next').onclick=next;document.getElementById('prev').onclick=prev;document.getElementById('menuBtn').onclick=()=>document.querySelector('.menu').classList.toggle('show');document.getElementById('fullBtn').onclick=()=>{if(!document.fullscreenElement)document.documentElement.requestFullscreen?.();else document.exitFullscreen?.()};
+addEventListener('keydown',e=>{if(e.target.matches('[contenteditable=true],textarea,input'))return;if(['ArrowRight','PageDown',' '].includes(e.key)){e.preventDefault();next()}if(['ArrowLeft','PageUp'].includes(e.key)){e.preventDefault();prev()}if(e.key==='Home')show(0,-1);if(e.key==='End')show(slides.length-1,1)});
+const menu=document.querySelector('.menu');slides.forEach((s,i)=>{const b=document.createElement('button');b.innerHTML=`<small>${String(i+1).padStart(2,'0')}</small>${s.dataset.title||'Slide'}`;b.onclick=()=>show(i,i>idx?1:-1);menu.appendChild(b)});
+document.querySelectorAll('.run').forEach(btn=>btn.onclick=()=>{const area=btn.closest('.nb-area');const out=btn.closest('.cell').nextElementSibling;if(out?.classList.contains('cell-output'))out.classList.toggle('show')});
+document.querySelectorAll('.copy').forEach(btn=>btn.onclick=async()=>{const t=btn.closest('.cell').querySelector('pre').innerText;let ok=false;try{await navigator.clipboard.writeText(t);ok=true}catch(e){const ta=document.createElement('textarea');ta.value=t;document.body.appendChild(ta);ta.select();try{ok=document.execCommand('copy')}catch(_){}ta.remove()}if(ok){const old=btn.textContent;btn.textContent='Copiado';setTimeout(()=>btn.textContent=old,900)}});
+document.querySelectorAll('.reveal-btn').forEach(btn=>btn.onclick=()=>{const r=btn.nextElementSibling;r.classList.toggle('show');btn.textContent=r.classList.contains('show')?'Ocultar respuesta':'Mostrar respuesta'});
+const range=document.getElementById('pRange'),pValue=document.getElementById('pValue'),fill=document.getElementById('trackFill'),marker=document.getElementById('marker'),pExplain=document.getElementById('pExplain');
+function updatePercentile(p){p=Math.max(1,Math.min(99,Number(p)||25));range.value=p;pValue.textContent='P'+p;fill.style.width=p+'%';marker.style.left=p+'%';let alias=p===25?'Q₁ = P₂₅':p===50?'Q₂ = D₅ = P₅₀':p===75?'Q₃ = P₇₅':p===10?'D₁ = P₁₀':p===90?'D₉ = P₉₀':'P'+p;pExplain.innerHTML=`<b>${alias}:</b> aproximadamente ${p}% de las observaciones queda en o por debajo del corte y ${100-p}% queda por encima.`;}
+range?.addEventListener('input',e=>updatePercentile(e.target.value));document.querySelectorAll('.explorer-presets button').forEach(b=>b.addEventListener('click',()=>updatePercentile(b.dataset.p)));updatePercentile(25);
+const m=location.hash.match(/slide-(\d+)/);if(m){const n=Math.max(1,Math.min(slides.length,Number(m[1])))-1;if(n!==0){slides[0].classList.remove('active');idx=n;slides[idx].classList.add('active')}}document.querySelector('.progress').style.width=((idx+1)/slides.length*100)+'%';
+</script>
+</body></html>
